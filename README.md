@@ -16,9 +16,11 @@ ROSBase.jl contains supporting functions and the data files used in ["Regression
 
 ## Contents
 
-All data files are in `.csv` format and located in the `data` directory. If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory.
+All data files are in `.csv` format and located in the `data` directory. 
 
-The supporting functions are intended to be used in currently 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
+If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory.
+
+The supporting functions are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
 
 ## Approach
 
