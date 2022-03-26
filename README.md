@@ -12,7 +12,7 @@
 
 ## Purpose (once completed, maybe late 2022)
 
-ROSBase.jl contains supporting functions and the data files used in ["Regression and other stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
+ROSBase.jl contains supporting functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
 ## Contents
 
@@ -26,6 +26,9 @@ The supporting functions are intended to be used in (currently) 2 Julia projects
 
 The approach taken in ROSBase.jl and associated projects is different from StatisticalRethinking.jl. In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In ROSBase.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
 
+## Issues, comments and questions
+
+Please file these [here](https://github.com/stanjulia/ROSbase.jl/issues). Thank you.
 
 ## Versions
 
@@ -37,7 +40,7 @@ The approach taken in ROSBase.jl and associated projects is different from Stati
 
 Of course this package is focuseed on:
 
-0. [Gelman, Hill, Vehtari: Regression and other stories](https://www.cambridge.org/highereducation/books/regression-and-other-stories/DD20DD6C9057118581076E54E40C372C#overview)
+0. [Gelman, Hill, Vehtari: Regression and Other Stories](https://www.cambridge.org/highereducation/books/regression-and-other-stories/DD20DD6C9057118581076E54E40C372C#overview)
 
 which in a sense is a major update to item 3. below.
 
