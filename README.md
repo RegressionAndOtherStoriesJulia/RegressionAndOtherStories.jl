@@ -16,25 +16,30 @@ ROSBase.jl contains supporting functions and the data files used in ["Regression
 
 ## Contents
 
-All data files are in `.csv` format and located in the `data` directory. 
+The supporting functions are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
+
+All data files are in `.csv` format and located in the `data` directory. The files can be read in as a DataFrame using:
+```
+hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
+```
 
 If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory.
 
-The supporting functions are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
-
 ## Approach
 
-The approach taken in ROSBase.jl and associated projects is different from StatisticalRethinking.jl. In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In ROSBase.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
+The approach taken in ROSBase.jl and associated projects is different from StatisticalRethinking.jl.
+
+In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In ROSBase.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
 
 ## Issues, comments and questions
 
-Please file these [here](https://github.com/stanjulia/ROSbase.jl/issues). Thank you.
+Please file issues, comments and questions [here](https://github.com/stanjulia/ROSbase.jl/issues).
 
 ## Versions
 
 ### Version 0.1.0
 
-1. Initial commit, basically to registrate the package for usage in projects.
+1. Initial commit (to registrate the package for usage in projects).
 
 ## References
 
