@@ -6,7 +6,13 @@ using Reexport
 @reexport using DataFrames
 
 # Direct access to the R repository "ROS-Examples"
-src_path = ENV["JULIA_ROS_HOME"]
+
+try
+    src_path = ENV["JULIA_ROS_HOME"]
+catch
+    @warning "ENV["JULIA_ROS_HOME"] not available."
+end
+
 ros_path(parts...) = normpath(joinpath(src_path, parts...))
 ros_data(dataset, parts...) = normpath(joinpath(src_path, dataset, "data",
     parts...))
