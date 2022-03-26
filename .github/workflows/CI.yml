@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+env:
+  JULIA_CMDSTAN_HOME: "/home/worker/cmdstan-2.29.1/"
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.version == 'nightly' }}
+    strategy:
+      matrix:
+        version:
+          - '1'
+          #- nightly
+        os:
+          - ubuntu-latest
+          #- macOS-latest
+          #- windows-latest
+        arch:
+          #- x86
+          - x64
+        exclude:
+          - os: windows-latest
+            arch: x86
+          - os: macOS-latest
+            arch: x86
+    steps:
+      - name: Install extra dependency on main branch
+        shell: julia --project=. {0}
+        run: |
+          println(pwd())
+          println(ENV["JULIA_CMDSTAN_HOME"])
+          println(ENV["HOME"])
+      - run: |
+          OLDWD=`pwd`
+          cd ~
+          pwd
+          wget https://github.com/stan-dev/cmdstan/releases/download/v2.29.1/cmdstan-2.29.1.tar.gz
+          tar -xzpf cmdstan-2.29.1.tar.gz
+          ls -lia .
+          make -C $JULIA_CMDSTAN_HOME build
+          cd $OLDWD
+        env:
+          JULIA_CMDSTAN_HOME: "/home/runner/cmdstan-2.29.1/"
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: actions/cache@v1
+        env:
+          cache-name: cache-artifacts
+        with:
+          path: ~/.julia/artifacts
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-test-
+            ${{ runner.os }}-
+      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-runtest@latest
+        env:
+          JULIA_CMDSTAN_HOME: "/home/runner/cmdstan-2.29.1/"
+      - uses: julia-actions/julia-processcoverage@v1
+        if: matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.num_threads == 1
+      - uses: codecov/codecov-action@v1
+        if: matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.num_threads == 1
+        with:
+          file: lcov.info
+      - uses: coverallsapp/github-action@master
+        if: matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.num_threads == 1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: lcov.info
