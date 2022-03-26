@@ -3,7 +3,8 @@ module ROSBase
 using Reexport
 
 @reexport using CSV, DelimitedFiles, Unicode
-@reexport using DataFrames
+@reexport using DataFrames, CategoricalArrays
+@reexport using StatsBase, Statistics
 
 # Direct access to the R repository "ROS-Examples"
 
