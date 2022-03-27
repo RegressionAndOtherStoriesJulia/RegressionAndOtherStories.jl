@@ -8,31 +8,134 @@ using Reexport
 
 # Direct access to the R repository "ROS-Examples"
 
-try
-    src_path = ENV["JULIA_ROS_HOME"]
-catch
-    @info "ENV[\"JULIA_ROS_HOME\"] not available."
+
+"""
+
+ros_data()
+
+Base part of the path to datafiles in the R package ROS-Examples.
+Return "" if `env_var` is not present in ENV.
+
+## Positional argument
+```julia
+* `dataset::Union{AbstractString, Missing}` # Path to data in ROS-Examples
+```
+
+### Keyword arguments
+```julia
+* `env_var = "JULIA_ROS_HOME"` # Environment variable name
+```
+
+### Returns
+```julia
+* `path::AbstractString` # Path or "".
+```
+
+# Extended help
+
+Examples:
+```julia
+ros_path()
+ros_path("HDI")
+```
+"""
+function ros_path(dataset::Union{AbstractString, Missing} = missing;
+    env_var="JULIA_ROS_HOME")
+
+    if haskey(ENV, env_var)
+        ros_src_path = ENV["JULIA_ROS_HOME"]
+    else
+        @warn "JULIA_ROS_HOME environment variable not defined."
+        return ""
+    end
+    if ismissing(dataset)
+        normpath(ros_src_path)
+    else
+        normpath(joinpath(ros_src_path, dataset))
+    end
 end
 
-ros_path(parts...) = normpath(joinpath(src_path, parts...))
-ros_data(dataset, parts...) = normpath(joinpath(src_path, dataset, "data",
-    parts...))
+"""
 
-# Access to "ROSStanPluto" repository data directory
-ros_datadir(parts...) = normpath(joinpath(@__DIR__), "../data", 
-    parts...)
+ros_data()
 
-#= Basic usage to read in a Stata file and store it to
-hibbs = CSV.read(ros_data("ElectionsEconomy", "hibbs.dat"), DataFrame;
-    delim=" ")
-f = open("/Users/rob/.julia/dev/ROSStanPluto/data/ElectionsEconomy/hibbs.csv", "w")
-CSV.write(f, hibbs)
-close(f)
-=#
+Construct the path to a datafile in the R package ROS-Examples.
+Return "" if `env_var` is not present in ENV.
+
+## Positional argument
+```julia
+* `dataset::AbstractString`
+* `parts::Vector{AbstractString}` # Path to data file in 
+```
+
+### Keyword arguments
+```julia
+* `env_var = "JULIA_ROS_HOME"` # Environment variable name
+```
+
+### Returns
+```julia
+* `path::AbstractString` # Path or "".
+```
+
+# Extended help
+
+Examples:
+```julia
+ros_data()
+ros_data("HDI", "hdi.dat")
+```
+"""
+function ros_data(dataset, parts...; env_var="JULIA_ROS_HOME") 
+   if haskey(ENV, env_var)
+        ros_src_path = ENV["JULIA_ROS_HOME"]
+    else
+        @warn "JULIA_ROS_HOME environment variable not defined."
+        return ""
+    end
+    normpath(joinpath(ros_path(dataset), "data", parts...))
+end
 
 export
     ros_path,
-    ros_data,
+    ros_data
+
+# Access ROSBase.jl data files (.csv) using ros_datadir()
+"""
+
+# ros_datadir()
+
+Path to the ROSBase.jl data files.
+
+Construct the path to a dataset in ROSBase.jl.
+
+## Positional argument
+```julia
+* `parts::Vector{AbstractString}` # Path to data file in 
+```
+
+### Returns
+```julia
+* `path::AbstractString` # Path or "".
+```
+
+# Extended help
+
+Examples:
+```julia
+ros_datadir("ElectionsEconomy", "hibbs.dat")
+```
+or, to read in as a DataFrame:
+```julia
+hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
+```
+
+"""
+function ros_datadir(parts...)
+    normpath(@__DIR__, "..", "data", parts...)
+end
+
+export
     ros_datadir
 
 end # module
