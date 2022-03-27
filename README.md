@@ -12,18 +12,27 @@
 
 ## Purpose (once completed, maybe late 2022)
 
-ROSBase.jl contains supporting functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
+ROSBase.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
 ## Contents
 
 The supporting functions are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
 
-All data files are in `.csv` format and located in the `data` directory. The files can be read in as a DataFrame using:
+All data files are in `.csv` format and located in the `data` directory.
+
+If ROSBase.jl is loaded, the files can be read in as a DataFrame using:
 ```
 hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
 ```
 
-If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory.
+For that purpose `ros_datadir()` is exported.
+
+If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package `ROS-Examples` ROSBase.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
+```
+ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Exampls")
+```
+
+R itself does not necessarily needs to be installed for this to work. Tha ROS-Examples package can be found [here](https://github.com/avehtari/ROS-Examples).
 
 ## Approach
 
