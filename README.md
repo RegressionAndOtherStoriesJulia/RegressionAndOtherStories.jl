@@ -32,7 +32,7 @@ If needed, Stata files (`.dat`) have been converted to `.csv` files using the sc
 ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Exampls")
 ```
 
-R itself does not necessarily needs to be installed for this to work. Tha ROS-Examples package can be found [here](https://github.com/avehtari/ROS-Examples).
+R itself does not necessarily need to be installed for this to work. Tha ROS-Examples package can be found [here](https://github.com/avehtari/ROS-Examples).
 
 ## Approach
 
@@ -52,7 +52,7 @@ Please file issues, comments and questions [here](https://github.com/stanjulia/R
 
 ## References
 
-Of course this package is focuseed on:
+Of course this package is focused on:
 
 0. [Gelman, Hill, Vehtari: Regression and Other Stories](https://www.cambridge.org/highereducation/books/regression-and-other-stories/DD20DD6C9057118581076E54E40C372C#overview)
 
@@ -64,7 +64,7 @@ There is no shortage of other good books on Bayesian statistics. A few of my fav
 
 2. [Bolstad: Understanding Computational Bayesian Statistics](http://www.wiley.com/WileyCDA/WileyTitle/productCd-0470046090.html)
 
-3. [Gelman, Hill: Data Analysis using regression and multileve,/hierachical models](http://www.stat.columbia.edu/~gelman/arm/)
+3. [Gelman, Hill: Data Analysis Using Regression and Multilevel/Hierarchical Models](http://www.stat.columbia.edu/~gelman/arm/)
 
 4. [McElreath: Statistical Rethinking](http://xcelab.net/rm/statistical-rethinking/)
 
