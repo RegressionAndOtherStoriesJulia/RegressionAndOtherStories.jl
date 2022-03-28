@@ -16,9 +16,10 @@ ROSBase.jl contains supporting (Julia) functions and the data files used in ["Re
 
 ## Contents
 
-The supporting functions are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
+The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
+See the lists of exported and not exported funtiens at the end of this file.
 
-All data files are in `.csv` format and located in the `data` directory.
+All **data files** are in `.csv` format and located in the `data` directory.
 
 If ROSBase.jl is loaded, the files can be read in as a DataFrame using:
 ```
@@ -34,11 +35,15 @@ ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Exampls")
 
 R itself does not necessarily need to be installed for this to work. Tha ROS-Examples package can be found [here](https://github.com/avehtari/ROS-Examples).
 
+If so desired, direct use of the Stata files is also possible as the Stata to .csv file conversion scripts mentioned above show.
+
 ## Approach
 
 The approach taken in ROSBase.jl and associated projects is different from StatisticalRethinking.jl.
 
 In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In ROSBase.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
+
+If this approach turns out an improvement I will consider updating the [StatisticalRethinking](https://github.com/StatisticalRethinkingJuliaROSTuringPluto projects SR2StanPluto.jl and SR2TuringPluto.jl in a similar way.
 
 ## Issues, comments and questions
 
@@ -81,4 +86,15 @@ There is no shortage of other good books on Bayesian statistics. A few of my fav
 10. [Pearl, Judea and MacKenzie, Dana: The Book of Why](https://www.basicbooks.com/titles/judea-pearl/the-book-of-why/9780465097616/)
 
 11. [Scott Cunningham: Causal Inference - the mixtapes](https://mixtape.scunning.com)
+
+## Currently exported functions (see online help)
+
+1. ros_path
+2. ros_data
+3. ros_datadir
+
+
+## Currently not exported functions (see online help)
+
+1. None yet
 
