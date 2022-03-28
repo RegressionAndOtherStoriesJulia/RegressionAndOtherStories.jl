@@ -65,7 +65,7 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
-[[deps.ROSBase]]
+[[deps.RegressionAndOtherStories]]
 path = ".."
 uuid = "21324389-b050-441a-ba7b-9a837781bda0"
 version = "0.1.0"

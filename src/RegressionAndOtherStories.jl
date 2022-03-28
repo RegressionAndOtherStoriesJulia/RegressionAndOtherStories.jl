@@ -1,4 +1,4 @@
-module ROSBase
+module RegressionAndOtherStories
 
 using Reexport
 
@@ -100,14 +100,14 @@ export
     ros_path,
     ros_data
 
-# Access ROSBase.jl data files (.csv) using ros_datadir()
+# Access RegressionAndOtherStories.jl data files (.csv) using ros_datadir()
 """
 
 # ros_datadir()
 
-Path to the ROSBase.jl data files.
+Path to the RegressionAndOtherStories.jl data files.
 
-Construct the path to a dataset in ROSBase.jl.
+Construct the path to a dataset in RegressionAndOtherStories.jl.
 
 ## Positional argument
 ```julia

@@ -1,4 +1,4 @@
-The ROSBase.jl package is licensed under the MIT "Expat" License:
+The RegressionAndOtherStories.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2022: Rob J Goedman.
 >

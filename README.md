@@ -1,4 +1,4 @@
-# ROSBase.jl v0.1.0
+# RegressionAndOtherStories.jl v0.1.0
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -12,7 +12,7 @@
 
 ## Purpose (once completed, maybe late 2022)
 
-ROSBase.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
+RegressionAndOtherStories.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
 ## Contents
 
@@ -21,14 +21,14 @@ See the lists of exported and not exported funtiens at the end of this file.
 
 All **data files** are in `.csv` format and located in the `data` directory.
 
-If ROSBase.jl is loaded, the files can be read in as a DataFrame using:
+If RegressionAndOtherStories.jl is loaded, the files can be read in as a DataFrame using:
 ```
 hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
 ```
 
 For that purpose `ros_datadir()` is exported.
 
-If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package `ROS-Examples` ROSBase.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
+If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package `ROS-Examples` RegressionAndOtherStories.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
 ```
 ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Exampls")
 ```
@@ -39,9 +39,9 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 ## Approach
 
-The approach taken in ROSBase.jl and associated projects is different from StatisticalRethinking.jl.
+The approach taken in RegressionAndOtherStories.jl and associated projects is different from StatisticalRethinking.jl.
 
-In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In ROSBase.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
+In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In RegressionAndOtherStories.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
 
 If this approach turns out an improvement I will consider updating the [StatisticalRethinking](https://github.com/StatisticalRethinkingJuliaROSTuringPluto projects SR2StanPluto.jl and SR2TuringPluto.jl in a similar way.
 
