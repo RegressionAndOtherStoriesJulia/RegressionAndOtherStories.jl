@@ -30,10 +30,10 @@ For that purpose `ros_datadir()` is exported.
 
 If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package `ROS-Examples` RegressionAndOtherStories.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
 ```
-ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Exampls")
+ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Examples")
 ```
 
-R itself does not necessarily need to be installed for this to work. Tha ROS-Examples package can be found [here](https://github.com/avehtari/ROS-Examples).
+R itself does not necessarily need to be installed for this to work. The ROS-Examples package can be found [here](https://github.com/avehtari/ROS-Examples).
 
 If so desired, direct use of the Stata files is also possible as the Stata to .csv file conversion scripts mentioned above show.
 
@@ -43,7 +43,7 @@ The approach taken in RegressionAndOtherStories.jl and associated projects is di
 
 In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In RegressionAndOtherStories.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
 
-If this approach turns out an improvement I will consider updating the [StatisticalRethinking](https://github.com/StatisticalRethinkingJuliaROSTuringPluto projects SR2StanPluto.jl and SR2TuringPluto.jl in a similar way.
+If this approach turns out to be an improvement, I will consider updating the corresponding StatisticalRethinking projects as well.
 
 ## Issues, comments and questions
 
@@ -87,14 +87,16 @@ There is no shortage of other good books on Bayesian statistics. A few of my fav
 
 11. [Scott Cunningham: Causal Inference - the mixtapes](https://mixtape.scunning.com)
 
-## Currently exported functions (see online help)
+## Functions defined in this package:
+
+### Currently exported functions (see online help)
 
 1. ros_path
 2. ros_data
 3. ros_datadir
 
 
-## Currently not exported functions (see online help)
+### Currently not exported functions (see online help)
 
 1. None yet
 
