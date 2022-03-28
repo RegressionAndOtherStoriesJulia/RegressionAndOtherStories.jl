@@ -81,11 +81,13 @@ There is no shortage of other good books on Bayesian statistics. A few of my fav
 
 8. [Gelman, Carlin, and others: Bayesian Data Analysis](http://www.stat.columbia.edu/~gelman/book/)
 
-9. [Causal Inference in Statistics - A Primer](https://www.wiley.com/en-us/Causal+Inference+in+Statistics%3A+A+Primer-p-9781119186847)
+9. [Pearl, Glymour, Jewell: Causal Inference in Statistics: A Primer](https://www.wiley.com/en-us/Causal+Inference+in+Statistics%3A+A+Primer-p-9781119186847)
 
 10. [Pearl, Judea and MacKenzie, Dana: The Book of Why](https://www.basicbooks.com/titles/judea-pearl/the-book-of-why/9780465097616/)
 
 11. [Scott Cunningham: Causal Inference - the mixtapes](https://mixtape.scunning.com)
+
+
 
 ## Functions defined in this package:
 
