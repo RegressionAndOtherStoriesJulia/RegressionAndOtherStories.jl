@@ -41,13 +41,15 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 The approach taken in RegressionAndOtherStories.jl and associated projects is different from StatisticalRethinking.jl.
 
-In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In RegressionAndOtherStories.jl all functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames.
+In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In RegressionAndOtherStories.jl most functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames in those cases.
 
-If this approach turns out to be an improvement, I will consider updating the corresponding StatisticalRethinking projects as well.
+If this approach turns out to be an improvement, I will consider updating the corresponding StatisticalRethinkingJulia projects as well.
 
 ## Issues, comments and questions
 
 Please file issues, comments and questions [here](https://github.com/stanjulia/ROSbase.jl/issues).
+
+Pull requests are also welcome.
 
 ## Versions
 
