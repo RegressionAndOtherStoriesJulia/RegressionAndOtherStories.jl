@@ -4,12 +4,12 @@ using Reexport
 
 @reexport using CSV, DelimitedFiles, Unicode
 @reexport using DataFrames, CategoricalArrays
-@reexport using StatsBase, Statistics
 @reexport using NamedArrays, DataStructures, NamedTupleTools
 @reexport using Distributions, StatsBase, Statistics
 @reexport using LinearAlgebra, LaTeXStrings, Dates
 
 # Direct access to the R repository "ROS-Examples"
+
 """
 
 ros_data()
