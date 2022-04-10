@@ -8,10 +8,19 @@ using InteractiveUtils
 using Pkg, DrWatson
 
 # ╔═╡ 4087e639-e1b9-4034-bb09-051ae0cc4e3d
-using RegressionAndOtherStories
+begin
+	using RegressionAndOtherStories
+end
 
 # ╔═╡ 27fd555f-2a13-4106-bcb5-6644e41dfb29
 md" ##### As this is a good example of real life data-mangling, this file is in notebook format!."
+
+# ╔═╡ d5f05d8b-416e-4648-89d8-afa937f30e77
+md"
+!!! note
+
+Unfortunately this notebook is not complete. Translating R to Julia can be tricky!!!
+"
 
 # ╔═╡ ad1df579-dd25-4be3-9194-62019182e9c2
 html"""
@@ -27,48 +36,48 @@ html"""
 
 
 # ╔═╡ a8a9aee2-f2fd-4176-9a45-570672d0eb94
-pew_pre = CSV.read(ros_datadir("Pew", "pew_pre.csv"), DataFrame; missingstring="NA")
+begin
+	pew_pre_raw = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "pew.csv"), DataFrame; missingstring="NA", pool=false)
+	#pew_pre_raw = CSV.read(ros_datadir("Pew", "pew2.csv"), DataFrame; missingstring="NA", pool=false)
+	pew_pre = pew_pre_raw[:, [:survey, :regicert,  :party, :state, :heat2, :heat4, :income2, :party4,
+		:date, :weight, :voter_weight2, :pid, :ideology, :inc]]
+end
+
+# ╔═╡ 8ef8d7c5-219d-42e7-85a2-6dee7d237edb
+N = size(pew_pre, 1)
+
+# ╔═╡ 4859f90d-ccdf-4995-be0c-85faa9c02978
+names(pew_pre)
 
 # ╔═╡ 424f704a-0d61-45fa-a88f-3ad851b81f53
-unique(pew_pre.heat2)
+heat2_vals = unique(pew_pre.heat2)
 
-# ╔═╡ e9f8e11f-632c-4ea7-bfd9-f405d093c557
-pew_pre.heat2[1:12]
-
-# ╔═╡ e1976a4a-7ba6-4ee9-9335-36877bb025aa
-Int.(pew_pre.heat2.refs)
+# ╔═╡ 663a35fc-5c55-459c-be4a-b6be96d04eaf
+pew_pre.heat2[1:10]
 
 # ╔═╡ e05b1923-3137-47df-b49f-839cfae0bd2e
-unique(pew_pre.heat4)
+heat4_vals = unique(pew_pre.heat4)
 
-# ╔═╡ d72a944c-815c-42e0-b37e-a02e7894c53d
-pew_pre.heat4[1:12]
+# ╔═╡ 6383993d-ce7c-401d-a6a2-f87e19f85dd7
+let
+	res = Int[]
+	ok = findall(x -> !ismissing(x), pew_pre.heat4)
+	for heat4_val in heat4_vals[2:end]
+		append!(res, [length(findall(x -> x == heat4_val, pew_pre.heat4[ok]))])
+	end
+	res
+end
 
-# ╔═╡ c48ba5c0-ebbc-4691-b37b-8b329ba269f8
-Int.(pew_pre.heat4.refs)
-
-# ╔═╡ 5df1fa83-3af2-4d9d-a49c-9d18cdebd920
-length(findall(x -> x == 4, Int.(pew_pre.heat4.refs)))
-
-# ╔═╡ f3c91e48-9dda-4672-b2cd-1bba94c79cde
-length(findall(x -> x == 6, Int.(pew_pre.heat4.refs)))
+# ╔═╡ cff39c41-c8b6-49b3-9e5e-eeabf141a61f
+rvote::Vector{Union{Missing, Int}} = repeat([missing]; inner=N);
 
 # ╔═╡ b78a4c9a-452e-4a27-8cb3-63154d48d965
 begin
-	numeric_heat2 = Int.(pew_pre.heat2.refs)
-	numeric_heat4 = Int.(pew_pre.heat4.refs)
-	which_question = [numeric_heat2[i] !== 4 ? 2 : numeric_heat4[i] !== 1 ? 4 : 0
-		for i in 1:length(numeric_heat2)]
+	which_question = [!ismissing(pew_pre.heat2[i]) ? 2 : !ismissing(pew_pre.heat4[i]) ? 4 : 0 for i in 1:N]
 end
 
-# ╔═╡ 571b2150-4752-4f11-a4cd-a28b1dbff784
-N = length(numeric_heat2)
-
-# ╔═╡ cff39c41-c8b6-49b3-9e5e-eeabf141a61f
-rvote::Vector{Union{Missing, Int}} = repeat([missing]; inner=N)
-
 # ╔═╡ 91a5866c-6723-46bd-b806-c2c9059c1244
-unique(which_question)
+length(which_question)
 
 # ╔═╡ e8e32ea1-35f1-48fa-b5e4-bb5f2e845e10
 findfirst(x -> x == 4, which_question)
@@ -85,23 +94,20 @@ mean(which_question)
 # ╔═╡ bad9cf89-cc3a-4cb2-b139-ff8e1052818e
 for i in 1:N
 	if which_question[i] == 2
-		rvote[i] = numeric_heat2[i] == 3 ? 1 : numeric_heat2[i] == 1 ? 0 : missing
+		rvote[i] = pew_pre.heat2[i] == "rep/lean rep" ? 1 : pew_pre.heat2[i] == "dem/lean dem" ? 0 : missing
 	elseif which_question[i] == 4
-		rvote[i] = numeric_heat4[i] == 3 ? 1 : numeric_heat4[i] == 2 ? 0 : missing
+		rvote[i] = pew_pre.heat4[i] == "rep/lean rep" ? 1 : pew_pre.heat4[i] == "dem/lean dem" ? 0 : missing
 	end
 end
 
 # ╔═╡ 75e4d07d-90ff-402a-8918-4f0e68bbcf5d
-rvote
+pew_pre.rvote = rvote
 
 # ╔═╡ 1040c140-5d2a-4352-a7f0-901f3a2b275a
 (question = mean(which_question), rvote = mean(filter(!ismissing, rvote)))
 
 # ╔═╡ d6ad38c9-5bc9-4d59-a1d8-b19ad76634dc
 unique(pew_pre.regicert)
-
-# ╔═╡ 299434ca-b582-4a77-8124-8cea0231523f
-Int.(pew_pre.regicert.refs)
 
 # ╔═╡ 9ce44159-004f-424a-8f8c-99e41b2dd622
 registered = [!ismissing(pew_pre.regicert[i]) && pew_pre.regicert[i] == "absolutely certain" ? 1 : 0 for i in 1:N]
@@ -129,32 +135,17 @@ begin
 	max_poll_id = maximum(poll_id)
 end
 
-# ╔═╡ 16a743cb-68ef-43c2-9aea-1268a4f8e88f
-#213 250 248 250 207 244 212 250 208 244 254 251 213 290 290 212 252 242 252 241 254 250 290 307 307 307 290
-day_numeric[1:27]
-
 # ╔═╡ db88ef04-e742-4336-b6c8-73eb5055e655
+# R: 266804, 542365, 138996
 [sum(month), sum(day), sum(poll_id)]
 
-# ╔═╡ 65b130db-d2a1-43c7-951e-a70151ef25b2
-unique(pew_pre.state)
-
-# ╔═╡ 038f64f5-4975-4480-b5f5-cf2c94307043
-pew_pre.state[1:3]
-
-# ╔═╡ 84b999ed-8e6e-4146-9547-d575c18c763f
-pew_pre.state[end-10:end]
-
-# ╔═╡ 8acf0d57-f1b8-4f85-9459-a02f2389e50b
-stnum = Int.(pew_pre.state.refs)
-
-# ╔═╡ c9870a53-7988-4e98-88c4-3e064aa3489e
-state_abr = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
-	"LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK",
-	"OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
-
 # ╔═╡ 745fb351-97c9-490c-b242-91937aefb895
-begin
+let
+	state_abr = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
+		"LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK",
+		"OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
+	sn = unique(Vector{String}(sort(pew_pre.state)))
+	state_names = vcat(sn[1], "alaska", sn[2:7], "dc", sn[8:46], sn[48:50])
 	votes08 = [60,39, 62,36, 54,45, 58,39, 40,59, 46,53, 39,60, 37,62, 7,93, 49,51, 53,46, 25,74, 61,36, 38,61, 
 		49,50, 45,54, 57,42, 58,41, 59,40, 40,58, 39,60, 36,62, 42,56, 44,54, 57,43, 49,49, 50,47, 57,41, 41,57, 
 		44,55, 42,57, 42,57, 37,62, 49,50, 53,45, 47,51, 66,34, 42,56, 44,55, 35,63, 54,45, 54,44, 57,42, 55,44,
@@ -162,12 +153,16 @@ begin
 	obama08 = votes08[2:2:102]
 	mccain08 = votes08[1:2:101]
 	ovote_actual = obama08 ./ (obama08 .+ mccain08)
-end;
+	global state_df = DataFrame(row=1:51, state=state_names, state_abbr=state_abr, obama08=obama08, mccain08=mccain08,
+		actual=ovote_actual)
+	state_df
+end
 
 # ╔═╡ 07fd84bd-7778-4ea1-ab87-190f4693c46d
 begin
 	pop_weight0 = Vector(pew_pre.weight)
 	voter_weight0 = [ismissing(rvote[i]) || registered[i] == 0 ? missing : pop_weight0[i] for i in 1:N]
+	
 	pop_weight = repeat([missing], N)
 	pop_weight = convert(Vector{Union{Missing, Float64}}, pop_weight)
 	voter_weight = repeat([missing], N)
@@ -179,6 +174,115 @@ begin
 	end
 end
 
+# ╔═╡ 3c2f895a-f1d3-4c80-a9d6-1cb4ab3a083c
+# [1] 1.326923 0.822000 0.493000 0.492000 2.000000 1.800000 1.384615 0.492000 1.081633 1.777778 0.571000 1.458000
+pew_pre.pop_weight0 = pop_weight0
+
+# ╔═╡ faf2626a-ac8a-4e74-b93c-8ccc8d8a4b69
+# R: [1] 0.5936557  NA 0.5352379 0.5341522 0.8947854 0.6640835 0.6194668 0.5341522 0.4839145 0.6558850
+pew_pre.voter_weight = voter_weight
+
+# ╔═╡ 5344134a-9e47-4cf1-83a8-017f43736fa0
+begin
+	dems = Int[]; reps = Int[]
+	votes = setdiff(1:N, findall(ismissing, rvote))
+	for st in state_df.state
+		state = findall(x -> x == st, pew_pre.state)
+		if length(state) > 10
+			valid = intersect(state, votes)
+			append!(dems, [sum(rvote[valid] .== 0)])
+			append!(reps, [sum(rvote[valid] .== 1)])
+		else
+			append!(dems, [0])
+			append!(reps, [0])
+		end
+	end
+	state_df.dems=dems
+	state_df.reps=reps
+	state_df
+end
+
+# ╔═╡ 354b330f-c86e-4f29-a2a7-2efc82f8f46a
+pew_pre[:, [:state, :rvote, :voter_weight2]]
+
+# ╔═╡ 02ab023b-199c-4134-9dc8-387c7963cdb3
+let
+	pew_df = pew_pre[completecases(pew_pre, [:rvote, :voter_weight]), [:state, :rvote, :voter_weight]]
+end
+
+# ╔═╡ 78426ef1-922f-4277-af1f-e3a1ef61ed6e
+md"
+!!! note
+
+In below DataFrame I'm surprised `inc` does not always correspond with `income2`.
+"
+
+# ╔═╡ bace2090-e331-4a04-ab5e-6f68b6c6ce27
+pew_pre[:, [:state, :inc, :income2]]
+
+# ╔═╡ 235cb6da-5cc7-456a-8874-c1b1923cf956
+sort(unique(pew_pre.inc))
+
+# ╔═╡ e58d4b6f-820e-4d69-8919-682fbf9051fb
+inc_vals = [5,15,25,35,45,62.5,87.5,125,200]
+
+# ╔═╡ d3978285-5e7e-44c5-b06b-9a46fe6b62e0
+max_inc = 9
+
+# ╔═╡ d35a817a-1fe9-4ccc-9484-7b272985c194
+sort(unique(pew_pre.pid))
+
+# ╔═╡ cd1810bf-11ed-46b1-b5a3-39054202e740
+sort(unique(filter(x -> !ismissing(x), pew_pre.pid)))
+
+# ╔═╡ e6cf6020-0953-4e6d-9174-f21928a742da
+pid_labels = ["Democrat", "Lean Dem.", "Independent", "Lean Rep.", "Republican"]
+
+# ╔═╡ 4310a3bb-74f4-4746-a4df-a2f3528de248
+max_pid = 5
+
+# ╔═╡ 922cbd2d-2ef0-4d0b-a9d5-c3759774068f
+sort(unique(pew_pre.ideology))
+
+# ╔═╡ 21cd4f93-cd3f-4813-a292-d1a6aef39db9
+ideology_labels = ["Very liberal", "Liberal", "Moderate", "Conservative", "Very conservative"]
+
+# ╔═╡ 9a173de0-b44b-4ec7-ba86-f34a8f0fdf0e
+max_ideo = 5
+
+# ╔═╡ 2b6be5ad-411a-4e82-a713-e3a8e6140314
+begin
+	incprop = zeros(Union{Missing, Float64}, max_pid+1, max_inc)
+	incprop[max_pid + 1, :] = ones(max_inc)
+	vc = pew_pre[completecases(pew_pre, [:pid, :inc]), [:pid, :inc, :pop_weight0]]
+	
+	for i in 2:max_pid
+		for j in 1:max_inc
+			vcs = vc[vc.pid .< i .&& vc.inc .== j, :]
+			incprop[i, j] = mean(vcs.pid, Weights(vcs.pop_weight0))
+		end
+	end
+	incprop
+	
+end
+
+# ╔═╡ d9c1c0a5-44fe-472f-a93c-9a3d38ef1a84
+begin
+	pid_incprob = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "pid_incprop.csv"), DataFrame; missingstring="NA", pool=false)
+end
+
+# ╔═╡ 272c6581-962e-461b-b99d-75c3ca9629c1
+begin
+	ideo_incprob = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "ideo_incprop.csv"), DataFrame; missingstring="NA", pool=false)
+end
+
+# ╔═╡ 7d9ce69d-6f62-4a99-91a2-2d9bab97eda1
+let
+	party_incprob_df = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "party_incprop.csv"), DataFrame; missingstring="NA", pool=false)
+	party_incprob = reshape(Array(party_incprob_df)[:, 2:end], :, 3, 9)
+	party_incprob[:, :, 9]
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -188,7 +292,7 @@ RegressionAndOtherStories = "21324389-b050-441a-ba7b-9a837781bda0"
 
 [compat]
 DrWatson = "~2.9.1"
-RegressionAndOtherStories = "~0.1.0"
+RegressionAndOtherStories = "~0.1.1"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -197,7 +301,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.0-DEV"
 manifest_format = "2.0"
-project_hash = "5582013e8a3a7b5aa053a8417ece63145187be7a"
+project_hash = "536dc4ec5f1876ca98d80512f9fd4510365e7f8b"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -584,9 +688,9 @@ version = "1.2.2"
 
 [[deps.RegressionAndOtherStories]]
 deps = ["CSV", "CategoricalArrays", "DataFrames", "DataStructures", "Dates", "DelimitedFiles", "Distributions", "LaTeXStrings", "LinearAlgebra", "NamedArrays", "NamedTupleTools", "Reexport", "Statistics", "StatsBase", "Unicode"]
-git-tree-sha1 = "7c6caa50568c34edd02b6dc1cf7e58d5dc62f96c"
+git-tree-sha1 = "40868309da2f6bf1c7821930ab3e49643283f3f2"
 uuid = "21324389-b050-441a-ba7b-9a837781bda0"
-version = "0.1.0"
+version = "0.1.1"
 
 [[deps.Requires]]
 deps = ["UUIDs"]
@@ -747,19 +851,17 @@ version = "16.2.1+1"
 
 # ╔═╡ Cell order:
 # ╟─27fd555f-2a13-4106-bcb5-6644e41dfb29
+# ╟─d5f05d8b-416e-4648-89d8-afa937f30e77
 # ╠═ad1df579-dd25-4be3-9194-62019182e9c2
 # ╠═7a3506e2-6287-4755-a715-cd1de9dffc4c
 # ╠═4087e639-e1b9-4034-bb09-051ae0cc4e3d
 # ╠═a8a9aee2-f2fd-4176-9a45-570672d0eb94
+# ╠═8ef8d7c5-219d-42e7-85a2-6dee7d237edb
+# ╠═4859f90d-ccdf-4995-be0c-85faa9c02978
 # ╠═424f704a-0d61-45fa-a88f-3ad851b81f53
-# ╠═e9f8e11f-632c-4ea7-bfd9-f405d093c557
-# ╠═e1976a4a-7ba6-4ee9-9335-36877bb025aa
+# ╠═663a35fc-5c55-459c-be4a-b6be96d04eaf
 # ╠═e05b1923-3137-47df-b49f-839cfae0bd2e
-# ╠═d72a944c-815c-42e0-b37e-a02e7894c53d
-# ╠═c48ba5c0-ebbc-4691-b37b-8b329ba269f8
-# ╠═5df1fa83-3af2-4d9d-a49c-9d18cdebd920
-# ╠═f3c91e48-9dda-4672-b2cd-1bba94c79cde
-# ╠═571b2150-4752-4f11-a4cd-a28b1dbff784
+# ╠═6383993d-ce7c-401d-a6a2-f87e19f85dd7
 # ╠═cff39c41-c8b6-49b3-9e5e-eeabf141a61f
 # ╠═b78a4c9a-452e-4a27-8cb3-63154d48d965
 # ╠═91a5866c-6723-46bd-b806-c2c9059c1244
@@ -771,18 +873,32 @@ version = "16.2.1+1"
 # ╠═75e4d07d-90ff-402a-8918-4f0e68bbcf5d
 # ╠═1040c140-5d2a-4352-a7f0-901f3a2b275a
 # ╠═d6ad38c9-5bc9-4d59-a1d8-b19ad76634dc
-# ╠═299434ca-b582-4a77-8124-8cea0231523f
 # ╠═9ce44159-004f-424a-8f8c-99e41b2dd622
 # ╠═fbd7dfb4-1cd7-4aad-ad4b-b89e675376e7
 # ╠═836e78ed-98d9-4ff6-adda-e7cfa3080bcf
-# ╠═16a743cb-68ef-43c2-9aea-1268a4f8e88f
 # ╠═db88ef04-e742-4336-b6c8-73eb5055e655
-# ╠═65b130db-d2a1-43c7-951e-a70151ef25b2
-# ╠═038f64f5-4975-4480-b5f5-cf2c94307043
-# ╠═84b999ed-8e6e-4146-9547-d575c18c763f
-# ╠═8acf0d57-f1b8-4f85-9459-a02f2389e50b
-# ╠═c9870a53-7988-4e98-88c4-3e064aa3489e
 # ╠═745fb351-97c9-490c-b242-91937aefb895
 # ╠═07fd84bd-7778-4ea1-ab87-190f4693c46d
+# ╠═3c2f895a-f1d3-4c80-a9d6-1cb4ab3a083c
+# ╠═faf2626a-ac8a-4e74-b93c-8ccc8d8a4b69
+# ╠═5344134a-9e47-4cf1-83a8-017f43736fa0
+# ╠═354b330f-c86e-4f29-a2a7-2efc82f8f46a
+# ╠═02ab023b-199c-4134-9dc8-387c7963cdb3
+# ╟─78426ef1-922f-4277-af1f-e3a1ef61ed6e
+# ╠═bace2090-e331-4a04-ab5e-6f68b6c6ce27
+# ╠═235cb6da-5cc7-456a-8874-c1b1923cf956
+# ╠═e58d4b6f-820e-4d69-8919-682fbf9051fb
+# ╠═d3978285-5e7e-44c5-b06b-9a46fe6b62e0
+# ╠═d35a817a-1fe9-4ccc-9484-7b272985c194
+# ╠═cd1810bf-11ed-46b1-b5a3-39054202e740
+# ╠═e6cf6020-0953-4e6d-9174-f21928a742da
+# ╠═4310a3bb-74f4-4746-a4df-a2f3528de248
+# ╠═922cbd2d-2ef0-4d0b-a9d5-c3759774068f
+# ╠═21cd4f93-cd3f-4813-a292-d1a6aef39db9
+# ╠═9a173de0-b44b-4ec7-ba86-f34a8f0fdf0e
+# ╠═2b6be5ad-411a-4e82-a713-e3a8e6140314
+# ╠═d9c1c0a5-44fe-472f-a93c-9a3d38ef1a84
+# ╠═272c6581-962e-461b-b99d-75c3ca9629c1
+# ╠═7d9ce69d-6f62-4a99-91a2-2d9bab97eda1
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
