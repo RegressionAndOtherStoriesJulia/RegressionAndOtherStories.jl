@@ -37,7 +37,7 @@ html"""
 
 # ╔═╡ a8a9aee2-f2fd-4176-9a45-570672d0eb94
 begin
-	pew_pre_raw = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "pew.csv"), DataFrame; missingstring="NA", pool=false)
+	pew_pre_raw = CSV.read(ros_datadir("Pew", "pew.csv"), DataFrame; missingstring="NA", pool=false)
 	#pew_pre_raw = CSV.read(ros_datadir("Pew", "pew2.csv"), DataFrame; missingstring="NA", pool=false)
 	pew_pre = pew_pre_raw[:, [:survey, :regicert,  :party, :state, :heat2, :heat4, :income2, :party4,
 		:date, :weight, :voter_weight2, :pid, :ideology, :inc]]
@@ -268,17 +268,17 @@ end
 
 # ╔═╡ d9c1c0a5-44fe-472f-a93c-9a3d38ef1a84
 begin
-	pid_incprob = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "pid_incprop.csv"), DataFrame; missingstring="NA", pool=false)
+	pid_incprob = CSV.read(ros_datadir("Pew", "pid_incprop.csv"), DataFrame; missingstring="NA", pool=false)
 end
 
 # ╔═╡ 272c6581-962e-461b-b99d-75c3ca9629c1
 begin
-	ideo_incprob = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "ideo_incprop.csv"), DataFrame; missingstring="NA", pool=false)
+	ideo_incprob = CSV.read(ros_datadir("Pew", "ideo_incprop.csv"), DataFrame; missingstring="NA", pool=false)
 end
 
 # ╔═╡ 7d9ce69d-6f62-4a99-91a2-2d9bab97eda1
 let
-	party_incprob_df = CSV.read(joinpath("/Users", "rob", ".julia", "dev", "RegressionAndOtherStories", "data", "Pew", "party_incprop.csv"), DataFrame; missingstring="NA", pool=false)
+	party_incprob_df = CSV.read(ros_datadir("Pew", "party_incprop.csv"), DataFrame; missingstring="NA", pool=false)
 	party_incprob = reshape(Array(party_incprob_df)[:, 2:end], :, 3, 9)
 	party_incprob[:, :, 9]
 end
@@ -292,7 +292,7 @@ RegressionAndOtherStories = "21324389-b050-441a-ba7b-9a837781bda0"
 
 [compat]
 DrWatson = "~2.9.1"
-RegressionAndOtherStories = "~0.1.1"
+RegressionAndOtherStories = "~0.1.2"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -301,7 +301,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.0-DEV"
 manifest_format = "2.0"
-project_hash = "536dc4ec5f1876ca98d80512f9fd4510365e7f8b"
+project_hash = "c1af439e4b3a1abbf7795826d31176bd2310c62c"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -318,12 +318,6 @@ deps = ["CodecZlib", "Dates", "FilePathsBase", "InlineStrings", "Mmap", "Parsers
 git-tree-sha1 = "873fb188a4b9d76549b81465b1f75c82aaf59238"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 version = "0.10.4"
-
-[[deps.Calculus]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "f641eb0a4f00c343bbc32346e1217b86f3ce9dad"
-uuid = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
-version = "0.5.1"
 
 [[deps.CategoricalArrays]]
 deps = ["DataAPI", "Future", "Missings", "Printf", "Requires", "Statistics", "Unicode"]
@@ -433,12 +427,6 @@ git-tree-sha1 = "67e9001646db6e45006643bf37716ecd831d37d2"
 uuid = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
 version = "2.9.1"
 
-[[deps.DualNumbers]]
-deps = ["Calculus", "NaNMath", "SpecialFunctions"]
-git-tree-sha1 = "5837a837389fccf076445fce071c8ddaea35a566"
-uuid = "fa6b7ba4-c1ee-5f82-b5fc-ecf0adba8f74"
-version = "0.6.8"
-
 [[deps.FileIO]]
 deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "80ced645013a5dbdc52cf70329399c35ce007fae"
@@ -469,12 +457,6 @@ version = "0.4.2"
 [[deps.Future]]
 deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
-
-[[deps.HypergeometricFunctions]]
-deps = ["DualNumbers", "LinearAlgebra", "SpecialFunctions", "Test"]
-git-tree-sha1 = "65e4589030ef3c44d3b90bdc5aac462b4bb05567"
-uuid = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
-version = "0.3.8"
 
 [[deps.InlineStrings]]
 deps = ["Parsers"]
@@ -552,9 +534,9 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[deps.LogExpFunctions]]
 deps = ["ChainRulesCore", "ChangesOfVariables", "DocStringExtensions", "InverseFunctions", "IrrationalConstants", "LinearAlgebra"]
-git-tree-sha1 = "58f25e56b706f95125dcb796f39e1fb01d913a71"
+git-tree-sha1 = "a7e100b068a6cbead98b9f4e5c8b488934b7aea0"
 uuid = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
-version = "0.3.10"
+version = "0.3.11"
 
 [[deps.Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
@@ -586,11 +568,6 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
 version = "2022.2.1"
-
-[[deps.NaNMath]]
-git-tree-sha1 = "737a5957f387b17e74d4ad2f440eb330b39a62c5"
-uuid = "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3"
-version = "1.0.0"
 
 [[deps.NamedArrays]]
 deps = ["Combinatorics", "DataStructures", "DelimitedFiles", "InvertedIndices", "LinearAlgebra", "Random", "Requires", "SparseArrays", "Statistics"]
@@ -688,9 +665,9 @@ version = "1.2.2"
 
 [[deps.RegressionAndOtherStories]]
 deps = ["CSV", "CategoricalArrays", "DataFrames", "DataStructures", "Dates", "DelimitedFiles", "Distributions", "LaTeXStrings", "LinearAlgebra", "NamedArrays", "NamedTupleTools", "Reexport", "Statistics", "StatsBase", "Unicode"]
-git-tree-sha1 = "40868309da2f6bf1c7821930ab3e49643283f3f2"
+git-tree-sha1 = "6cbfc20f44776778474198647fefe075f83fab6b"
 uuid = "21324389-b050-441a-ba7b-9a837781bda0"
-version = "0.1.1"
+version = "0.1.2"
 
 [[deps.Requires]]
 deps = ["UUIDs"]
@@ -769,10 +746,10 @@ uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.33.16"
 
 [[deps.StatsFuns]]
-deps = ["ChainRulesCore", "HypergeometricFunctions", "InverseFunctions", "IrrationalConstants", "LogExpFunctions", "Reexport", "Rmath", "SpecialFunctions"]
-git-tree-sha1 = "72e6abd6fc9ef0fa62a159713c83b7637a14b2b8"
+deps = ["ChainRulesCore", "InverseFunctions", "IrrationalConstants", "LogExpFunctions", "Reexport", "Rmath", "SpecialFunctions"]
+git-tree-sha1 = "5950925ff997ed6fb3e985dcce8eb1ba42a0bbe7"
 uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
-version = "0.9.17"
+version = "0.9.18"
 
 [[deps.SuiteSparse]]
 deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
