@@ -48,4 +48,8 @@ if success(rc1_1s)
         @test σ̄ ≈ 3.6 atol = 0.2
     end
     
+    @testset "model_summary.jl" begin
+        mod_sum = model_summary(post1_1s_df, [:a, :b, :sigma])
+        @test mod_sum[:a, :median] ≈ 46.5 atol=0.4
+    end
 end

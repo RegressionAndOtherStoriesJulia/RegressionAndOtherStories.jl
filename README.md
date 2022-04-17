@@ -98,6 +98,8 @@ There is no shortage of other good books on Bayesian statistics. A few of my fav
 1. ros_path
 2. ros_data
 3. ros_datadir
+4. plot_chains
+5. model_summary
 
 
 ### Currently not exported functions (see online help)
