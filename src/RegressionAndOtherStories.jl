@@ -9,6 +9,7 @@ using Reexport
 @reexport using LinearAlgebra, LaTeXStrings, Dates
 
 using AlgebraOfGraphics, Makie
+using DocStringExtensions: FIELDS, SIGNATURES, TYPEDEF
 
 # Direct access to the R repository "ROS-Examples"
 

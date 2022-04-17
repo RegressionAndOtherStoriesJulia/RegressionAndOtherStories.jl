@@ -1,3 +1,21 @@
+"""
+
+Compute median, mad_sd, mean and std summary of distribition.
+
+$(SIGNATURES)
+
+## Positional arguments
+```julia
+* `df::DataFrame` # DataFrame holding the draws
+* `pars::Vector{Symbol}` # Vector of symbols to be included
+```
+
+## Keyword arguments
+```julia
+* `digits = 2` # Number of decimal digits
+```
+
+"""
 function model_summary(model, pars; digits=2)
     parameters = Pair{Symbol, Int}[]
     estimates = zeros(length(pars), 4)
