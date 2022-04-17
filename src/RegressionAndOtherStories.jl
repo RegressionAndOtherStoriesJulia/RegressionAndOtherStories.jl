@@ -8,7 +8,7 @@ using Reexport
 @reexport using Distributions, StatsBase, Statistics
 @reexport using LinearAlgebra, LaTeXStrings, Dates
 
-using AlgebraOfGraphics, GLMakie
+using AlgebraOfGraphics, Makie
 
 # Direct access to the R repository "ROS-Examples"
 
