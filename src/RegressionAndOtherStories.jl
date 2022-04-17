@@ -141,6 +141,6 @@ end
 export
     ros_datadir
 
-include("plot_chains.jl")
+include("Makie/plot_chains.jl")
 
 end # module
