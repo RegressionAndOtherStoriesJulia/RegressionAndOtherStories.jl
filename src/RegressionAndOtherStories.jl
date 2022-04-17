@@ -8,6 +8,8 @@ using Reexport
 @reexport using Distributions, StatsBase, Statistics
 @reexport using LinearAlgebra, LaTeXStrings, Dates
 
+using AlgebraOfGraphics, GLMakie
+
 # Direct access to the R repository "ROS-Examples"
 
 """
@@ -138,5 +140,7 @@ end
 
 export
     ros_datadir
+
+include("plot_chains.jl")
 
 end # module
