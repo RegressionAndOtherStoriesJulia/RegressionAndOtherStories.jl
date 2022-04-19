@@ -1,7 +1,7 @@
 name = "RegressionAndOtherStories"
 uuid = "21324389-b050-441a-ba7b-9a837781bda0"
 authors = ["Rob J Goedman <goedman@icloud.com>"]
-version = "0.1.8"
+version = "0.2.0"
 
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"

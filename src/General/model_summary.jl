@@ -6,7 +6,7 @@ $(SIGNATURES)
 
 ## Positional arguments
 ```julia
-* `df::DataFrame` # DataFrame holding the draws
+* `model_df::DataFrame` # DataFrame holding the draws
 * `pars::Vector{Symbol}` # Vector of symbols to be included
 ```
 
@@ -16,21 +16,42 @@ $(SIGNATURES)
 ```
 
 """
-function model_summary(model, pars; digits=2)
-    parameters = Pair{Symbol, Int}[]
-    estimates = zeros(length(pars), 4)
-    for (indx, par) in enumerate(pars)
-        append!(parameters, [par => indx])
-        vals = model[:, par]
-        estimates[indx, :] = [median(vals), mad(vals), mean(vals), std(vals)]
+function model_summary(model_df::DataFrame, 
+    params::T = Symbol.(names(model_df)); 
+    digits = 2) where {T}
+    
+    colnames = Symbol.(names(model_df))
+
+    pars = Symbol[]
+    for par in Symbol.(params)
+        if par in colnames
+            append!(pars, [par])
+        else
+            @warn ":$(par) not in $(colnames), will be dropped."
+        end
     end
 
-    NamedArray(
-        round.(estimates; digits=digits), 
-        (OrderedDict(parameters...), 
-        OrderedDict(:median=>1, :mad_sd=>2, :mean=>3, :std=>4)),
-               ("Parameter", "Value")
-    )
+    if length(pars) > 0
+        parameters = Pair{Symbol, Int}[]
+        estimates = zeros(length(pars), 4)
+        for (indx, par) in enumerate(pars)
+            if par in colnames
+                append!(parameters, [par => indx])
+                vals = model_df[:, par]
+                estimates[indx, :] = [median(vals), mad(vals), mean(vals), std(vals)]
+            end
+        end
+
+        return NamedArray(
+            round.(estimates; digits=digits), 
+            (OrderedDict(parameters...), 
+            OrderedDict(:median=>1, :mad_sd=>2, :mean=>3, :std=>4)),
+                   ("Parameter", "Value")
+        )
+    else
+        @warn "No parameters match the column names in model_df."
+        return nothing
+    end
 end
 
 export
