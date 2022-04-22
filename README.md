@@ -55,13 +55,13 @@ Pull requests are also welcome.
 
 ### Version 0.2.0
 
-1. The 5 examples from chapter 1 done.
+1. Support for the 5 examples from chapter 1 done.
 2. Added plot_chains() and model_summary() functions.
 3. Added Makie and AlgebraOfGraphics as dependencies.
 
 Note: Source files for Makie/AoG are all in src/Makie/ to simplify moving those to a separate repo (not my intention right now, but still).
 
-4. In sync with the both ROS[Turing|Stan]Pluto projects tagged 2.3 and up.
+4. In sync with both ROS[Turing|Stan]Pluto projects tagged 2.3 and up.
 
 ### Version 0.1.0
 
