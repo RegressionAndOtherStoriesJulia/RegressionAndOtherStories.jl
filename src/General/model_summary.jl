@@ -38,7 +38,9 @@ function model_summary(model_df::DataFrame,
             if par in colnames
                 append!(parameters, [par => indx])
                 vals = model_df[:, par]
-                estimates[indx, :] = [median(vals), mad(vals), mean(vals), std(vals)]
+                estimates[indx, :] = 
+                    [median(vals), mad(vals, normalize=false),
+                        mean(vals), std(vals)]
             end
         end
 

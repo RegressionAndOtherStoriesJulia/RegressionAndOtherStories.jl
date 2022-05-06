@@ -5,7 +5,7 @@ using Reexport
 @reexport using CSV, DelimitedFiles, Unicode
 @reexport using DataFrames, CategoricalArrays
 @reexport using NamedArrays, DataStructures, NamedTupleTools
-@reexport using Distributions, StatsBase, Statistics
+@reexport using Random, Distributions, StatsBase, Statistics
 @reexport using LinearAlgebra, LaTeXStrings, Dates
 
 using AlgebraOfGraphics, Makie
@@ -142,7 +142,10 @@ end
 export
     ros_datadir
 
+include("Utilities/binvec.jl")
+include("Utilities/rank_vector.jl")
 include("General/model_summary.jl")
 include("Makie/plot_chains.jl")
+include("Makie/trankplot.jl")
 
 end # module
