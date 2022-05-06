@@ -142,7 +142,7 @@ end
 export
     ros_datadir
 
-include("Utilities/binvec.jl")
+include("Utilities/bin_vector.jl")
 include("Utilities/rank_vector.jl")
 include("General/model_summary.jl")
 include("Makie/plot_chains.jl")
