@@ -26,11 +26,18 @@ function trankplot(df::DataFrame, param::AbstractString;
     ranks = rank_vector(df[:, param], nt_args)
     
     f = Figure()
-    ax = Axis(f[1, 1])
+    if n_eff > 0
+        ax = Axis(f[1, 1]; 
+            title="Trankplot of parameter $(param) (n_eff = $(n_eff))")
+    else
+        ax = Axis(f[1, 1])
+    end
+    
     Makie.xlims!(ax, 1, 41)
     colors = [:black, :green, :blue, :red]
+
     for j in 1:4
-        bv = binvec(ranks[:, j], 40)
+        bv = bin_vector(ranks[:, j], 40)
         s = [Meta.parse(string(split(string(cut(bv, 40)[i])[2:4], ":")[1])) for i in 1:40]
         for i in 1:40
             lines!([Float64(i), Float64(i+1)], [s[i], s[i]]; color=colors[j])

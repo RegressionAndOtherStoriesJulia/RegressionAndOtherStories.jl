@@ -1,6 +1,6 @@
 """
 
-Binning of a vector.
+Binning of a vector (of draws).
 
 $(SIGNATURES)
 
@@ -16,7 +16,7 @@ From [Bogumił Kamiński](https://bkamins.github.io/julialang/2020/12/11/binning
 Not exported.
 
 """
-function binvec(x::AbstractVector, n::Int, 
+function bin_vector(x::AbstractVector, n::Int, 
     rng::AbstractRNG=Random.default_rng())
 
     n > 0 || throw(ArgumentError("number of bins must be positive"))
