@@ -1,6 +1,11 @@
 module RegressionAndOtherStories
 
 using Reexport
+using Requires
+
+function __init__()
+    @require StanSample="c1514b29-d3a0-5178-b312-660c88baa699" include("Require/stan_glue.jl")
+end
 
 @reexport using CSV, DelimitedFiles, Unicode
 @reexport using DataFrames, CategoricalArrays
