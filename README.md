@@ -14,6 +14,8 @@
 
 RegressionAndOtherStories.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
+
+
 ## Contents
 
 The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
@@ -47,7 +49,7 @@ Over time I might minimize the use of AlgebraOfGraphics.jl. It is a nice package
 
 For testing puposes the packages enabled using Requires.jl will move to the test section of RegrassionAndOtherStories.jl.
 
-In doing this I will move over several important packages from StatisticalRethinking.jl as well, e.g. `link()`.
+In doing this I will move over several important functions from StatisticalRethinking.jl as well, e.g. `link()`.
 
 I expect I can use ParetoSmoothedImportanceSampling.jl and StructuralCausalModels.jl as is.
 
@@ -63,10 +65,12 @@ Pull requests are also welcome.
 
 1. Switch back to using Requires.jl
 2. Switch to using `eachindex()` where appropriate.
+3. Experimental versions for chapter 3.
 
 ### Version 0.2.4
 
 1. Chapter 2 mostly done
+2. Added trankplot function
 
 ### Version 0.2.0
 
@@ -114,20 +118,25 @@ There is no shortage of other good books on Bayesian statistics. A few of my fav
 
 11. [Scott Cunningham: Causal Inference - the mixtapes](https://mixtape.scunning.com)
 
+A good book to understand most of the Julia constructs used in this book is:
 
+12. [Bogumił Kamiński: Julia for Data Analysis](https://www.manning.com/books/julia-for-data-analysis).
 
 ## Functions defined in this package:
 
-### Currently exported functions (see online help)
+### Currently (v0.3.0) exported functions (see online help)
 
 1. ros_path
 2. ros_data
 3. ros_datadir
 4. plot_chains
 5. model_summary
+6. trankplot
 
 
 ### Currently not exported functions (see online help)
 
-1. None yet
+1. rank_vector
+2. bin_vector
 
+All documentation is on-line.
