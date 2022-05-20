@@ -5,6 +5,8 @@ using Requires
 
 function __init__()
     @require StanSample="c1514b29-d3a0-5178-b312-660c88baa699" include("Require/stan_glue.jl")
+    @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" include("Require/makie_glue.jl")
+    @require AlgebraOfGraphics="cbdf2221-f076-402e-a563-3d30da359d67" include("Require/aog_glue.jl")
 end
 
 @reexport using CSV, DelimitedFiles, Unicode
@@ -13,7 +15,6 @@ end
 @reexport using Random, Distributions, StatsBase, Statistics
 @reexport using LinearAlgebra, LaTeXStrings, Dates
 
-using AlgebraOfGraphics, Makie
 using DocStringExtensions: FIELDS, SIGNATURES, TYPEDEF
 
 # Direct access to the R repository "ROS-Examples"
@@ -150,7 +151,7 @@ export
 include("Utilities/bin_vector.jl")
 include("Utilities/rank_vector.jl")
 include("General/model_summary.jl")
-include("Makie/plot_chains.jl")
-include("Makie/trankplot.jl")
+#include("AoG/plot_chains.jl")
+#include("Makie/trankplot.jl")
 
 end # module

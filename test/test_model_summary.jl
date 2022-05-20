@@ -1,4 +1,6 @@
-using RegressionAndOtherStories, Test
+using StanSample
+using RegressionAndOtherStories
+using Test
 
 df = DataFrame(x = 1:10, y = 1:10)
 

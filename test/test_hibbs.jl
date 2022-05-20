@@ -1,5 +1,5 @@
-using RegressionAndOtherStories
 using StanSample
+using RegressionAndOtherStories
 
 hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
 

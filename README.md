@@ -39,11 +39,17 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 ## Approach
 
-The approach taken in RegressionAndOtherStories.jl and associated projects is different from StatisticalRethinking.jl.
+The initial approach I attempted in RegressionAndOtherStories.jl (v0,2) and associated projects was different from StatisticalRethinking.jl. But that approach did not work out as I expected, so I will switch to a similiar setup as in StatisticalRethinking.jl using Requires.jl from v0.3 onwards. 
 
-In StatisticalRethinking.jl I attempted to create an intermediate layer to convert Stan and Turing mcmc results to a set of common functions. I am no longer happy with the complexity that introduced. In RegressionAndOtherStories.jl most functions work on DataFrames. It's up to the notebooks to create appropriate DataFrames in those cases.
+In particular Turing, Stan, Makie and AlgebraOfGraphics, if needed, will all be included using Requires.jl.
 
-If this approach turns out to be an improvement, I will consider updating the corresponding StatisticalRethinkingJulia projects as well.
+Over time I might minimize the use of AlgebraOfGraphics.jl. It is a nice package but also a bit more difficult to tailor (compared to Makie/GLMakie).
+
+For testing puposes the packages enabled using Requires.jl will move to the test section of RegrassionAndOtherStories.jl.
+
+In doing this I will move over several important packages from StatisticalRethinking.jl as well, e.g. `link()`.
+
+I expect I can use ParetoSmoothedImportanceSampling.jl and StructuralCausalModels.jl as is.
 
 ## Issues, comments and questions
 
@@ -52,6 +58,15 @@ Please file issues, comments and questions [here](https://github.com/stanjulia/R
 Pull requests are also welcome.
 
 ## Versions
+
+### version 0.3.0 (under development)
+
+1. Switch back to using Requires.jl
+2. Switch to using `eachindex()` where appropriate.
+
+### Version 0.2.4
+
+1. Chapter 2 mostly done
 
 ### Version 0.2.0
 
