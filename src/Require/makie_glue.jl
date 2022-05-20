@@ -1,3 +1,3 @@
 using .Makie
 
-import("Makie/trankplot.jl")
+include("Makie/trankplot.jl")

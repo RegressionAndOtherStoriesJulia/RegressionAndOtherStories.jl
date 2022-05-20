@@ -1,3 +1,3 @@
 using .AlgebraOfGraphics
 
-import("AoG/plot_chains.jl")
+include("AoG/plot_chains.jl")
