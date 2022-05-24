@@ -145,13 +145,19 @@ function ros_datadir(parts...)
     normpath(@__DIR__, "..", "data", parts...)
 end
 
-export
-    ros_datadir
-
 include("Utilities/bin_vector.jl")
 include("Utilities/rank_vector.jl")
 include("General/model_summary.jl")
-#include("AoG/plot_chains.jl")
-#include("Makie/trankplot.jl")
+include("Maintenance/update_notebook_files.jl")
+
+ros_df = DataFrame(
+    :chapter => String[], 
+    :section => String[],
+    :reset => Bool[]
+)
+
+export
+    ros_datadir,
+    ros_df
 
 end # module
