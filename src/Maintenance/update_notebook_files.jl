@@ -185,8 +185,9 @@ function update_notebook_files!(df=ros_df;
 
     if !all(df.reset)
         @info "All ros_df.reset values are false. No actions taken. \
-            \nUse `reset_all_notebooks!()`to reset all notebooks. \
-            \nor set some entries in ros_df.reset to `true`."
+            \nUse `reset_all_notebooks!()`to reset all notebooks \
+            \nor set some entries in ros_df.reset to `true` \
+            \nand run `update_notebook_files!() again."
     end
     
     oldwd = pwd()

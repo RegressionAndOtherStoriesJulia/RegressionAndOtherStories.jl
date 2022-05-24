@@ -54,7 +54,8 @@ update_notebook_files!()
 
 ┌ Info: All ros_df.reset values are false. No actions taken. 
 │ Use `reset_all_notebooks!()`to reset all notebooks. 
-└ or set some entries in ros_df.reset to `true`.
+│ or set some entries in ros_df.reset to `true` 
+└ and run `update_notebook_files!() again.
 ```
 Now reset all notebooks with ros_df.rest set to true, e.g.:
 ```julia
