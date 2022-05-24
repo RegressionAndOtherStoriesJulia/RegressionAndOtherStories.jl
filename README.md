@@ -61,6 +61,10 @@ Pull requests are also welcome.
 
 ## Versions
 
+### Release 0.3.4
+
+1. Is tagging using JuliaHub with setting branch name working?
+
 ### Version 0.3.3
 
 1. Add initial version of notebook maintenance routines.
