@@ -235,7 +235,7 @@ $(SIGNATURES)
 * `create_pkg_files=false # Not implemented yet!
 ```
 
-Please see [this file]() for how to use these maintenance functions.
+Please see [this file](https://github.com/RegressionAndOtherStoriesJulia/RegressionAndOtherStories.jl/blob/main/src/Maintenance/README.md) for how to use these maintenance functions.
 
 Exported.
 

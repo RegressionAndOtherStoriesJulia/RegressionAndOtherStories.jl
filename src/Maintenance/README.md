@@ -1,17 +1,17 @@
 #### Walk through maintenace script.
 
-If a project has many Pluto notebooks, a package update that affects most notebooks can become rather time consuming. This is primarily an issue for a maintainer of the projects.
+If a project has many Pluto notebooks, a package update that affects most notebooks can become rather time consuming. This is primarily an issue for a maintainer of the project.
 
-For both "RegressionAndOtherStories.jl" based projects ("RosStanPluto.jl" and "ROSTuringPluto.jl"), below steps will trigger creation of new Project and Manifest sections the next time a notebook is opened in Pluto.
+For both "RegressionAndOtherStories.jl" based projects ("ROSStanPluto.jl" and "ROSTuringPluto.jl"), below steps will trigger creation of new Project and Manifest sections the next time a notebook is opened in Pluto.
 
-Although these functions are part of RegressionAndOtherStories.jl, they are only useful for projects similar to "RosStanPluto.jl" and "ROSTuringPluto.jl" (with a fixed layout for the `notebooks` subdirectory, see below an example of a `ros_df` DataFrame).
+Although these functions are part of RegressionAndOtherStories.jl, they are only useful for projects similar to "ROSStanPluto.jl" and "ROSTuringPluto.jl" (with a fixed layout for the `notebooks` subdirectory, see below an example of a `ros_df` DataFrame).
 
-To use either `reset_all_notebooks!()` or `update_notebook_files!()`, start with moving to the intended project directory, e.g.:
+In Julia's REPL, to use either `reset_all_notebooks!()` or `update_notebook_files!()`, start with moving to the intended project directory, e.g.:
 ```julia
 cd(expanduser(joinpath("~", ".julia", "dev", "ROSStanPluto")))
 ```
 
-Load `RegressionAndOtherStories.jl` in Julia's REPL:
+Load `RegressionAndOtherStories.jl` into Julia's REPL:
 ```julia
 using RegressionAndOtherStories
 ```
@@ -23,9 +23,11 @@ reset_all_notebooks!()
 └ update ros_df first by running `update_notebook_files!()`
 ```
 
-Most likely, the first time in a REPL session the DataFrame `ros_df` is indeed empty.
+Most likely, the first time in a REPL session the DataFrame `ros_df` is indeed empty. 
 
-As suggested:
+**Note: Currently these functions have only been tested using a DataFrame `ros_df` defined in RegressionAndOtherStrories.jl. Using these functions outside this context is currently untested.**
+
+As suggested in above `Info` message:
 ```julia
 update_notebook_files!()
 ┌ Info: DataFrame ros_df is empty!
