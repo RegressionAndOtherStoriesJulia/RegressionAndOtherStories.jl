@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.1.0
+# RegressionAndOtherStories.jl v0.3.3
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -61,7 +61,20 @@ Pull requests are also welcome.
 
 ## Versions
 
-### version 0.3.0 (under development)
+### Version 0.3.3
+
+1. Add initial version of notebook maintenance routines.
+2. Tag this version (if not done by TagBot)
+
+### Version 0.3.2
+
+1. Fix Makie and AoG glue scripts.
+
+### Version 0.3.1
+
+1. StatsFuns compat entry to 1.0.
+
+### Version 0.3.0 (under development)
 
 1. Switch back to using Requires.jl
 2. Switch to using `eachindex()` where appropriate.
