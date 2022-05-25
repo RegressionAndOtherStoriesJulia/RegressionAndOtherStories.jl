@@ -148,7 +148,7 @@ end
 include("Utilities/bin_vector.jl")
 include("Utilities/rank_vector.jl")
 include("General/model_summary.jl")
-include("Maintenance/update_notebook_files.jl")
+include("Maintenance/update_notebooks.jl")
 
 ros_df = DataFrame(
     :chapter => String[], 

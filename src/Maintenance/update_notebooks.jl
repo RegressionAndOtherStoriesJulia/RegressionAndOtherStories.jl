@@ -161,7 +161,7 @@ $(SIGNATURES)
 Exported.
 
 """
-function update_notebook_files!(df=ros_df; 
+function update_notebooks!(df=ros_df; 
     display_actions=false, 
     create_package_files=false)
 
@@ -185,9 +185,9 @@ function update_notebook_files!(df=ros_df;
 
     if !all(df.reset)
         @info "All ros_df.reset values are false. No actions taken. \
-            \nUse `reset_all_notebooks!()`to reset all notebooks \
+            \nUse `reset_notebooks!()`to reset all notebooks \
             \nor set some entries in ros_df.reset to `true` \
-            \nand run `update_notebook_files!() again."
+            \nand run `update_notebooks!() again."
     end
     
     oldwd = pwd()
@@ -241,7 +241,7 @@ Please see [this file](https://github.com/RegressionAndOtherStoriesJulia/Regress
 Exported.
 
 """
-function reset_all_notebooks!(df=ros_df; 
+function reset_notebooks!(df=ros_df; 
     display_actions=false, 
     create_package_files=false)
 
@@ -253,15 +253,15 @@ function reset_all_notebooks!(df=ros_df;
 
     if nrow(ros_df) > 0
         ros_df.reset .= true
-        update_notebook_files!()
+        update_notebooks!()
     else
         @info "DataFrame `ros_df` is empty, \nupdate ros_df first by running \
-            `update_notebook_files!()`"
+            `update_notebooks!()`"
         return
     end
 end
 
 export
-    reset_all_notebooks!,
-    update_notebook_files!
+    reset_notebooks!,
+    update_notebooks!
 
