@@ -177,9 +177,9 @@ function update_notebooks!(df=ros_df;
         oldwd = pwd()
         cd("./notebooks")
         update_ros_df!(df)
-        println()
-        df |> display
-        println()
+        display_actions && println()
+        display_actions && df |> display
+        display_actions && println()
         cd(oldwd)
     end
 
