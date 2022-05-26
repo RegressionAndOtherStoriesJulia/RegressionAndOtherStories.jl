@@ -1,6 +1,6 @@
 #### Walk through maintenace script.
 
-If a project has many Pluto notebooks, a package update that affects most notebooks can become rather time consuming. This is primarily an issue for a maintainer of the project.
+If a project has many Pluto notebooks, a package update that affects most notebooks can become rather time consuming. This is primarily an issue for a maintainer of the project who has to open each notebook and trigger a package update request.
 
 For both "RegressionAndOtherStories.jl" based projects ("ROSStanPluto.jl" and "ROSTuringPluto.jl"), below steps will trigger creation of new Project and Manifest sections the next time a notebook is opened in Pluto.
 
@@ -33,9 +33,8 @@ update_notebooks!()
 ┌ Info: DataFrame ros_df is empty!
 └  It will be recreated from the directory `./notebooks`.
 ┌ Info: All ros_df.reset values are false. No actions taken. 
-│ Use `reset_notebooks!()`to reset all notebooks. 
-│ or set some entries in ros_df.reset to `true` 
-└ and run `update_notebooks!() again.
+│ Use `reset_notebooks!()`to reset all notebooks or set some entries in 
+└ ros_df.reset to `true` and run `update_notebooks!() again.
 ```
 
 Inspect DataFrame `ros_df`:
@@ -83,3 +82,5 @@ Updating file:./09 - MCMC/9.1 Bayes.jl
 ```
 
 Start Pluto (or re-start Pluto if certain notebooks are active) and open a notebook.
+
+In the `notebooks` directory, under `Notebook maintenance`, a notebook version is provided.
