@@ -156,4 +156,12 @@ A good book to understand most of the Julia constructs used in this book is:
 1. rank_vector
 2. bin_vector
 
+### Maintenance functions
+
+1. update_ros_df! (Not exported)
+2. add_to_ros_df! (Not exported)
+3. reset_notebook! (Not exported)
+4. reset_notebooks! (Exported)
+5. update_notebooks! (Exported)
+
 All documentation is on-line.
