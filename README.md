@@ -41,17 +41,27 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 ## Approach
 
-The initial approach I attempted in RegressionAndOtherStories.jl (v0,2) and associated projects was different from StatisticalRethinking.jl. But that approach did not work out as I expected, so I will switch to a similiar setup as in StatisticalRethinking.jl using Requires.jl from v0.3 onwards. 
+The initial approach attempted in RegressionAndOtherStories.jl (v0.2) and associated projects was different from StatisticalRethinking.jl. But that approach did not work out as expected, so I will switch to a similiar setup as in StatisticalRethinking.jl using Requires.jl from v0.3 onwards. 
 
 In particular Turing, Stan, Makie and AlgebraOfGraphics, if needed, will all be included using Requires.jl.
 
 Over time I might minimize the use of AlgebraOfGraphics.jl. It is a nice package but also a bit more difficult to tailor (compared to Makie/GLMakie).
 
-For testing puposes the packages enabled using Requires.jl will move to the test section of RegrassionAndOtherStories.jl.
+For testing purposes the packages enabled using Requires.jl will move to the test section of RegressionAndOtherStories.jl.
 
 In doing this I will move over several important functions from StatisticalRethinking.jl as well, e.g. `link()`.
 
 I expect I can use ParetoSmoothedImportanceSampling.jl and StructuralCausalModels.jl as is.
+
+## Notebook maintenance
+
+Pluto is a great tool and definitely leads to a different programming style. But it is also new and thus will continue to develop rapidly (I hope). One aspect, as the developer/maintainer of 4 projects each containing a growing number of notebooks, I have found updating packages in these notebooks is time consuming.
+
+For now I am using a maintenance function (`update_notebooks!()`) which will remove the Project and Manifest sections in selected notebooks.
+
+To reset the loaded packages in all notebooks in a subdirectory, use `reset_notebooks!()`.
+
+This I will likely use in the future to store all notebooks on GitHub.
 
 ## Issues, comments and questions
 
@@ -60,6 +70,14 @@ Please file issues, comments and questions [here](https://github.com/stanjulia/R
 Pull requests are also welcome.
 
 ## Versions
+
+### Release 0.3.6 (Under construction)
+
+1. Focus on Appendices A and B.
+
+### Release 0.3.5
+
+1. Added maintenace functions for a (large) set of notebooks.
 
 ### Release 0.3.4
 
