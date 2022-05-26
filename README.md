@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.3.3
+# RegressionAndOtherStories.jl v0.3.6
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -13,8 +13,6 @@
 ## Purpose (once completed, maybe late 2022)
 
 RegressionAndOtherStories.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
-
-
 
 ## Contents
 
@@ -182,4 +180,4 @@ A good book to understand most of the Julia constructs used in this book is:
 4. reset_notebooks! (Exported)
 5. update_notebooks! (Exported)
 
-All documentation is on-line.
+All functions are documented on-line.
