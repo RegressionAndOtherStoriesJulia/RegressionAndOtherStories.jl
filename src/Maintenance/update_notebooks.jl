@@ -165,7 +165,8 @@ function update_notebooks!(df=ros_notebooks; display_actions=false)
     if !isdir("./notebooks")
         @error "You are not in a directory that holds a `notebooks` \
             subdirectory."
-        end
+        return
+    end
 
     if nrow(df) == 0
         @info "DataFrame ros_notebooks is empty!\n \

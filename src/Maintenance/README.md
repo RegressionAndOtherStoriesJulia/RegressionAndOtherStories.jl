@@ -2,14 +2,20 @@
 
 If a project has many Pluto notebooks, a package update that affects most notebooks can become rather time consuming. This is primarily an issue for a maintainer of the project who has to open each notebook and trigger a package update request.
 
-For both "RegressionAndOtherStories.jl" based projects ("ROSStanPluto.jl" and "ROSTuringPluto.jl"), below steps will trigger creation of new Project and Manifest sections the next time a notebook is opened in Pluto.
+For both "RegressionAndOtherStories.jl" based projects ("ROSStanPluto.jl" and "ROSTuringPluto.jl"), below steps will trigger the creation of new Project and Manifest sections the next time a notebook is opened in Pluto.
 
-Although these functions are part of RegressionAndOtherStories.jl, they are only useful for projects similar to "ROSStanPluto.jl" and "ROSTuringPluto.jl" (with a fixed layout for the `notebooks` subdirectory, see below an example of a `ros_df` DataFrame).
+Although these functions are part of RegressionAndOtherStories.jl, they are only useful for projects similar to "ROSStanPluto.jl" and "ROSTuringPluto.jl" (with a fixed layout for the `notebooks` subdirectory, see below an example of a `ros_notebooks` DataFrame).
 
-In Julia's REPL, to use either `reset_notebooks!()` or `update_notebooks!()`, start with moving to the intended project directory, e.g.:
+The 2 most important (and exported) functions are `update_notebooks!()` and `reset_notebooks!()`.
+
+**Note: Currently these functions have only been tested using a DataFrame `ros_notebooks` defined in RegressionAndOtherStories.jl. Using these functions outside this context is currently untested.**
+
+In Julia's REPL, start with moving to the intended project directory, e.g.:
 ```julia
 cd(expanduser(joinpath("~", ".julia", "dev", "ROSStanPluto")))
 ```
+
+The notebooks directory is expected to be a subdirectory of the project directory.
 
 Load `RegressionAndOtherStories.jl` into Julia's REPL:
 ```julia
@@ -19,27 +25,25 @@ using RegressionAndOtherStories
 Attempt to reset all notebooks:
 ```julia
 reset_notebooks!()
-┌ Info: DataFrame `ros_df` is empty, 
-└ update ros_df first by running `update_notebooks!()`
+┌ Info: DataFrame `ros_notebooks` is empty, 
+└ update ros_notebooks first by running `update_notebooks!()`
 ```
 
-Most likely, the first time in a REPL session the DataFrame `ros_df` is indeed empty. 
-
-**Note: Currently these functions have only been tested using a DataFrame `ros_df` defined in RegressionAndOtherStories.jl. Using these functions outside this context is currently untested.**
+Most likely, the first time in a REPL session the DataFrame `ros_notebooks` is indeed empty. 
 
 As suggested in above `Info` message:
 ```julia
 update_notebooks!()
-┌ Info: DataFrame ros_df is empty!
+┌ Info: DataFrame ros_notebooks is empty!
 └  It will be recreated from the directory `./notebooks`.
-┌ Info: All ros_df.reset values are false. No actions taken. 
+┌ Info: All ros_notebooks.reset values are false. No actions taken. 
 │ Use `reset_notebooks!()`to reset all notebooks or set some entries in 
-└ ros_df.reset to `true` and run `update_notebooks!() again.
+└ ros_notebooks.reset to `true` and run `update_notebooks!() again.
 ```
 
-Inspect DataFrame `ros_df`:
+Inspect DataFrame `ros_notebooks`:
 ```julia
-ros_df |> display
+ros_notebooks |> display
 16×3 DataFrame
  Row │ chapter                    section                            reset 
      │ String                     String                             Bool  
@@ -62,7 +66,7 @@ ros_df |> display
   16 │ Appendix Z                 using_reset_all_notebooks.jl       false
 ```
 
-Reset all notebooks with ros_df.rest set to true, e.g.:
+Reset all notebooks with ros_notebooks.reset set to true, e.g.:
 ```julia
 reset_notebooks!()
 Updating file:./00 - ROS Stan Guide/0.1 Ros Stan Guide.jl

@@ -17,7 +17,8 @@ RegressionAndOtherStories.jl contains supporting (Julia) functions and the data 
 ## Contents
 
 The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
-See the lists of exported and not exported funtiens at the end of this file.
+
+Fuctions included in RegressionAndOtherStories.jl are listed in the `function_summary` DataFrame and come with online docs.
 
 All **data files** are in `.csv` format and located in the `data` directory.
 
@@ -155,29 +156,3 @@ A good book to understand most of the Julia constructs used in this book is:
 
 12. [Bogumił Kamiński: Julia for Data Analysis](https://www.manning.com/books/julia-for-data-analysis).
 
-## Functions defined in this package:
-
-### Currently (v0.3.0) exported functions (see online help)
-
-1. ros_path
-2. ros_data
-3. ros_datadir
-4. plot_chains
-5. model_summary
-6. trankplot
-
-
-### Currently not exported functions (see online help)
-
-1. rank_vector
-2. bin_vector
-
-### Maintenance functions
-
-1. update_ros_df! (Not exported)
-2. add_to_ros_df! (Not exported)
-3. reset_notebook! (Not exported)
-4. reset_notebooks! (Exported)
-5. update_notebooks! (Exported)
-
-All functions are documented on-line.
