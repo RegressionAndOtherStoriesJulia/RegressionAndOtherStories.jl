@@ -2,26 +2,26 @@ using RegressionAndOtherStories
 
 """
 
-Update the ros_df DataFrame contents.
+Update the ros_notebooks DataFrame contents.
 
 $(SIGNATURES)
 
 ## Positional arguments
 ```julia
-* `df=ros_df # DataFrame to be updated according to `./notebooks`
+* `df=ros_notebooks # DataFrame to be updated according to `./notebooks`
 ```
 
 Not exported.
 
 """
-function update_ros_df!(df; display_actions=false)
+function update_ros_notebooks!(df; display_actions=false)
 
     files = readdir(pwd(); join=true)
     for f in files
         if !(contains(f, ".DS_Store") || contains(f, "intros"))
             if isdir(f) && !contains(f, "intros") 
                 display_actions && println("Found dir $f")
-                add_to_ros_df!(df, f)
+                add_to_ros_notebooks!(df, f)
             elseif isfile(f)
                 display_actions && println("Found notebook $f")
                 split_dir_path = split(f, "/")
@@ -59,7 +59,7 @@ $(SIGNATURES)
 Not exported.
 
 """
-function add_to_ros_df!(df, dir_path;
+function add_to_ros_notebooks!(df, dir_path;
     display_actions=false)
 
     files = readdir(dir_path; join=true)
@@ -67,7 +67,7 @@ function add_to_ros_df!(df, dir_path;
         if !(contains(f, ".DS_Store") || contains(f, "intros"))
             if isdir(f)
                 display_actions && println("Found dir $f")
-                add_to_ros_df!(df, f)
+                add_to_ros_notebooks!(df, f)
             elseif isfile(f)
                 display_actions && println("Found notebook $f")
                 split_dir_path = split(f, "/")
@@ -107,7 +107,7 @@ Not exported.
 """
 function reset_notebook!(fname;
     display_actions=false, 
-    create_pkg_files=false)
+    create_pkg_files=false) # Not implemented yet
 
     f = open(fname)
     c = readlines(f)
@@ -147,23 +147,20 @@ Update notebook files from DataFrame `df` with `df.reset` set to `true`.
 
 $(SIGNATURES)
 
-## Positional arguments
+## Optional positional arguments
 ```julia
-* `df=ros_df` # DataFrame with info on all notebooks
+* `df=ros_notebooks` # DataFrame with info on all notebooks
 ```
 
 ## Optional keyword arguments
 ```julia
 * `display_actions=false # Display action steps taken
-* `create_pkg_files=false # Not implemented yet!
 ```
 
 Exported.
 
 """
-function update_notebooks!(df=ros_df; 
-    display_actions=false, 
-    create_package_files=false)
+function update_notebooks!(df=ros_notebooks; display_actions=false)
 
     if !isdir("./notebooks")
         @error "You are not in a directory that holds a `notebooks` \
@@ -171,12 +168,12 @@ function update_notebooks!(df=ros_df;
         end
 
     if nrow(df) == 0
-        @info "DataFrame ros_df is empty!\n \
+        @info "DataFrame ros_notebooks is empty!\n \
             It will be recreated from directory `./notebooks`."
 
         oldwd = pwd()
         cd("./notebooks")
-        update_ros_df!(df)
+        update_ros_notebooks!(df)
         display_actions && println()
         display_actions && df |> display
         display_actions && println()
@@ -184,9 +181,9 @@ function update_notebooks!(df=ros_df;
     end
 
     if !all(df.reset)
-        @info "All ros_df.reset values are false. No actions taken. \
+        @info "All ros_notebooks.reset values are false. No actions taken. \
             \nUse `reset_notebooks!()`to reset all notebooks \
-            \nor set some entries in ros_df.reset to `true` \
+            \nor set some entries in ros_notebooks.reset to `true` \
             \nand run `update_notebooks!() again."
     end
     
@@ -225,9 +222,9 @@ Reset all notebook files from df.
 
 $(SIGNATURES)
 
-## Positional arguments
+## Optional positional arguments
 ```julia
-* `df=ros_df` # DataFrame with info on all notebooks
+* `df=ros_notebooks` # DataFrame with info on all notebooks
 ```
 
 ## Optional keyword arguments
@@ -241,9 +238,7 @@ Please see [this file](https://github.com/RegressionAndOtherStoriesJulia/Regress
 Exported.
 
 """
-function reset_notebooks!(df=ros_df; 
-    display_actions=false, 
-    create_package_files=false)
+function reset_notebooks!(df=ros_notebooks; display_actions=false)
 
     if !isdir("./notebooks")
         @error "You are not in a directory that holds a `notebooks` \
@@ -251,11 +246,11 @@ function reset_notebooks!(df=ros_df;
         return
     end
 
-    if nrow(ros_df) > 0
-        ros_df.reset .= true
+    if nrow(ros_notebooks) > 0
+        ros_notebooks.reset .= true
         update_notebooks!()
     else
-        @info "DataFrame `ros_df` is empty, \nupdate ros_df first by running \
+        @info "DataFrame `ros_notebooks` is empty, \nupdate ros_notebooks first by running \
             `update_notebooks!()`"
         return
     end

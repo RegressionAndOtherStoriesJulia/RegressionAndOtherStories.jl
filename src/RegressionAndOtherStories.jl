@@ -148,9 +148,12 @@ end
 include("Utilities/bin_vector.jl")
 include("Utilities/rank_vector.jl")
 include("General/model_summary.jl")
+include("Maintenance/function_summary.jl")
 include("Maintenance/update_notebooks.jl")
 
-ros_df = DataFrame(
+ros_functions = function_summary()
+
+ros_notebooks = DataFrame(
     :chapter => String[], 
     :section => String[],
     :reset => Bool[]
@@ -158,6 +161,7 @@ ros_df = DataFrame(
 
 export
     ros_datadir,
-    ros_df
+    ros_functions,
+    ros_notebooks
 
 end # module

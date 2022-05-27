@@ -55,7 +55,7 @@ I expect I can use ParetoSmoothedImportanceSampling.jl and StructuralCausalModel
 
 Pluto is a great tool and definitely leads to a different programming style. But it is also new and thus will continue to develop rapidly (I hope). One aspect, as the developer/maintainer of 4 projects each containing a growing number of notebooks, I have found updating packages in these notebooks is time consuming.
 
-For now I am using a maintenance function (`update_notebooks!()`) which will remove the Project and Manifest sections in selected notebooks.
+For now I am using a (homegrown) maintenance function (`update_notebooks!()`) which will remove the Project and Manifest sections in selected notebooks.
 
 To reset the loaded packages in all notebooks in a subdirectory, use `reset_notebooks!()`.
 
