@@ -150,8 +150,8 @@ end
 include("Utilities/bin_vector.jl")
 include("Utilities/rank_vector.jl")
 include("General/model_summary.jl")
-include("Maintenance/function_summary.jl")
-include("Maintenance/update_notebooks.jl")
+include("Maintenance/ros_functions.jl")
+include("Maintenance/ros_notebooks.jl")
 
 export
     ROS,
