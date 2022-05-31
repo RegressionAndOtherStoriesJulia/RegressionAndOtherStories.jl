@@ -18,7 +18,7 @@ RegressionAndOtherStories.jl contains supporting (Julia) functions and the data 
 
 The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
 
-Fuctions included in RegressionAndOtherStories.jl are listed in the `function_summary` DataFrame and come with online docs.
+Fuctions included in RegressionAndOtherStories.jl are listed in the `ros_functions` DataFrame.
 
 All **data files** are in `.csv` format and located in the `data` directory.
 
@@ -61,6 +61,12 @@ For now I am using a (homegrown) maintenance function (`update_notebooks!()`) wh
 To reset the loaded packages in all notebooks in a subdirectory, use `reset_notebooks!()`.
 
 This I will likely use in the future to store all notebooks on GitHub.
+
+## Function summary
+
+I use a DataFrame `ros_functions` to keep track of all functions introduced in RegressionAndOtherStories.jl. 
+
+The `ros_function` table can created by `create_function_summary()`. As the actual available functions can vary by notebook there is a function `update_functions_in_summary(df)` that update the :functions column in `ros_funstions`.
 
 ## Issues, comments and questions
 
