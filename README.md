@@ -22,7 +22,7 @@ I use the `ros_functions` dataframe to summarize all functions introduced in Reg
 
 The `ros_functions` dataframe can created in a notebook by executing `ros_functions = create_ros_functions()`.
 
-As the actual available functions will vary by notebook there is a function `update_ros_functions(df)` which will update the :functions column in `ros_functions` for a given notebook based on its loaded packages (shown in the column :condition).
+As the actual available functions will vary by notebook there is a function `update_ros_functions(df)` which will update the :function column in `df` (typically `ros_functions`) for a given notebook based on its loaded packages (the dependency is shown in the column :condition).
 
 All **data files** are in `.csv` format and located in the `data` directory.
 
