@@ -26,7 +26,7 @@ ros_notebooks = create_ros_notebooks()
 └  It will be recreated from directory `./notebooks`.
 ┌ Info: All ros_notebooks.reset values are false. No actions taken. 
 │ Set some entries in ros_notebooks.reset to `true` 
-└ and run `update_notebooks!(df).
+└ and run `update_ros_notebooks(df).
 ```
 
 Inspect DataFrame `ros_notebooks`:
