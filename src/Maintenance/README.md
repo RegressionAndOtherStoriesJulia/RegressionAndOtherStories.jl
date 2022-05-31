@@ -6,9 +6,9 @@ For both "RegressionAndOtherStories.jl" based projects ("ROSStanPluto.jl" and "R
 
 Although these functions are part of RegressionAndOtherStories.jl, they are only useful for projects similar to "ROSStanPluto.jl" and "ROSTuringPluto.jl" (with a fixed layout for the `notebooks` subdirectory, see below an example of a `ros_notebooks` DataFrame).
 
-The 2 most important (and exported) functions are `update_notebooks!()` and `reset_notebooks!()`.
+The 2 most important (and exported) functions are `create_ros_notebooks!()` and `update_notebooks!(df)`.
 
-**Note: Currently these functions have only been tested using a DataFrame `ros_notebooks` defined in RegressionAndOtherStories.jl. Using these functions outside this context is currently untested.**
+**Note: Currently these functions have only been tested using a DataFrame `ros_notebooks` as defined in RegressionAndOtherStories.jl. Using these functions outside this context is currently untested.**
 
 In Julia's REPL, start with moving to the intended project directory, e.g.:
 ```julia
@@ -20,25 +20,13 @@ The notebooks directory is expected to be a subdirectory of the project director
 Load `RegressionAndOtherStories.jl` into Julia's REPL:
 ```julia
 using RegressionAndOtherStories
-```
 
-Attempt to reset all notebooks:
-```julia
-reset_notebooks!()
-┌ Info: DataFrame `ros_notebooks` is empty, 
-└ update ros_notebooks first by running `update_notebooks!()`
-```
-
-Most likely, the first time in a REPL session the DataFrame `ros_notebooks` is indeed empty. 
-
-As suggested in above `Info` message:
-```julia
-update_notebooks!()
+ros_notebooks = create_ros_notebooks()
 ┌ Info: DataFrame ros_notebooks is empty!
-└  It will be recreated from the directory `./notebooks`.
+└  It will be recreated from directory `./notebooks`.
 ┌ Info: All ros_notebooks.reset values are false. No actions taken. 
-│ Use `reset_notebooks!()`to reset all notebooks or set some entries in 
-└ ros_notebooks.reset to `true` and run `update_notebooks!() again.
+│ Set some entries in ros_notebooks.reset to `true` 
+└ and run `update_notebooks!(df).
 ```
 
 Inspect DataFrame `ros_notebooks`:
@@ -66,9 +54,16 @@ ros_notebooks |> display
   16 │ Appendix Z                 using_reset_all_notebooks.jl       false
 ```
 
-Reset all notebooks with ros_notebooks.reset set to true, e.g.:
+Update all `ros_notebooks.reset` values:
 ```julia
-reset_notebooks!()
+ros_notebooks.reset .= true;
+```
+
+Or just update a few ros_notebooks.reset values.
+
+Reset notebooks with ros_notebooks.reset set to true, e.g.:
+```julia
+update_notebooks!(ros_notebooks)
 Updating file:./00 - ROS Stan Guide/0.1 Ros Stan Guide.jl
 Updating file:./00 - ROS Stan Guide/0.2 Valid chains.jl
 Updating file:./00 - ROS Stan Guide/0.3 DataFramesMiniLanguage.jl

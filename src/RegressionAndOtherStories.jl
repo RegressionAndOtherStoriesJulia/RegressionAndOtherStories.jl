@@ -153,24 +153,8 @@ include("General/model_summary.jl")
 include("Maintenance/function_summary.jl")
 include("Maintenance/update_notebooks.jl")
 
-ros_functions = DataFrame(
-    :symbol => Symbol[],
-    :function => Union{Function, Missing}[],
-    :exported => Bool[],
-    :condition => String[],
-    :signature => String[]
-)
-
-ros_notebooks = DataFrame(
-    :chapter => String[], 
-    :section => String[],
-    :reset => Bool[]
-)
-
 export
     ROS,
-    ros_datadir,
-    ros_functions,
-    ros_notebooks
+    ros_datadir
 
 end # module

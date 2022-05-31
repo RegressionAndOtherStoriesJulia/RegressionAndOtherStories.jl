@@ -33,8 +33,8 @@ const funs = Symbol[
     :update_ros_notebooks!, 
     :add_to_ros_notebooks!,
     :reset_notebook!, 
-    :reset_notebooks!, 
-    :update_notebooks!
+    :create_ros_notebooks, 
+    :update_notebooks
 ]
 
 const sigs = [
@@ -55,7 +55,7 @@ const sigs = [
     "(df; display_actions", 
     "(df, dir_path; display_actions)",
     "(fname; display_actions, create_pkg_files)",
-    "(df; display_actions)",
+    "(; display_actions)",
     "(df; display_actions)"
 ]
 
@@ -65,8 +65,8 @@ const exps = [
     true, # if AoG loaded
     true, # if Makie loaded
     true, # if StanSample loaded
-    false,
-    false, false, false, true, true
+    true,
+    false, false, true, true, true
 ]
 
 const cons = [
@@ -81,14 +81,9 @@ const cons = [
 
 """
 
-Fill the ros_functions DataFrame.
+Create a ros_functions DataFrame.
 
 $(SIGNATURES)
-
-## Optional positional arguments
-```julia
-* `df=ros_functions # DataFrame to be filled`
-```
 
 ## Optional keyword arguments
 ```julia
@@ -98,26 +93,74 @@ $(SIGNATURES)
 * `cons=cons` # Vector of package names which trigger function inclusion
 ```
 
-
-
-Not exported.
+Exported.
 
 """
-function function_summary(df=ros_functions; 
-    funs=funs, sigs=sigs, exps=exps, cons=cons)
+function create_function_summary(; funs=funs, sigs=sigs, exps=exps, cons=cons)
+
+    df = DataFrame(
+        :symbol => Symbol[],
+        :function => Union{Function, Missing}[],
+        :exported => Bool[],
+        :condition => String[],
+        :signature => String[]
+    )
 
     for (indx, fun) in enumerate(funs)
-        func = isdefined(Main, Symbol(fun)) ? getfield(Main, fun) : missing
-            append!(df,
-                DataFrame(
-                    :symbol => fun,
-                    :function => func,
-                    :exported => exps[indx],
-                    :condition => cons[indx],
-                    :signature => sigs[indx]
-                )
+        if isdefined(Main, Symbol(fun))
+            func = getfield(Main, fun)
+        elseif isdefined(RegressionAndOtherStories, Symbol(fun))
+            func = getfield(RegressionAndOtherStories, Symbol(fun))
+        else
+            func = missing
+        end
+        append!(df,
+            DataFrame(
+                :symbol => fun,
+                :function => func,
+                :exported => exps[indx],
+                :condition => cons[indx],
+                :signature => sigs[indx]
             )
+        )
     end
-    
+
     df
 end
+
+"""
+
+Update loaded functions in the ros_functions DataFrame.
+
+$(SIGNATURES)
+
+## Optional positional arguments
+```julia
+* `df # DataFrame `ros_functions` to be updated`
+```
+
+
+Exported.
+
+"""
+function update_functions_in_summary(df)
+
+    funcs = Union{Function, Missing}[]
+    for fun in df.symbol
+        if isdefined(Main, Symbol(fun))
+            func = getfield(Main, fun)
+        elseif isdefined(RegressionAndOtherStories, Symbol(fun))
+            func = getfield(RegressionAndOtherStories, Symbol(fun))
+        else
+            func = missing
+        end
+        append!(funcs, [func])
+    end
+
+    df.function = funcs
+    df
+end
+
+export
+    create_function_summary,
+    update_functions_in_summary
