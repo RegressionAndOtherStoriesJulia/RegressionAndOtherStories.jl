@@ -1,50 +1,24 @@
 using RegressionAndOtherStories
+using DataFrames
+using DocStringExtensions
 
-#=
-## Functions defined in this package:
-
-### Currently (v0.3.0) exported functions (see online help)
-
-1. ros_path
-2. ros_data
-3. ros_datadir
-4. plot_chains
-5. model_summary
-6. trankplot
-
-
-### Currently not exported functions (see online help)
-
-1. rank_vector
-2. bin_vector
-
-### Maintenance functions
-
-1. update_ros_notebooks! (Not exported)
-2. add_to_ros_notebooks! (Not exported)
-3. reset_notebook! (Not exported)
-4. reset_notebooks! (Exported)
-5. update_notebooks! (Exported)
-
-=#
-
-funs = [
+const funs = Symbol[
     # RegressionAndOtherStoties.jl
-    "ros_path",
-    "ros_data",
-    "ros_datadir",
+    :ros_path,
+    :ros_data,
+    :ros_datadir,
 
     # General/model_summary.jl
-    "model_summary",
+    :model_summary,
 
     # Require/AoG/plot_chains.jl
-    "plot_chains",
+    :plot_chains,
 
     # Require/Makie/trankplot.jl
-    "trankplot",
+    :trankplot,
 
     # Require Stan only
-    "Require/Stan/model_summary.jl",
+    :model_summary,
 
     # Require Turing only
 
@@ -53,17 +27,17 @@ funs = [
     # Require ParetoSmoothedImportanceSampling?
 
     # Maintenace/function_summary.jl
-    "function_summary",
+    :function_summary,
 
-    # Maintenace/update_notebooks.jl
-    "update_ros_notebooks!", 
-    "add_to_ros_notebooks!",
-    "reset_notebook!", 
-    "reset_notebooks!", 
-    "update_notebooks!",
+    # Maintenance/update_notebooks.jl
+    :update_ros_notebooks!, 
+    :add_to_ros_notebooks!,
+    :reset_notebook!, 
+    :reset_notebooks!, 
+    :update_notebooks!
 ]
 
-sigs = [
+const sigs = [
     "(dataset; env_var",
     "(dataset, parts...; env_var)",
     "(parts...)",
@@ -85,7 +59,7 @@ sigs = [
     "(df; display_actions)"
 ]
 
-exps = [
+const exps = [
     false, false, true,
     true,
     true, # if AoG loaded
@@ -95,7 +69,7 @@ exps = [
     false, false, false, true, true
 ]
 
-cons = [
+const cons = [
     "", "", "",
     "",
     "AoG",
@@ -116,16 +90,34 @@ $(SIGNATURES)
 * `df=ros_functions # DataFrame to be filled`
 ```
 
+## Optional keyword arguments
+```julia
+* `funs=funs` # Vector of function names (symbols)
+* `sigs=sigs` # Vector of signatures (strings)
+* `exps=exps` # Vector of boolean values indicating is exported
+* `cons=cons` # Vector of package names which trigger function inclusion
+```
+
+
+
 Not exported.
 
 """
-function function_summary(; funs=funs, sigs=sigs, exps=exps, cons=cons)
+function function_summary(df=ros_functions; 
+    funs=funs, sigs=sigs, exps=exps, cons=cons)
 
-    df = DataFrame()
-    df.functions = funs 
-    df.signatures = sigs
-    df.exported = exps 
-    df.condition = cons
+    for (indx, fun) in enumerate(funs)
+        func = isdefined(Main, Symbol(fun)) ? getfield(Main, fun) : missing
+            append!(df,
+                DataFrame(
+                    :symbol => fun,
+                    :function => func,
+                    :exported => exps[indx],
+                    :condition => cons[indx],
+                    :signature => sigs[indx]
+                )
+            )
+    end
+    
     df
 end
-

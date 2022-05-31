@@ -1,5 +1,7 @@
 module RegressionAndOtherStories
 
+const ROS = RegressionAndOtherStories
+
 using Reexport
 using Requires
 
@@ -151,7 +153,13 @@ include("General/model_summary.jl")
 include("Maintenance/function_summary.jl")
 include("Maintenance/update_notebooks.jl")
 
-ros_functions = function_summary()
+ros_functions = DataFrame(
+    :symbol => Symbol[],
+    :function => Union{Function, Missing}[],
+    :exported => Bool[],
+    :condition => String[],
+    :signature => String[]
+)
 
 ros_notebooks = DataFrame(
     :chapter => String[], 
@@ -160,6 +168,7 @@ ros_notebooks = DataFrame(
 )
 
 export
+    ROS,
     ros_datadir,
     ros_functions,
     ros_notebooks
