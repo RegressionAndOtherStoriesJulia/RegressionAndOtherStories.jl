@@ -1,4 +1,4 @@
-#### Walk through maintenace script.
+#### Example of using the `update_ros_notebooks()` maintenace function.
 
 If a project has many Pluto notebooks, a package update that affects most notebooks can become rather time consuming. This is primarily an issue for a maintainer of the project who has to open each notebook and trigger a package update request.
 
@@ -6,7 +6,7 @@ For both "RegressionAndOtherStories.jl" based projects ("ROSStanPluto.jl" and "R
 
 Although these functions are part of RegressionAndOtherStories.jl, they are only useful for projects similar to "ROSStanPluto.jl" and "ROSTuringPluto.jl" (with a fixed layout for the `notebooks` subdirectory, see below an example of a `ros_notebooks` DataFrame).
 
-The 2 most important (and exported) functions are `create_ros_notebooks!()` and `update_notebooks!(df)`.
+The 2 most important (and exported) functions are `create_ros_notebooks()` and `update_ros_notebooks(df)`.
 
 **Note: Currently these functions have only been tested using a DataFrame `ros_notebooks` as defined in RegressionAndOtherStories.jl. Using these functions outside this context is currently untested.**
 
@@ -17,7 +17,7 @@ cd(expanduser(joinpath("~", ".julia", "dev", "ROSStanPluto")))
 
 The notebooks directory is expected to be a subdirectory of the project directory.
 
-Load `RegressionAndOtherStories.jl` into Julia's REPL:
+Load `RegressionAndOtherStories.jl` into Julia's REPL and create `ros_notebooks`:
 ```julia
 using RegressionAndOtherStories
 
@@ -59,11 +59,19 @@ Update all `ros_notebooks.reset` values:
 ros_notebooks.reset .= true;
 ```
 
-Or just update a few ros_notebooks.reset values.
+Or just update a few ros_notebooks.reset values:
+```julia
+ros_notebooks[[3, 5,6], :reset] .= true;
+
+# or
+
+ros_notebooks.reset[[3, 5, 6]] .= true;
+
+```
 
 Reset notebooks with ros_notebooks.reset set to true, e.g.:
 ```julia
-update_notebooks!(ros_notebooks)
+update_ros_notebooks!(ros_notebooks)
 Updating file:./00 - ROS Stan Guide/0.1 Ros Stan Guide.jl
 Updating file:./00 - ROS Stan Guide/0.2 Valid chains.jl
 Updating file:./00 - ROS Stan Guide/0.3 DataFramesMiniLanguage.jl
@@ -83,3 +91,5 @@ Updating file:./09 - MCMC/9.1 Bayes.jl
 Start Pluto (or re-start Pluto if certain notebooks are active) and open a notebook.
 
 In the `notebooks` directory, under `Notebook maintenance`, a notebook version is provided.
+
+In the same directory there is also a notebook demonstrating the maintenance functions `create_ros_functions()` and `update_ros_functions(df)`.
