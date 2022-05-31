@@ -252,7 +252,7 @@ $(SIGNATURES)
 Exported.
 
 """
-function update_notebooks(df; display_actions=false)
+function update_ros_notebooks(df; display_actions=false)
 
     if !isdir("./notebooks")
         @error "You are not in a directory that holds a `notebooks` \
@@ -313,5 +313,5 @@ end
 export
     reset_notebook!,
     create_ros_notebooks,
-    update_notebooks
+    update_ros_notebooks
 

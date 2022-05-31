@@ -27,14 +27,15 @@ const funs = Symbol[
     # Require ParetoSmoothedImportanceSampling?
 
     # Maintenace/function_summary.jl
-    :function_summary,
+    :create_ros_functions,
+    :update_ros_functions,
 
     # Maintenance/update_notebooks.jl
     :update_ros_notebooks!, 
     :add_to_ros_notebooks!,
     :reset_notebook!, 
     :create_ros_notebooks, 
-    :update_notebooks
+    :update_ros_notebooks
 ]
 
 const sigs = [
@@ -45,12 +46,11 @@ const sigs = [
     "(model_df, params, digits)", # model_summary(::DataFrame)
 
     "(plot_chains(df, pars; no_of_chains, no_of_draws)", # plot_chains
-
     "(df, param; bins, n_draws, n_chains, n_eff, kwargs...)", # trankplot
-
     "(model, params; round_estimates)", # model_summary(::SampleModel)
 
-    "(; funs, sigs, exps, cons)", # function_summary
+    "(; funs, sigs, exps, cons)", # create_function_summary
+    "(df)", # update_functions_in_summary
 
     "(df; display_actions", 
     "(df, dir_path; display_actions)",
@@ -61,21 +61,27 @@ const sigs = [
 
 const exps = [
     false, false, true,
+
     true,
+
     true, # if AoG loaded
     true, # if Makie loaded
     true, # if StanSample loaded
-    true,
+
+    true, true,
+
     false, false, true, true, true
 ]
 
 const cons = [
     "", "", "",
+
     "",
-    "AoG",
-    "Makie",
-    "StanSample",
-    "",
+
+    "AoG", "Makie", "StanSample",
+
+    "", "",
+
     "", "", "", "", ""
 ]
 
@@ -96,7 +102,7 @@ $(SIGNATURES)
 Exported.
 
 """
-function create_function_summary(; funs=funs, sigs=sigs, exps=exps, cons=cons)
+function create_ros_functions(; funs=funs, sigs=sigs, exps=exps, cons=cons)
 
     df = DataFrame(
         :symbol => Symbol[],
@@ -143,7 +149,7 @@ $(SIGNATURES)
 Exported.
 
 """
-function update_functions_in_summary(df)
+function update_ros_functions(df)
 
     funcs = Union{Function, Missing}[]
     for fun in df.symbol
@@ -162,5 +168,5 @@ function update_functions_in_summary(df)
 end
 
 export
-    create_function_summary,
-    update_functions_in_summary
+    create_ros_functions,
+    update_ros_functions
