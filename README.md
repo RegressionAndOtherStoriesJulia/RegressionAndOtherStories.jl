@@ -18,7 +18,11 @@ RegressionAndOtherStories.jl contains supporting (Julia) functions and the data 
 
 The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
 
-Fuctions included in RegressionAndOtherStories.jl are listed in the `ros_functions` DataFrame.
+I use the `ros_functions` dataframe to summarize all functions introduced in RegressionAndOtherStories.jl. 
+
+The `ros_functions` dataframe can created in a notebook by executing `ros_functions = create_ros_functions()`.
+
+As the actual available functions will vary by notebook there is a function `update_ros_functions(df)` which will update the :functions column in `ros_functions` for a given notebook based on its loaded packages (shown in the column :condition).
 
 All **data files** are in `.csv` format and located in the `data` directory.
 
@@ -56,17 +60,9 @@ I expect I can use ParetoSmoothedImportanceSampling.jl and StructuralCausalModel
 
 Pluto is a great tool and definitely leads to a different programming style. But it is also new and thus will continue to develop rapidly (I hope). One aspect, as the developer/maintainer of 4 projects each containing a growing number of notebooks, I have found updating packages in these notebooks is time consuming.
 
-For now I am using a (homegrown) maintenance function (`update_notebooks!()`) which will remove the Project and Manifest sections in selected notebooks.
+For now I am using a (homegrown) maintenance function (`update_ros_notebooks()`) which will remove the Project and Manifest sections in selected notebooks.
 
-To reset the loaded packages in all notebooks in a subdirectory, use `reset_notebooks!()`.
-
-This I will likely use in the future to store all notebooks on GitHub.
-
-## Function summary
-
-I use a DataFrame `ros_functions` to keep track of all functions introduced in RegressionAndOtherStories.jl. 
-
-The `ros_function` table can created by `create_function_summary()`. As the actual available functions can vary by notebook there is a function `update_functions_in_summary(df)` that update the :functions column in `ros_funstions`.
+This function I will likely use in the future to store all notebooks on GitHub.
 
 ## Issues, comments and questions
 
@@ -76,13 +72,17 @@ Pull requests are also welcome.
 
 ## Versions
 
-### Release 0.3.6 (Under construction)
+### Release 0.3.11 (Under construction)
 
 1. Focus on Appendices A and B.
 
+### Versions 0.3.6 - 0.3.10
+
+1. Fine tuning working with ros_functions and ros_notebooks.
+
 ### Release 0.3.5
 
-1. Added maintenace functions for a (large) set of notebooks.
+1. Added maintenance functions for a (large) set of notebooks.
 
 ### Release 0.3.4
 
