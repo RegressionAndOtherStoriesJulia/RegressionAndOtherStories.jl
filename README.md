@@ -20,7 +20,7 @@ The **supporting functions** are intended to be used in (currently) 2 Julia proj
 
 I use the `ros_functions` dataframe to summarize all functions introduced in RegressionAndOtherStories.jl. 
 
-The `ros_functions` dataframe can created in a notebook by executing `ros_functions = create_ros_functions()`.
+The `ros_functions` dataframe can be created in a notebook by executing `ros_functions = create_ros_functions()`.
 
 As the actual available functions will vary by notebook there is a function `update_ros_functions(df)` which will update the :function column in `df` (typically `ros_functions`) for a given notebook based on its loaded packages (the dependency is shown in the column :condition).
 
