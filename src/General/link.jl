@@ -39,3 +39,6 @@ function link(dfa::DataFrame, rx_to_val::Function, xrange)
     for x ∈ xrange
   ]
 end
+
+export
+  link
