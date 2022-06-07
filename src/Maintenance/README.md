@@ -32,26 +32,31 @@ ros_notebooks = create_ros_notebooks()
 Inspect DataFrame `ros_notebooks`:
 ```julia
 ros_notebooks |> display
-16×3 DataFrame
- Row │ chapter                    section                            reset 
-     │ String                     String                             Bool  
-─────┼─────────────────────────────────────────────────────────────────────
-   1 │ 00 - ROSStanGuide          0.1 Ros Stan Guide.jl              false
-   2 │ 00 - ROSStanGuide          0.2 Valid chains.jl                false
-   3 │ 00 - ROSStanGuide          0.3 DataFramesMiniLanguage.jl      false
-   4 │ 01 - Introduction          1.1 Elections Economy - hibbs.jl   false
-   5 │ 01 - Introduction          1.2 Electric Company - electric.…  false
-   6 │ 01 - Introduction          1.3 Peacekeeping - piece.jl        false
-   7 │ 01 - Introduction          1.4 Simple Causal - causal.jl      false
-   8 │ 01 - Introduction          1.5 Helicopters - helicopters.jl   false
-   9 │ 02 - Data and Measurement  2.1 HDI - hdi.jl                   false
-  10 │ 02 - Data and Measurement  2.2 Pew - pew.jl                   false
-  11 │ 02 - Data and Measurement  2.3 HealthExpenditure - healthex…  false
-  12 │ 02 - Data and Measurement  2.4 Names - allnames.jl            false
-  13 │ 03 - Probability           3.0 Basic methods.jl               false
-  14 │ 09 - MCMC                  9.1 Bayes.jl                       false
-  15 │ Appendix Z                 latexify_example.jl                false
-  16 │ Appendix Z                 using_reset_all_notebooks.jl       false
+
+20×3 DataFrame
+ Row │ chapter                            section                            reset 
+     │ String                             String                             Bool  
+─────┼─────────────────────────────────────────────────────────────────────────────
+   1 │ 00 - ROSStanGuide                  0.1 Ros Stan Guide.jl              false
+   2 │ 00 - ROSStanGuide                  0.2 Valid chains.jl                false
+   3 │ 00 - ROSStanGuide                  0.3 DataFramesMiniLanguage.jl      false
+   4 │ 01 - Introduction                  1.1 Elections Economy - hibbs.jl   false
+   5 │ 01 - Introduction                  1.2 Electric Company - electric.…  false
+   6 │ 01 - Introduction                  1.3 Peacekeeping - piece.jl        false
+   7 │ 01 - Introduction                  1.4 Simple Causal - causal.jl      false
+   8 │ 01 - Introduction                  1.5 Helicopters - helicopters.jl   false
+   9 │ 02 - Data and Measurement          2.1 HDI - hdi.jl                   false
+  10 │ 02 - Data and Measurement          2.2 Pew - pew.jl                   false
+  11 │ 02 - Data and Measurement          2.3 HealthExpenditure - health.jl  false
+  12 │ 02 - Data and Measurement          2.4 Names - allnames.jl            false
+  13 │ 03 - Probability                   3.0 Basic methods.jl               false
+  14 │ 04 - Generative models and stati…  4.0 Chapter4.jl                    false
+  15 │ 09 - MCMC                          9.1 Bayes.jl                       false
+  16 │ 10 - Linear regression with mult…  kidiq.jl                           false
+  17 │ Appendix A                         A.7.jl                             false
+  18 │ Notebook maintenance               ros_functions.jl                   false
+  19 │ Notebook maintenance               ros_notebooks.jl                   false
+  20 │ Notebook maintenance               template.jl                        false
 ```
 
 Update all `ros_notebooks.reset` values:
@@ -92,4 +97,7 @@ Start Pluto (or re-start Pluto if certain notebooks are active) and open a noteb
 
 In the `notebooks` directory, under `Notebook maintenance`, a notebook version is provided.
 
-In the same directory there is also a notebook demonstrating the maintenance functions `create_ros_functions()` and `update_ros_functions(df)`.
+In the same directory there is also a notebook demonstrating the maintenance functions `create_ros_functions()` and `update_ros_functions(df)`. 
+
+The file template.jl can be used to bootstrap new notebooks.
+
