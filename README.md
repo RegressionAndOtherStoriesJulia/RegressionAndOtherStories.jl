@@ -16,13 +16,13 @@ RegressionAndOtherStories.jl contains supporting (Julia) functions and the data 
 
 ## Contents
 
-The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), ROSStanPluto.jl and ROSTuringPluto.jl.
+The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), [ROSStanPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSStanPluto.jl) and [ROSTuringPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSTuringPluto.jl).
 
 I use the `ros_functions` dataframe to summarize all functions introduced in RegressionAndOtherStories.jl. 
 
 The `ros_functions` dataframe can be created in a notebook by executing `ros_functions = create_ros_functions()`.
 
-As the actual available functions will vary by notebook there is a function `update_ros_functions(df)` which will update the :function column in `df` (typically `ros_functions`) for a given notebook based on its loaded packages (the dependency is shown in the column :condition).
+As the actual available functions will vary by notebook there is a function `update_ros_functions(df)` which will update the `:function` column in `df` (typically `ros_functions`) for a given notebook based on its loaded packages (the dependency is shown in the column `:condition`).
 
 All **data files** are in `.csv` format and located in the `data` directory.
 
@@ -33,12 +33,12 @@ hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
 
 For that purpose `ros_datadir()` is exported.
 
-If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package `ROS-Examples` RegressionAndOtherStories.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
+If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package [ROS-Examples](https://github.com/avehtari/ROS-Examples) RegressionAndOtherStories.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
 ```
 ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Examples")
 ```
 
-R itself does not necessarily need to be installed for this to work. The ROS-Examples package can be found [here](https://github.com/avehtari/ROS-Examples).
+R itself does not necessarily need to be installed for this to work. 
 
 If so desired, direct use of the Stata files is also possible as the Stata to .csv file conversion scripts mentioned above show.
 
