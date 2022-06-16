@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.3.6
+# RegressionAndOtherStories.jl v0.4
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -72,9 +72,11 @@ Pull requests are also welcome.
 
 ## Versions
 
-### Release 0.3.11 (Under construction)
+### Release 0.4.x
 
-1. Focus on Appendices A and B.
+1. Model_summary and plot_chains (accept both Symbol and Strings)
+2. Focus on Appendices A and B.
+3. Focus on chapters 4, 5, 6, 7
 
 ### Versions 0.3.6 - 0.3.10
 
