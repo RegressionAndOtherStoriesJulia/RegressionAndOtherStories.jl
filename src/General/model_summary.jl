@@ -13,7 +13,7 @@ $(SIGNATURES)
 ## Keyword arguments
 ```julia
 * `digits = 2` # Number of decimal digits
-* `table-headers` # Default:Symbols or Strings as eltype(pars).
+* `table_headers` # Default:Symbols or Strings as eltype(pars).
 ```
 
 """
