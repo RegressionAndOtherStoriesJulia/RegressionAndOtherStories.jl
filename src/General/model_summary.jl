@@ -6,25 +6,33 @@ $(SIGNATURES)
 
 ## Positional arguments
 ```julia
-* `model_df::DataFrame` # DataFrame holding the draws
-* `pars` # Vector of Symbols or Strings to be included
+* `df::DataFrame` # DataFrame holding the draws
+* `params` # Vector of Symbols or Strings to be included
 ```
 
 ## Keyword arguments
 ```julia
-* `digits = 2` # Number of decimal digits
-* `table_headers` # Default:Symbols or Strings as eltype(pars).
+* `round_estimates=true` # Round to `digits` decimals.
+* `digits = 3` # Number of decimal digits
+* `table_header_type=eltype(params)` # Symbol or String
 ```
 
 """
-function model_summary(model_df::DataFrame, params::Vector{String}; 
-    digits = 2, table_headers = String)
+function model_summary(df::DataFrame, params; 
+    round_estimates = true, digits = 3, table_header_type = eltype(params))
 
-    colnames = String.(names(model_df))
-    pars = String[]
+    if !(typeof(params) in [Vector{String}, Vector{Symbol}])
+        @error "Parameter vector is not a Vector of Strings or Symbols."
+        return NamedArray(Float64, 0)
+    end
+
+    colnames = names(df)
+    col_type = eltype(colnames)
+    params_type = eltype(params)
+    pars = params_type[]
     
     for par in params
-        if par in colnames
+        if col_type(par) in colnames
             append!(pars, [par])
         else
             @warn ":$(par) not in $(colnames), will be dropped."
@@ -32,25 +40,29 @@ function model_summary(model_df::DataFrame, params::Vector{String};
     end
 
     if length(pars) > 0
-        parameters = Pair{String, Int}[]
+        parameters = Pair{params_type, Int}[]
         estimates = zeros(length(pars), 4)
         for (indx, par) in enumerate(pars)
-            if par in colnames
+            if col_type(par) in colnames
                 append!(parameters, [par => indx])
-                vals = model_df[:, par]
+                vals = df[:, par]
                 estimates[indx, :] = 
-                    [median(vals), mad(vals, normalize=false),
+                    [median(vals), mad(vals, normalize=true),
                         mean(vals), std(vals)]
             end
         end
 
-        if table_headers === String
-            na = NamedArray(round.(estimates; digits=digits), 
+        if round_estimates
+            estimates = round.(estimates; digits)
+        end
+
+        if table_header_type === String
+            na = NamedArray(estimates, 
                 (OrderedDict(parameters...), 
                 OrderedDict("median"=>1, "mad_sd"=>2, "mean"=>3, "std"=>4)),
                 ("Parameter", "Value"))
         else
-            na = NamedArray(round.(estimates; digits=digits), 
+            na = NamedArray(estimates, 
                 (OrderedDict(parameters...), 
                 OrderedDict(:median=>1, :mad_sd=>2, :mean=>3, :std=>4)),
                 ("Parameter", "Value"))
@@ -59,53 +71,7 @@ function model_summary(model_df::DataFrame, params::Vector{String};
        return na
     else
         @warn "No parameters match the column names in model_df."
-        return nothing
-    end
-end
-
-function model_summary(model_df::DataFrame, params::Vector{Symbol} = Symbol.(names(model_df)); 
-    digits = 2, table_headers=Symbol)
-    
-    colnames = Symbol.(names(model_df))
-    pars = Symbol[]
-    
-    for par in params
-        if par in colnames
-            append!(pars, [par])
-        else
-            @warn ":$(par) not in $(colnames), will be dropped."
-        end
-    end
-
-    if length(pars) > 0
-        parameters = Pair{Symbol, Int}[]
-        estimates = zeros(length(pars), 4)
-        for (indx, par) in enumerate(pars)
-            if par in colnames
-                append!(parameters, [par => indx])
-                vals = model_df[:, par]
-                estimates[indx, :] = 
-                    [median(vals), mad(vals, normalize=false),
-                        mean(vals), std(vals)]
-            end
-        end
-
-        if table_headers === String
-            na = NamedArray(round.(estimates; digits=digits), 
-                (OrderedDict(parameters...), 
-                OrderedDict("median"=>1, "mad_sd"=>2, "mean"=>3, "std"=>4)),
-                ("Parameter", "Value"))
-        else
-            na = NamedArray(round.(estimates; digits=digits), 
-                (OrderedDict(parameters...), 
-                OrderedDict(:median=>1, :mad_sd=>2, :mean=>3, :std=>4)),
-                ("Parameter", "Value"))
-        end
-        
-        return na
-   else
-        @warn "No parameters match the column names in model_df."
-        return nothing
+        return NamedArray(Float64, 0)
     end
 end
 

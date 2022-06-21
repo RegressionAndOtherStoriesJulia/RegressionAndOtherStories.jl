@@ -1,5 +1,6 @@
 using StanSample
 using RegressionAndOtherStories
+using Test
 
 hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
 
@@ -36,11 +37,8 @@ rc1_1s = stan_sample(m1_1s; data=data1_1s)
 
 if success(rc1_1s)
     sdf = read_summary(m1_1s)
-    post1_1s_df = read_samples(m1_1s, :dataframe)
-    post1_1s_df[!, :chain] = repeat(collect(1:m1_1s.num_chains);
-        inner=m1_1s.num_samples)
-    post1_1s_df[!, :chain] = categorical(post1_1s_df.chain)
-    ā, b̄, σ̄ = mean(Array(post1_1s_df), dims=1)
+    post1_1s = read_samples(m1_1s, :dataframe)
+    ā, b̄, σ̄ = mean(Array(post1_1s), dims=1)
 
     @testset "test_hibbs.jl" begin
         @test ā ≈ 3.0 atol = 0.1
@@ -48,8 +46,24 @@ if success(rc1_1s)
         @test σ̄ ≈ 3.6 atol = 0.2
     end
     
-    @testset "model_summary.jl" begin
-        mod_sum = model_summary(post1_1s_df, [:a, :b, :sigma])
-        @test mod_sum[:a, :median] ≈ 46.5 atol=0.4
+    @testset "model_summary" begin
+        ms = model_summary(m1_1s, [:a, :b, :sigma])
+        @test ms[:a, :mean] ≈ 46.5 atol=0.4
+
+        ms = model_summary(m1_1s, [:a, :b, :sigma]; table_header_type=String)
+        @test ms[:a, "mean"] ≈ 46.5 atol=0.4
+
+        ms = model_summary(m1_1s, ["a", "b", "sigma"])
+        @test ms["a", "mean"] ≈ 46.5 atol=0.4
+
+        ms = model_summary(m1_1s, 
+            Symbol.(["a", "b", "sigma"]); table_header_type=Symbol)
+        @test ms[:a, :mean] ≈ 46.5 atol=0.4
+
+        # Illegal input vector for params.
+
+        ms = model_summary(m1_1s, [1, 2, 3])
+        @test typeof(ms) <: NamedVector
+
     end
 end
