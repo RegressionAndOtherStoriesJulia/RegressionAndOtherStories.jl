@@ -44,7 +44,7 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 ## Approach
 
-The initial approach attempted in RegressionAndOtherStories.jl (v0.2) and associated projects was different from StatisticalRethinking.jl. But that approach did not work out as expected, so I will switch to a similiar setup as in StatisticalRethinking.jl using Requires.jl from v0.3 onwards. 
+The initial approach attempted in RegressionAndOtherStories.jl (v0.2) and associated projects was different from StatisticalRethinking.jl. But that approach did not work out as expected, so I will switch to a similar setup as in StatisticalRethinking.jl using Requires.jl from v0.3 onwards. 
 
 In particular Turing, Stan, Makie and AlgebraOfGraphics, if needed, will all be included using Requires.jl.
 

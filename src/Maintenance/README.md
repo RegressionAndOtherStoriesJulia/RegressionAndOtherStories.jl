@@ -1,4 +1,4 @@
-#### Example of using the `update_ros_notebooks()` maintenace function.
+#### Example of using the `update_ros_notebooks()` maintenance function.
 
 If a project has many Pluto notebooks, a package update that affects most notebooks can become rather time consuming. This is primarily an issue for a maintainer of the project who has to open each notebook and trigger a package update request.
 
