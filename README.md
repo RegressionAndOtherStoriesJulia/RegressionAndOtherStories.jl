@@ -72,6 +72,11 @@ Pull requests are also welcome.
 
 ## Versions
 
+### Release 0.4.5
+
+1. Doc fixes by Pietro Monticone
+2. Added model_summary(::SampleModel).
+
 ### Release 0.4.x
 
 1. Model_summary and plot_chains (accept both Symbol and Strings)
