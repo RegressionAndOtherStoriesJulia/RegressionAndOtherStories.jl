@@ -83,4 +83,3 @@ function model_summary(model::SampleModel)
     sdf = read_summary(model)
     return sdf[8:end, [1, 2, 4, 5, 6, 7, 8, 10]]
 end
-
