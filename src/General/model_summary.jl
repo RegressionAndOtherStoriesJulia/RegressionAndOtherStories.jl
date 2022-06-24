@@ -1,6 +1,6 @@
 """
 
-Compute median, mad_sd, mean and std summary of distribition.
+Compute median, mad_sd, mean and std summary of distribution.
 
 $(SIGNATURES)
 
