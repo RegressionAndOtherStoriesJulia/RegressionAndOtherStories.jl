@@ -62,7 +62,7 @@ Pluto is a great tool and definitely leads to a different programming style. But
 
 For now I am using a (homegrown) maintenance function (`update_ros_notebooks()`) which will remove the Project and Manifest sections in selected notebooks.
 
-This function I will likely use in the future to store all notebooks on GitHub.
+This function I is used before storing all notebooks on GitHub.
 
 ## Issues, comments and questions
 
