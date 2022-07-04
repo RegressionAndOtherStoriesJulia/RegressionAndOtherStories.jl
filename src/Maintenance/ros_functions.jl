@@ -3,13 +3,15 @@ using DataFrames
 using DocStringExtensions
 
 const funs = Symbol[
-    # RegressionAndOtherStoties.jl
+    # RegressionAndOtherStories.jl
     :ros_path,
     :ros_data,
     :ros_datadir,
 
     # General/model_summary.jl
     :model_summary,
+    :link,
+    :jitter,
 
     # Require/AoG/plot_chains.jl
     :plot_chains,
@@ -44,6 +46,8 @@ const sigs = [
     "(parts...)",
 
     "(model_df, params, digits)", # model_summary(::DataFrame)
+    "()", # link
+    "(x, j=0.5)", # jitter
 
     "(plot_chains(df, pars; no_of_chains, no_of_draws)", # plot_chains
     "(df, param; bins, n_draws, n_chains, n_eff, kwargs...)", # trankplot
@@ -62,7 +66,7 @@ const sigs = [
 const exps = [
     false, false, true,
 
-    true,
+    true, true, true,
 
     true, # if AoG loaded
     true, # if Makie loaded
@@ -76,7 +80,7 @@ const exps = [
 const cons = [
     "", "", "",
 
-    "",
+    "", "", "",
 
     "AoG", "Makie", "StanSample",
 
