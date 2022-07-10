@@ -45,25 +45,4 @@ if success(rc1_1s)
         @test b̄ ≈ 46.3 atol = 1.0
         @test σ̄ ≈ 3.6 atol = 0.2
     end
-    
-    @testset "model_summary" begin
-        ms = model_summary(m1_1s, [:a, :b, :sigma])
-        @test ms[:a, :mean] ≈ 46.5 atol=0.4
-
-        ms = model_summary(m1_1s, [:a, :b, :sigma]; table_header_type=String)
-        @test ms[:a, "mean"] ≈ 46.5 atol=0.4
-
-        ms = model_summary(m1_1s, ["a", "b", "sigma"])
-        @test ms["a", "mean"] ≈ 46.5 atol=0.4
-
-        ms = model_summary(m1_1s, 
-            Symbol.(["a", "b", "sigma"]); table_header_type=Symbol)
-        @test ms[:a, :mean] ≈ 46.5 atol=0.4
-
-        # Illegal input vector for params.
-
-        ms = model_summary(m1_1s, [1, 2, 3])
-        @test typeof(ms) <: NamedVector
-
-    end
 end

@@ -1,3 +1,3 @@
 using .StanSample
 
-include("Stan/model_summary.jl")
+include("Stan/stansummary.jl")

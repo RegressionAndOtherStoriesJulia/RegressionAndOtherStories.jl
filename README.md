@@ -72,6 +72,13 @@ Pull requests are also welcome.
 
 ## Versions
 
+### Release 0.5.0
+
+1. Added DataFrame operatior function (not exported).
+2. Added errorbars_mean and errorbars_draws.
+3. Added nested_column_to_array.
+4. Made model_summary String/Symbol agnostic.
+
 ### Release 0.4.5
 
 1. Doc fixes by Pietro Monticone

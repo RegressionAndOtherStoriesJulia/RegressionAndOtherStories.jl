@@ -9,9 +9,10 @@ $(SIGNATURES)
 * `x`: Value
 
 ## Optional positional argument
-* `j = 0.5: Jitter range bound for Uniform(-j, j)
+* `j = 0.5`: Jitter range bound for Uniform(-j, j)
 
-```
+Exported
+
 """
 function jitter(x, j=0.5)
   x + rand(Uniform(-j, j))
