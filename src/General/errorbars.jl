@@ -50,7 +50,7 @@ function errorbars_draws(df, p = [0.25, 0.75])
     q_df = DataFrame()
     for (indx, col) in enumerate(eachcol(df))
         m = median(col)
-        s = mad(col)
+        s = mad(col; normalize=true)
         int = [abs.(quantile(col, p) .- m)]
         append!(q_df, DataFrame(parameters = names(df)[indx], median = m, mad_sd = s, p = [p], q = int))
     end

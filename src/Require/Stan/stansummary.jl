@@ -55,6 +55,10 @@ $(SIGNATURES)
 ## Required positional arguments
 ```julia
 * `model::SampleModel` # SampleModel used to create the draws
+```
+
+## Optional positional arguments
+```julia
 * `params` # Vector of Symbols or Strings to be included
 ```
 
@@ -95,6 +99,15 @@ function describe(model::SampleModel, params;
     end
 
     StanSummary(dfnew)
+end
+
+function describe(model::SampleModel; showall=false)
+    sdf = read_summary(model)
+    sdf.parameters = String.(sdf.parameters)
+    if !showall
+        sdf = sdf[8:end, :] 
+    end
+    StanSummary(sdf)
 end
 
 export

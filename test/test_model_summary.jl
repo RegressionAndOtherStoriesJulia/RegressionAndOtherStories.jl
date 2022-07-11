@@ -49,6 +49,7 @@ ms1_1_2 = model_summary(post1_1s, ["a", "b", "sigma"])
 end
 
 ss1_1 = describe(m1_1s, ["a", "b", "sigma"]; digits=2)
+ss1_2 = describe(m1_1s)
 
 @testset "describe(SampleModel,...)" begin
     @test ss1_1(:a, :mean) ≈ 46.25 atol=1
@@ -56,5 +57,8 @@ ss1_1 = describe(m1_1s, ["a", "b", "sigma"]; digits=2)
 
     @test ss1_1("a", "mean") ≈ 46.25 atol=1
     @test ss1_1("b", "50%") ≈ 3.07 atol=0.1
+
+    @test ss1_2("b", "mean") ≈ 3.03 atol=0.04
+    @test ss1_2("b", "std") ≈ 0.69 atol=0.04
 end
 
