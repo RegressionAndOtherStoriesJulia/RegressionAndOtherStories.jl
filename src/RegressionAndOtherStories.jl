@@ -6,7 +6,6 @@ using Reexport
 using Requires
 
 function __init__()
-    @require StanSample="c1514b29-d3a0-5178-b312-660c88baa699" include("Require/stan_glue.jl")
     @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" include("Require/makie_glue.jl")
     @require AlgebraOfGraphics="cbdf2221-f076-402e-a563-3d30da359d67" include("Require/aog_glue.jl")
 end
@@ -152,7 +151,6 @@ include("Utilities/rank_vector.jl")
 include("General/link.jl")
 include("General/jitter.jl")
 include("General/modelsummary.jl")
-include("General/nested_column_to_array.jl")
 include("General/errorbars.jl")
 include("Maintenance/ros_functions.jl")
 include("Maintenance/ros_notebooks.jl")
