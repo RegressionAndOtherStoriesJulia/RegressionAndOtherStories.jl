@@ -1,48 +1,28 @@
-import Base.show
+if !isdefined(Main, :StanSample)
+    import DataFrames: getindex
 
-"""
-
-Struct to hold a DataFrame created by model_summary().
-
-#$(TYPEDEF)
-
-Basically a DataFrame but expects a column "parameters".
-
-Exported
-
-"""
-mutable struct ModelSummary
-    df::DataFrame
-end
-
-show(ModelSummary) = show(ModelSummary.df)
-
-"""
-
-Element selection operator on a Model.
-
-$(SIGNATURES)
-
-Basically a DataFrame but expects a column "parameters".
-
-Exported
-
-"""
-function (ms::ModelSummary)(par, stat)
-
-    varlocalx = String(par)
-    varlocaly = String(stat)
-    
-    if !(varlocalx in ms.df.parameters)
-        @warn "Variable \"$(varlocalx)\" not found in $(ms.df.parameters)."
-        return nothing
-    elseif !(varlocaly in names(ms.df))
-        @warn "Variable $(varlocaly) not found in $(names(ms.df))."
-        return nothing
+    function getindex(df::DataFrame, r::T, c) where {T<:Union{Symbol, String}}
+        colstrings = String.(names(df))
+        if !("parameters" in colstrings)
+            @warn "DataFrame `df` does not have a column named `parameters`."
+            return nothing
+        end
+        if eltype(df.parameters) <: Union{Vector{String}, Vector{Symbol}}
+            @warn "DataFrame `df.parameters` is not of type `Union{String, Symbol}'."
+            return nothing
+        end
+        rs = String(r)
+        cs = String(c)
+        if !(rs in String.(df.parameters))
+            @warn "Parameter `$(r)` is not in $(df.parameters)."
+            return nothing
+        end
+        if !(cs in colstrings)
+            @warn "Statistic `$(c)` is not in $(colstrings)."
+            return nothing
+        end
+        return df[df.parameters .== rs, cs][1]
     end
- 
-    return ms.df[ms.df.parameters .== String(varlocalx), 
-        String(varlocaly)][1]
 end
 
 """
@@ -107,9 +87,8 @@ function model_summary(df::DataFrame, params::T;
         dfnew[!, "mean"] = estimates[:, 3]
         dfnew[!, "std"] = estimates[:, 4]
     end
-    ModelSummary(dfnew)
+    dfnew
 end
 
 export
-    ModelSummary,
     model_summary
