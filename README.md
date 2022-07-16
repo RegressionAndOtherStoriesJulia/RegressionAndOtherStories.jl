@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.5
+# RegressionAndOtherStories.jl v0.6.1
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -71,6 +71,12 @@ Please file issues, comments and questions [here](https://github.com/stanjulia/R
 Pull requests are also welcome.
 
 ## Versions
+
+### Version 0.6.1
+
+1. Changed back to use DataFrames directly as basis for summaries.
+2. Use getindex to access single elements in summary DataFrames (first argument taken vrom `parameters` column in df)
+3. For Stan use array() to group nested columns into a matrix. For Turing continue to use nested_column_to_array.
 
 ### Release 0.5.0
 
