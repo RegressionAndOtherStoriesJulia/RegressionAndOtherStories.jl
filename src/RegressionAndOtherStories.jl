@@ -7,7 +7,6 @@ using Requires
 
 function __init__()
     @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" include("Require/makie_glue.jl")
-    @require AlgebraOfGraphics="cbdf2221-f076-402e-a563-3d30da359d67" include("Require/aog_glue.jl")
 end
 
 @reexport using CSV, DelimitedFiles, Unicode
