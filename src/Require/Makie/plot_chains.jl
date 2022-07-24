@@ -27,16 +27,12 @@ function plot_chains(df::DataFrame, pars::Vector{Symbol};
 
     fig = Figure()
     for i in 1:length(pars)
-        let
-            plt = data(dft) * visual(Lines) * mapping(pars[i]; color=:chain)
-            axis = (; ylabel="$(pars[i])", xlabel="Iteration", title="Traces")
-            draw!(fig[i, 1], plt; axis)
+        ax = Axis(fig[i, 1]; ylabel="$(pars[i])", xlabel="Iteration", title="Traces")
+        for j in 1:no_of_chains
+            plt = lines!(dft[dft.chain .== j, pars[i]])
         end
-        let
-            plt = data(dft) * mapping(pars[i]; color=:chain) * AlgebraOfGraphics.density()
-            axis = (; title="Density $(pars[i])")
-            draw!(fig[i, 2], plt; axis)
-        end
+        ax = Axis(fig[i, 2]; ylabel="pdf", xlabel="$(pars[i])", title="Density $(pars[i])")
+        den = density!(dft[:, pars[i]])
     end
     return fig
 end
@@ -51,16 +47,12 @@ function plot_chains(df::DataFrame, pars::Vector{String};
 
     fig = Figure()
     for i in 1:length(pars)
-        let
-            plt = data(dft) * visual(Lines) * mapping(pars[i]; color=:chain)
-            axis = (; ylabel="$(pars[i])", xlabel="Iteration", title="Traces")
-            draw!(fig[i, 1], plt; axis)
+        ax = Axis(fig[i, 1]; ylabel="$(pars[i])", xlabel="Iteration", title="Traces")
+        for j in 1:no_of_chains
+            plt = lines!(dft[dft.chain .== j, pars[i]])
         end
-        let
-            plt = data(dft) * mapping(pars[i]; color=:chain) * AlgebraOfGraphics.density()
-            axis = (; title="Density $(pars[i])")
-            draw!(fig[i, 2], plt; axis)
-        end
+        ax = Axis(fig[i, 2]; ylabel="pdf", xlabel="$(pars[i])", title="Density $(pars[i])")
+        den = density!(dft[:, pars[i]])
     end
     return fig
 end

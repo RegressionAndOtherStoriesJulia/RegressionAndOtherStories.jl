@@ -45,8 +45,6 @@ StatsFuns = "0.9, 1.0"
 julia = "^1"
 
 [extras]
-AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
-Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 StanSample = "c1514b29-d3a0-5178-b312-660c88baa699"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
