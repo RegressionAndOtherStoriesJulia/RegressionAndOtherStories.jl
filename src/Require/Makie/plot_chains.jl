@@ -16,9 +16,11 @@ $(SIGNATURES)
 * 'no_of_draws = 1000' # Number of draws (after warmup) in each chain
 ```
 
+KernelDensity.jl keyword arguments are passed on to `kde()`.
+
 """
 function plot_chains(df::DataFrame, pars::Vector{Symbol};
-    no_of_chains=4, no_of_draws=1000)
+    no_of_chains=4, no_of_draws=1000, kwargs...)
 
     dft = deepcopy(df)
 
@@ -32,13 +34,20 @@ function plot_chains(df::DataFrame, pars::Vector{Symbol};
             plt = lines!(dft[dft.chain .== j, pars[i]])
         end
         ax = Axis(fig[i, 2]; ylabel="pdf", xlabel="$(pars[i])", title="Density $(pars[i])")
-        den = density!(dft[:, pars[i]])
+        for j in 1:no_of_chains
+            U = kde(dft[dft.chain .== j, pars[i]]; kwargs...)
+            den = lines!(U.x, U.density)
+            xs = LinRange(minimum(U.x), maximum(U.x), length(U.density))
+            ys_low = zeros(length(U.density))
+            ys_high = U.density
+            band!(xs, ys_low, ys_high; color=:lightgrey)
+        end
     end
     return fig
 end
 
-function plot_chains(df::DataFrame, pars::Vector{String};
-    no_of_chains=4, no_of_draws=1000)
+function plot_chains(df::DataFrame, pars::Vector{Symbol};
+    no_of_chains=4, no_of_draws=1000, kwargs...)
 
     dft = deepcopy(df)
 
@@ -52,7 +61,15 @@ function plot_chains(df::DataFrame, pars::Vector{String};
             plt = lines!(dft[dft.chain .== j, pars[i]])
         end
         ax = Axis(fig[i, 2]; ylabel="pdf", xlabel="$(pars[i])", title="Density $(pars[i])")
-        den = density!(dft[:, pars[i]])
+        for j in 1:no_of_chains
+            U = kde(dft[dft.chain .== j, pars[i]]; kwargs...)
+            den = lines!(U.x, U.density)
+            xs = LinRange(minimum(U.x), maximum(U.x), length(U.density))
+            ys_low = zeros(length(U.density))
+            ys_high = U.density
+            band!(xs, ys_low, ys_high; color=:lightgrey)
+
+        end
     end
     return fig
 end

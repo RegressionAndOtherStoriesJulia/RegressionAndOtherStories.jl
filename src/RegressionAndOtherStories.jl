@@ -13,7 +13,7 @@ end
 @reexport using DataFrames, CategoricalArrays
 @reexport using NamedArrays, DataStructures, NamedTupleTools
 @reexport using Random, Distributions, StatsBase, Statistics
-@reexport using LinearAlgebra, LaTeXStrings, Dates
+@reexport using KernelDensity, LinearAlgebra, LaTeXStrings, Dates
 
 using DocStringExtensions: FIELDS, SIGNATURES, TYPEDEF
 
