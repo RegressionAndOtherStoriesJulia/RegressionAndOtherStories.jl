@@ -68,7 +68,7 @@ function add_to_ros_notebooks!(df, dir_path;
             if isdir(f)
                 display_actions && println("Found dir $f")
                 add_to_ros_notebooks!(df, f)
-            elseif isfile(f)
+            elseif isfile(f) && f[end-2:end] == ".jl"
                 display_actions && println("Found notebook $f")
                 split_dir_path = split(f, "/")
                 parts = split_dir_path[end-1:end]

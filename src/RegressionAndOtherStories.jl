@@ -153,6 +153,7 @@ include("General/modelsummary.jl")
 include("General/nested_columns.jl")
 include("General/errorbars.jl")
 include("Maintenance/ros_notebooks.jl")
+include("Maintenance/create_pdfs.jl")
 
 export
     ROS,
