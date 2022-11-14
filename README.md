@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.6.1
+# RegressionAndOtherStories.jl v0.7
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -49,14 +49,6 @@ For testing purposes the packages enabled using Requires.jl will move to the tes
 In doing this I will move over several important functions from StatisticalRethinking.jl as well, e.g. `link()`.
 
 I expect I can use ParetoSmoothedImportanceSampling.jl and StructuralCausalModels.jl as is.
-
-## Notebook maintenance
-
-Pluto is a great tool and definitely leads to a different programming style. But it is also new and thus will continue to develop rapidly (I hope). One aspect, as the developer/maintainer of 4 projects each containing a growing number of notebooks, I have found updating packages in these notebooks is time consuming.
-
-For now I am using a (homegrown) maintenance function (`update_ros_notebooks()`) which will remove the Project and Manifest sections in selected notebooks.
-
-This function I is used before storing all notebooks on GitHub.
 
 ## Issues, comments and questions
 
