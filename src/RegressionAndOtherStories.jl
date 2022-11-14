@@ -152,7 +152,6 @@ include("General/jitter.jl")
 include("General/modelsummary.jl")
 include("General/nested_columns.jl")
 include("General/errorbars.jl")
-include("Maintenance/ros_notebooks.jl")
 
 export
     ROS,
