@@ -106,9 +106,12 @@ function ros_data(dataset, parts...; env_var="JULIA_ROS_HOME")
     normpath(joinpath(ros_path(dataset), "data", parts...))
 end
 
+default_figure_resolution = (1100, 600);
+
 export
     ros_path,
-    ros_data
+    ros_data,
+    default_figure_resolution
 
 # Access RegressionAndOtherStories.jl data files (.csv) using ros_datadir()
 """
