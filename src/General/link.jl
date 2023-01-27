@@ -34,10 +34,7 @@ julia> link(d, (r,x) -> r.a+x*r.b, 1:2)
 ```
 """
 function link(dfa::DataFrame, rx_to_val::Function, xrange)
-  [
-    rx_to_val.(eachrow(dfa), (x,))
-    for x ∈ xrange
-  ]
+  [rx_to_val.(eachrow(dfa), (x,)) for x ∈ xrange]
 end
 
 export

@@ -155,6 +155,12 @@ include("General/jitter.jl")
 include("General/modelsummary.jl")
 include("General/nested_columns.jl")
 include("General/errorbars.jl")
+include("General/hpdi.jl")
+include("General/PI.jl")
+include("General/estimparam.jl")
+include("General/lin.jl")
+include("General/meanlowerupper.jl")
+include("General/zscore_transform.jl")
 include("Maintenace/reset_notebooks.jl")
 
 export
