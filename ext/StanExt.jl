@@ -1,7 +1,6 @@
 module StanExt
 
 using RegressionAndOtherStories
-#using StanSample
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using StanSample) : (using ..StanSample)
 

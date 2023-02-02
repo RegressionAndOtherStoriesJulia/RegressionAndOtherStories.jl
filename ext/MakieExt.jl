@@ -1,7 +1,6 @@
 module MakieExt
 
 using RegressionAndOtherStories
-#using Makie
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using Makie) : (using ..Makie)
 
