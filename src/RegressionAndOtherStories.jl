@@ -3,11 +3,21 @@ module RegressionAndOtherStories
 const ROS = RegressionAndOtherStories
 
 using Reexport
-using Requires
+
+# Compatibility with the new "Package Extensions" (https://github.com/JuliaLang/julia/pull/47695)
+const EXTENSIONS_SUPPORTED = isdefined(Base, :get_extension)
+
+if !EXTENSIONS_SUPPORTED
+    using Requires: @require
+end
 
 function __init__()
-    @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" include("Require/makie_glue.jl")
+    @static if !EXTENSIONS_SUPPORTED
+        @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" include("../ext/MakieExt.jl")
+        @require StanSample="c1514b29-d3a0-5178-b312-660c88baa699" include("../ext/StanExt.jl")
+    end
 end
+
 
 @reexport using CSV, DelimitedFiles, Unicode
 @reexport using DataFrames, CategoricalArrays
@@ -161,6 +171,10 @@ include("General/estimparam.jl")
 include("General/lin.jl")
 include("General/meanlowerupper.jl")
 include("General/zscore_transform.jl")
+include("PlottingSupport/plot_model_coef.jl")
+include("PlottingSupport/trankplot.jl")
+include("PlottingSupport/cov_ellipse.jl")
+include("PlottingSupport/plot_chains.jl")
 include("Maintenace/reset_notebooks.jl")
 
 export

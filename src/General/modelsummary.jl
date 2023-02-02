@@ -1,3 +1,4 @@
+#=
 if !isdefined(Main, :StanSample)
     import DataFrames: getindex
 
@@ -24,6 +25,7 @@ if !isdefined(Main, :StanSample)
         return df[df.parameters .== rs, cs][1]
     end
 end
+=#
 
 """
 
