@@ -1,32 +1,3 @@
-#=
-if !isdefined(Main, :StanSample)
-    import DataFrames: getindex
-
-    function getindex(df::DataFrame, r::T, c) where {T<:Union{Symbol, String}}
-        colstrings = String.(names(df))
-        if !("parameters" in colstrings)
-            @warn "DataFrame `df` does not have a column named `parameters`."
-            return nothing
-        end
-        if eltype(df.parameters) <: Union{Vector{String}, Vector{Symbol}}
-            @warn "DataFrame `df.parameters` is not of type `Union{String, Symbol}'."
-            return nothing
-        end
-        rs = String(r)
-        cs = String(c)
-        if !(rs in String.(df.parameters))
-            @warn "Parameter `$(r)` is not in $(df.parameters)."
-            return nothing
-        end
-        if !(cs in colstrings)
-            @warn "Statistic `$(c)` is not in $(colstrings)."
-            return nothing
-        end
-        return df[df.parameters .== rs, cs][1]
-    end
-end
-=#
-
 """
 
 Compute median, mad_sd, mean and std summary of distribution.
