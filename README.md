@@ -58,6 +58,12 @@ Pull requests are also welcome.
 
 ## Versions
 
+### Version 9
+
+1. Switch to extensions
+2. Added simulate function
+3. Added scale_df_cols! (scale! conflicted with Makie and other packages)
+
 ### Version 0.6.1
 
 1. Changed back to use DataFrames directly as basis for summaries.

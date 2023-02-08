@@ -63,5 +63,5 @@ function scale_df_cols!(
 end
 
 export
-    scale!
+    scale_df_cols!
     
