@@ -1,7 +1,7 @@
 name = "RegressionAndOtherStories"
 uuid = "21324389-b050-441a-ba7b-9a837781bda0"
 authors = ["Rob J Goedman <goedman@icloud.com>"]
-version = "0.9.1"
+version = "0.9.2"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"

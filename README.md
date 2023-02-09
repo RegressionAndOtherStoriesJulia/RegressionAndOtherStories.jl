@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.7
+# RegressionAndOtherStories.jl v0.9
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -10,13 +10,15 @@
 
 [project-status-img]: https://img.shields.io/badge/lifecycle-experimental-orange.svg
 
-## Purpose (once completed, maybe late 2022)
+## Purpose (once completed, maybe late 2023)
 
 RegressionAndOtherStories.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
+It is also used in SR2StanPluto.jl v9+, a revised inplementation of the [Statistical Rethinking](https://github.com/StatisticalRethinkingJulia) using Makie.jl and CausalInference.jl. 
+
 ## Contents
 
-The **supporting functions** are intended to be used in (currently) 2 Julia projects (also under development), [ROSStanPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSStanPluto.jl) and [ROSTuringPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSTuringPluto.jl).
+The **supporting functions** are intended to be used in (currently) 3 Julia projects (also under development), [ROSStanPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSStanPluto.jl), [ROSTuringPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSTuringPluto.jl) and [SR2StanPluto](https://xcelab.net/rm/statistical-rethinking/).
 
 All **data files** are in `.csv` format and located in the `data` directory.
 
@@ -38,17 +40,17 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 ## Approach
 
-The initial approach attempted in RegressionAndOtherStories.jl (v0.2) and associated projects was different from StatisticalRethinking.jl. But that approach did not work out as expected, so I will switch to a similar setup as in StatisticalRethinking.jl using Requires.jl from v0.3 onwards. 
-
-In particular Turing, Stan, Makie and AlgebraOfGraphics, if needed, will all be included using Requires.jl.
+RegressionAndOtherStories.jl v9+ is using Julia's package extension option. In particular Turing, Stan, Makie and CausalInference, if needed, are included as extensions.
 
 Over time I might minimize the use of AlgebraOfGraphics.jl. It is a nice package but also a bit more difficult to tailor (compared to Makie/GLMakie).
 
-For testing purposes the packages enabled using Requires.jl will move to the test section of RegressionAndOtherStories.jl.
-
 In doing this I will move over several important functions from StatisticalRethinking.jl as well, e.g. `link()`.
 
-I expect I can use ParetoSmoothedImportanceSampling.jl and StructuralCausalModels.jl as is.
+I expect I can use ParetoSmoothedImportanceSampling.jl as is but will take another look at PSIS.jl and ParetoSmooth.jl when revising the relevant chapters.
+
+## Project maintenance for Pluto notebooks
+
+In the subdirectory `src/Maintenance/reset_motebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes two changes to listed notebooks: 1. If it finds a line starting with `Pkg.activate(` it comments out that line, and 2) it removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
 
 ## Issues, comments and questions
 
@@ -63,6 +65,13 @@ Pull requests are also welcome.
 1. Switch to extensions
 2. Added simulate function
 3. Added scale_df_cols! (scale! conflicted with Makie and other packages)
+4. Switching to CausalInference.jl as a replacement for StructuralCausalModels.jl.
+5. Possibly switching to either PSIS.jl or ParetoSmooth.jl as a replacement for ParetoSmoothedImportanceSampling.jl.
+6. Switched to Makie.jl and GLMakie.jl as back-end.
+
+### Versions 7 and 8
+
+1. Primarily following package updates.
 
 ### Version 0.6.1
 
