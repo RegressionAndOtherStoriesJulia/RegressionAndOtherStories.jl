@@ -177,7 +177,7 @@ include("PlottingSupport/plot_model_coef.jl")
 include("PlottingSupport/trankplot.jl")
 include("PlottingSupport/cov_ellipse.jl")
 include("PlottingSupport/plot_chains.jl")
-include("Maintenace/reset_notebooks.jl")
+include("Maintenance/reset_notebooks.jl")
 
 export
     ROS,
