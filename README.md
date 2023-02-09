@@ -14,7 +14,7 @@
 
 RegressionAndOtherStories.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
-It is also used in SR2StanPluto.jl v9+, a revised inplementation of the [Statistical Rethinking](https://github.com/StatisticalRethinkingJulia) using Makie.jl and CausalInference.jl. 
+It is also used in project SR2StanPluto.jl v9+, a revised inplementation of the [Statistical Rethinking](https://github.com/StatisticalRethinkingJulia) support functions using Makie.jl and CausalInference.jl. 
 
 ## Contents
 
@@ -50,7 +50,7 @@ I expect I can use ParetoSmoothedImportanceSampling.jl as is but will take anoth
 
 ## Project maintenance for Pluto notebooks
 
-In the subdirectory `src/Maintenance/reset_motebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes two changes to listed notebooks: 1. If it finds a line starting with `Pkg.activate(` it comments out that line, and 2) it removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
+In the subdirectory `src/Maintenance/reset_notebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes two changes to listed notebooks: 1. If it finds a line starting with `Pkg.activate(` it comments out that line, and 2) it removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
 
 ## Issues, comments and questions
 
