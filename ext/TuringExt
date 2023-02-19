@@ -1,4 +1,4 @@
-module MakieExt
+module TuringExt
 
 using RegressionAndOtherStories, DataFrames
 

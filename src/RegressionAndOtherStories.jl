@@ -15,6 +15,8 @@ function __init__()
     @static if !EXTENSIONS_SUPPORTED
         @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" include("../ext/MakieExt.jl")
         @require StanSample="c1514b29-d3a0-5178-b312-660c88baa699" include("../ext/StanExt.jl")
+        @require CausalInference="8e462317-f959-576b-b3c1-403f26cec956"  include("../ext/CausalInferenceExt.jl")
+        @require GraphViz="f526b714-d49f-11e8-06ff-31ed36ee7ee0" include("../ext/GraphVizExt.jl")
     end
 end
 
@@ -177,6 +179,8 @@ include("PlottingSupport/plot_model_coef.jl")
 include("PlottingSupport/trankplot.jl")
 include("PlottingSupport/cov_ellipse.jl")
 include("PlottingSupport/plot_chains.jl")
+include("CausalInferenceSupport/extension_functions.jl")
+include("GraphVizSupport/extension_functions.jl")
 include("Maintenance/reset_notebooks.jl")
 
 export
