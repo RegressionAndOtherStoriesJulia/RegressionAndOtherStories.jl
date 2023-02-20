@@ -14,7 +14,7 @@
 
 RegressionAndOtherStories.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
-It is also used in project SR2StanPluto.jl v9+, a revised inplementation of the [Statistical Rethinking](https://github.com/StatisticalRethinkingJulia) support functions using Makie.jl and CausalInference.jl. 
+The package is also used in project SR2StanPluto.jl v9+, a revised inplementation of the [Statistical Rethinking](https://github.com/StatisticalRethinkingJulia) support functions using Makie.jl, CausalInference.jl and GraphViz.jl. 
 
 ## Contents
 
@@ -40,11 +40,11 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 ## Approach
 
-RegressionAndOtherStories.jl v9+ is using Julia's package extension option. In particular Turing, Stan, Makie and CausalInference, if needed, are included as extensions.
+RegressionAndOtherStories.jl v9+ is using Julia's package extension option. In particular Turing, Stan, Makie, GraphViz and CausalInference, if needed, are included as extensions.
 
 Over time I might minimize the use of AlgebraOfGraphics.jl. It is a nice package but also a bit more difficult to tailor (compared to Makie/GLMakie).
 
-In doing this I will move over several important functions from StatisticalRethinking.jl as well, e.g. `link()`.
+In working on this I will move over (and likely update) several important functions from StatisticalRethinking.jl as well, e.g. `link()`.
 
 I expect I can use ParetoSmoothedImportanceSampling.jl as is but will take another look at PSIS.jl and ParetoSmooth.jl when revising the relevant chapters.
 
@@ -60,7 +60,7 @@ Pull requests are also welcome.
 
 ## Versions
 
-### Version 9
+### Version 9 (under development!!!)
 
 1. Switch to extensions
 2. Added simulate function
@@ -68,6 +68,7 @@ Pull requests are also welcome.
 4. Switching to CausalInference.jl as a replacement for StructuralCausalModels.jl.
 5. Possibly switching to either PSIS.jl or ParetoSmooth.jl as a replacement for ParetoSmoothedImportanceSampling.jl.
 6. Switched to Makie.jl and GLMakie.jl as back-end.
+7. Use of GraphViz.jl to display DAGs.
 
 ### Versions 7 and 8
 
