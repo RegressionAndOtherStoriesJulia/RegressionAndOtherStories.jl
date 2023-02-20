@@ -13,8 +13,8 @@ DAG(
 * `d::AbstractString` : DAG dot representation (e.g. used for GraphViz)
 * `g::Graphs.Graph` : DiGraph with field: ne, fadjlist and badjlist
 * `v::Vector{Symbol}` : Names of variables in DAG, order corresponding to g
-* `df::DataFrameOrNothing` : Variable observations
-* `cov::NamedArrayOrNothing` : Covariance matrix as NamedArray
+* `df::Union{DataFrame, Nothing}` : Variable observations
+* `cov::Union{NamedArray, Nothing}` : Covariance matrix as NamedArray
 )
 ```
 
@@ -28,7 +28,7 @@ mutable struct DAG
     g
     v::Vector{Symbol}
     df::Union{DataFrame, Nothing}
-    cov::Union{NamedArray, Nothing}
+    covm::Union{NamedArray, Nothing}
 end
 
 function sort_nodes() end

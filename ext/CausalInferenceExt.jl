@@ -1,6 +1,6 @@
 module CausalInferenceExt
 
-using RegressionAndOtherStories, Graphs, DocStringExtensions
+using RegressionAndOtherStories, Graphs, DocStringExtensions, NamedArrays
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using CausalInference) : (using ..CausalInference)
 
@@ -17,7 +17,7 @@ $(SIGNATURES)
 ## Returns
 * `NamedTuple` : (lhs=..., both=..., rhs=..., vars=...)
 
-Exported
+Exported, will be updated in the future.
 """
 function sort_nodes(edges::Vector{Tuple{T, T}}) where {T <: Symbol}
     lhs = OrderedSet()
@@ -47,82 +47,8 @@ function sort_nodes(edges::Vector{Tuple{T, T}}) where {T <: Symbol}
     (lhs=lhs, both=both, rhs=rhs, vars=vars)
 end
 
-
 """
-Construct a graph and its dot_repr from an edge vector. Returns a DAG object.
-
-$(SIGNATURES)
-
-## Required arguments
-* `name::AbstractString` : Name of the DAG
-* `edges::Vector{Tuple{Symbol, Symbol}}` : Vector of edges, e.g. [(:a, :b), (:a, :c), ...]
-
-## Returns
-* `DAG` : See ?DAG
-
-Exported
-"""
- function construct_dag(
-    dag_name::AbstractString, 
-    edges::Vector{Tuple{T, T}};
-    use_chickering_order=true) where {T <: Symbol}
-    
-    a_tuple = []
-    a_digraph = "digraph $dag_name {"
-    
-    lhs, both, rhs, vars = sort_nodes(edges)
-    for s in Symbol.(lhs)
-        for e in edges
-            if e[1] == s
-                push!(a_tuple, (findfirst(x -> x == e[1], vars), findfirst(x -> x == e[2], vars)))
-            end
-        end
-    end
-    for s in Symbol.(both)
-        for e in edges
-            if e[1] == s
-                push!(a_tuple, (findfirst(x -> x == e[1], vars), findfirst(x -> x == e[2], vars)))
-            end
-        end
-    end
-
-    g = DiGraph(length(vars))
-    for (i, j) in a_tuple
-        add_edge!(g, i, j)
-    end
-
-    if use_chickering_order
-        co = CausalInference.chickering_order(g)
-        os = OrderedSet{Int}()
-        for c in co
-            push!(os, c[1])
-            push!(os, c[2])
-        end
-
-        a_tuple = []
-        for p in co
-            push!(a_tuple, (p[1], p[2]))
-        end
-
-        g = DiGraph(length(vars))
-        for (i, j) in a_tuple
-            add_edge!(g, i, j)
-        end
-    end
-
-    for e in a_tuple
-        a_digraph = a_digraph * "$(vars[e[1]]) -> $(vars[e[2]]);"
-    end
-    a_digraph = a_digraph * "}"
-    
-    return DAG(dag_name, edges, g, a_digraph, vars)
-end
-
-
-# DAG constructor
-
-"""
-Directed acyclic graph basic constructor
+DAG constructor
 
 $(SIGNATURES)
 
@@ -135,6 +61,7 @@ $(SIGNATURES)
 ### Keyword arguments
 ```julia
 * `df::DataFrame` : DataFrame with observations
+* `covm::NamedArray` : Covariance matrix of observations
 ```
 
 ### Returns
@@ -145,7 +72,8 @@ $(SIGNATURES)
 Part of API, exported.
 """
 function dag(dag_name::AbstractString, model::Vector{Tuple{Symbol, Symbol}};
-    df::Union{DataFrame, Nothing}=nothing, use_chickering_order=true)
+    df::Union{DataFrame, Nothing}=nothing, covm::Union{NamedArray, Nothing}=nothing,
+    use_chickering_order=true)
 
     local e
     if typeof(model) <: Vector{Tuple{Symbol, Symbol}}
@@ -201,13 +129,12 @@ function dag(dag_name::AbstractString, model::Vector{Tuple{Symbol, Symbol}};
     end
     a_digraph = a_digraph * "}"
 
+    c = covm
+    if !isnothing(df) && isnothing(c)
+        #!isnothing(c) && @warn "New covariance matrix computed from df."
+        @assert length(names(df)) == length(vars) "DataFrame has different number of columns"
 
-
-    if isnothing(df)
-        c = nothing
-    else
         # Compute covariance matrix and store as NamedArray
-        @assert length(names(df)) == length(v) "DataFrame has different number of columns"
         c = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
     end
 
@@ -218,7 +145,7 @@ function dag(dag_name::AbstractString, model::Vector{Tuple{Symbol, Symbol}};
 end
 
 """
-Directed acyclic graph basic constructor from an estimate graph.
+DAG constructor from an estimated (pcalg) graph.
 
 $(SIGNATURES)
 
@@ -226,28 +153,29 @@ $(SIGNATURES)
 ```julia
 * `name::AbstractString` : Name for the DAG object
 * `g::Graphs.SimpleGraphs.SimpleDiGraph` : Estimated using `pcalg()`
-* `vars::Vector{Symbol}` : Symbol sequence as used in original Dag
+* `d::DAG` : Original DAG
 ```
 
+The fields `d.df` and `d.covm` will be included in the new DAG.
 
 ### Returns
 ```julia
-* `dag::DAG` : Newly created DAG
+* `dag::DAG` : Newly created DAG holding the estimated graph
 ```
 
 Part of API, exported.
 """
-function dag(dag_name::AbstractString, g::T, vars::Vector{Symbol}) where
+function dag(dag_name::AbstractString, g::T, d::DAG) where
     {T <: Graphs.SimpleGraphs.SimpleDiGraph{Int}}
     #println(g.fadjlist)
     a_tuple = Tuple{Symbol, Symbol}[]
 
     for (f, edge) in enumerate(g.fadjlist)
         for l in edge
-            push!(a_tuple, (vars[f], vars[l]))
+            push!(a_tuple, (d.v[f], d.v[l]))
         end
     end
-    dag(dag_name, a_tuple; use_chickering_order=false)
+    dag(dag_name, a_tuple; df=d.df, covm=d.covm, use_chickering_order=false)
 end
 
 """
