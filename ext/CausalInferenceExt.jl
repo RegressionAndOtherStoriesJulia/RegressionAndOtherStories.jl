@@ -144,6 +144,20 @@ function dag(dag_name::AbstractString, model::Vector{Tuple{Symbol, Symbol}};
 
 end
 
+function update_digraph(est_d::DAG, d::DAG)
+    sd = setdiff(est_d.e, d.e)
+    a_digraph = "digraph $(est_d.name) {"
+    for edge in d.e
+        if length(setdiff(est_d.e, [(edge[2], edge[1])])) !== length(est_d.e)
+            a_digraph = a_digraph * 
+                "$(edge[1]) -> $(edge[2]) [color=red, arrowhead=none];"
+        else
+            a_digraph = a_digraph * "$(edge[1]) -> $(edge[2]);"
+        end
+    end
+    a_digraph = a_digraph * "}"
+end
+
 """
 DAG constructor from an estimated (pcalg) graph.
 
@@ -175,7 +189,10 @@ function dag(dag_name::AbstractString, g::T, d::DAG) where
             push!(a_tuple, (d.v[f], d.v[l]))
         end
     end
-    dag(dag_name, a_tuple; df=d.df, covm=d.covm, use_chickering_order=false)
+
+    dnew = dag(dag_name, a_tuple; df=d.df, covm=d.covm, use_chickering_order=false)
+    dnew.d = update_digraph(dnew, d)
+    dnew
 end
 
 """

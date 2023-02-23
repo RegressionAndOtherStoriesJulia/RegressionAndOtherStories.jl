@@ -1,10 +1,11 @@
 module StanExt
 
 using RegressionAndOtherStories
+import RegressionAndOtherStories: plot_model_coef
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using StanSample) : (using ..StanSample)
 
-    function RegressionAndOtherStories.plot_model_coef(models::Vector{SampleModel},
+    function plot_model_coef(models::Vector{SampleModel},
         pars::Vector{Symbol}; fig="", title="")
 
         mnames = [models[i].name for i in 1:length(models)]

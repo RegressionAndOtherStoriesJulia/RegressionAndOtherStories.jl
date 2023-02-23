@@ -1,13 +1,14 @@
 module MakieExt
 
 using RegressionAndOtherStories
+import RegressionAndOtherStories: plot_model_coef, trankplot, plot_chains
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using Makie) : (using ..Makie)
 
-function RegressionAndOtherStories.plot_model_coef(s::Vector{NamedTuple},
+function plot_model_coef(s::Vector{NamedTuple},
     pars::Vector{Symbol}; mnames=String[], fig="", title="")
 
-    levels = length(s) * (length(pars) + 1)
+    levels = length(s) * (length(pars) + 1) + 1
     colors = [:blue, :red, :green, :darkred, :black, :grey, :darkblue, :cyan, :darkred]
     
     xmin = 0; xmax = 0.0
@@ -26,11 +27,11 @@ function RegressionAndOtherStories.plot_model_coef(s::Vector{NamedTuple},
     for j in 1:length(s)
         for i in 1:length(pars)
             l = length(String(pars[i]))
-            str = repeat(" ", 9-l) * String(pars[i])
+            str = repeat(" ", levels-l) * String(pars[i])
             append!(ylabs, [str])
         end
         l = length(mnames[j])
-        str = mnames[j] * repeat(" ", 9-l)
+        str = mnames[j] * repeat(" ", levels-l)
         append!(ylabs, [str])
     end
     
@@ -41,13 +42,13 @@ function RegressionAndOtherStories.plot_model_coef(s::Vector{NamedTuple},
     f = Figure(resolution=default_figure_resolution)
     ax = Axis(f[1, 1]; title, yticks)
     xlims!(xmin-0.1(xmax-xmin), xmax+0.1(xmax-xmin))
-    ylims!(0, 10)
+    ylims!(0, levels)
     
     line = 0
     for mindx in 1:length(s)
         line += 1
         #hlines!([line] .+ length(pars), color=:darkgrey, line=(2, :dash))
-        hlines!([line, line+1], color=:darkgrey, linewidth=2, linestyle=:dot)
+        hlines!([line + length(pars)], color=:darkgrey, linewidth=2, linestyle=:dot)
         
         for (pindx, par) in enumerate(pars)
             line += 1
@@ -66,7 +67,7 @@ function RegressionAndOtherStories.plot_model_coef(s::Vector{NamedTuple},
     (s, f)
 end
 
-function RegressionAndOtherStories.trankplot(df::DataFrame, param::AbstractString;
+function trankplot(df::DataFrame, param::AbstractString;
         bins=40, n_draws=1000, n_chains=4, n_eff=0, kwargs...)
 
     nt_args = (n_draws=n_draws, n_chains=n_chains)
@@ -101,7 +102,7 @@ function RegressionAndOtherStories.trankplot(df::DataFrame, param::AbstractStrin
     f
 end
 
-function RegressionAndOtherStories.plot_chains(df::DataFrame, pars::Vector{Symbol};
+function plot_chains(df::DataFrame, pars::Vector{Symbol};
     no_of_chains=4, no_of_draws=1000, kwargs...)
 
     dft = deepcopy(df)
