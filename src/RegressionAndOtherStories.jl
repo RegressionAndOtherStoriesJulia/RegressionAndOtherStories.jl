@@ -21,7 +21,7 @@ function __init__()
 end
 
 
-@reexport using CSV, DelimitedFiles, Unicode
+@reexport using CSV, DelimitedFiles, Unicode, Graphs, OrderedCollections
 @reexport using DataFrames, CategoricalArrays
 @reexport using NamedArrays, DataStructures, NamedTupleTools
 @reexport using Random, Distributions, StatsBase, Statistics

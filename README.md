@@ -50,7 +50,12 @@ I expect I can use ParetoSmoothedImportanceSampling.jl as is but will take anoth
 
 ## Project maintenance for Pluto notebooks
 
-In the subdirectory `src/Maintenance/reset_notebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes two changes to listed notebooks: 1. If it finds a line starting with `Pkg.activate(` it comments out that line, and 2) it removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
+In the subdirectory `src/Maintenance/reset_notebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes two changes to selected notebooks: 
+1. If it finds a line starting with `Pkg.activate` it disbales that line if `reset_activate = true`.
+2. If it finds a line starting with `#Pkg.activate` it enables that line if `set_activate = true`.
+3. It removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
+
+Using `Pkg.activate(...)` is useful if your workflow uses many different notebooks.
 
 ## Issues, comments and questions
 
@@ -60,17 +65,23 @@ Pull requests are also welcome.
 
 ## Versions
 
-### Version 9 (under development!!!)
+### Version 0.10
 
-1. Switch to extensions
-2. Added simulate function
-3. Added scale_df_cols! (scale! conflicted with Makie and other packages)
+1. Redone DAG struct.
+2. Use GraphViz with CairoMakie.
+3. switch to use CairoMakie instead of GLMakie.
+
+### Version 0.9
+
+1. Switch to extensions.
+2. Added simulate function.
+3. Added scale_df_cols! (scale! conflicted with Makie and other packages).
 4. Switching to CausalInference.jl as a replacement for StructuralCausalModels.jl.
 5. Possibly switching to either PSIS.jl or ParetoSmooth.jl as a replacement for ParetoSmoothedImportanceSampling.jl.
 6. Switched to Makie.jl and GLMakie.jl as back-end.
 7. Use of GraphViz.jl to display DAGs.
 
-### Versions 7 and 8
+### Versions 0.7 and 0.8
 
 1. Primarily following package updates.
 

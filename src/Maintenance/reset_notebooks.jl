@@ -11,10 +11,15 @@ typically before I merge the project back to Github.
 $(SIGNATURES)
 
 """
-function reset_notebook!(fname::AbstractString; display_actions=false, reset_activate=true) 
+function reset_notebook!(fname::AbstractString;
+    display_actions=false, reset_activate=true, set_activate=false) 
 
     if !isfile(fname)
         @warn "Notebook $fname does not exist!"
+    end
+
+    if reset_activate && set_activate
+        @warn "Both `reset_activate` and `set_activate` are true. No action will be taken."
     end
 
     f = open(fname)
@@ -27,12 +32,23 @@ function reset_notebook!(fname::AbstractString; display_actions=false, reset_act
 
     for i in 1:length(c)
 
-        if reset_activate
+        if reset_activate && !set_activate
             if contains(c[i], "Pkg.activate(") && !contains(c[i], "#Pkg.activate(")
                 c[i] = "#" * c[i]
                 @info "Disabled `Pkg.activate()` on line $i in $(split(fname, "/")[end])."
-            elseif contains(c[1], "#Pkg.activate(")
+            elseif contains(c[i], "#Pkg.activate(")
                 @info "`Pkg.activate()` on line $i in $(split(fname, "/")[end]) already commented out."
+            end
+        end
+
+        if set_activate && !reset_activate
+            if contains(c[i], "#Pkg.activate(")
+                if c[i][1] == '#'
+                    c[i] = c[i][2:end]
+                    @info "Enabled `Pkg.activate()` on line $i in $(split(fname, "/")[end])."
+                else
+                    @info "No `#Pkg.activate()` found in file."
+                end
             end
         end
 
@@ -81,10 +97,12 @@ $(SIGNATURES)
 See the Maintenance Pluto notebooks in the `Regresssion And Other Stories` and `Statistical Rethinking` projects.
 
 """
-function reset_selected_notebooks_in_notebooks_df!(df::DataFrame; display_actions=false, reset_activate=true)
+function reset_selected_notebooks_in_notebooks_df!(df::DataFrame;
+    display_actions=false, reset_activate=true, set_activate=false)
     for row in eachrow(df)
         if row.reset == true
-            row.done = reset_notebook!(expanduser(row.file); display_actions, reset_activate)
+            row.done = reset_notebook!(expanduser(row.file);
+                display_actions, reset_activate, set_activate)
             row.reset = false
         end
     end
