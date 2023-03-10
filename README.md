@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.9
+# RegressionAndOtherStories.jl v0.10
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
