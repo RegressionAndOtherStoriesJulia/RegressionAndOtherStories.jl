@@ -37,6 +37,7 @@ DAG(
 * `est_g_tuple_list::Union{Vector{Tuple{Int, Int}}, Nothing}` : DAG definition as vector of edges, e.g. [(:a, :b), ...]
 * `est_g_dot_repr::Union{AbstractString, Nothing}` : DAG dot representation (e.g. used for GraphViz)
 * `est_vars::Union{OrderedSet{Symbol}, Nothing}` : OrderedSet of variables in DAG
+* `p::Union{Float64, Nothing}` : p value
 * `df::Union{DataFrame, Nothing}` : Variable observations
 * `cov::Union{NamedArray, Nothing}` : Covariance matrix as NamedArray
 )
@@ -61,31 +62,35 @@ mutable struct DAG
     est_g_tuple_list::Union{Vector{Tuple{Int, Int}}, Nothing}
     est_g_dot_repr::Union{AbstractString, Nothing}
     est_vars::Union{OrderedSet{Symbol}, Nothing}
+    # p value used in testing
+    p::Union{Float64, Nothing}
     # Df used for est_g
     df::Union{DataFrame, Nothing}
     # Covariance matrix from df
     covm::Union{NamedArray, Nothing}
-
 end
 
 function create_dag(name::Union{AbstractString, Nothing}=nothing)
+
     d = isnothing(name) ?
         DAG("", 
             nothing, nothing, nothing, nothing, 
             nothing, nothing, nothing, nothing, 
-            nothing, nothing) :
+            nothing, nothing, nothing) :
         DAG(name, 
             nothing, nothing, nothing, nothing, 
             nothing, nothing, nothing, nothing, 
-            nothing, nothing)
+            nothing, nothing, nothing)
 
     return d
 end
 
-function update_dag!(d::DAG, g_dot_repr::AbstractString)
+function update_dag!(d::DAG, df::Union{DataFrame, Nothing}=nothing;
+    g_dot_repr::AbstractString)
     
     d.g_dot_repr = g_dot_repr
-    (d.g_tuple_list, d.vars) = create_tuple_list(g_dot_repr, nothing)
+    vars = isnothing(df) ? nothing : OrderedSet(Symbol.(names(df)))
+    (d.g_tuple_list, d.vars) = create_tuple_list(g_dot_repr, vars)
     d.g = DiGraph(length(d.vars))
     for (i, j) in d.g_tuple_list
         add_edge!(d.g, i, j)
@@ -94,6 +99,22 @@ function update_dag!(d::DAG, g_dot_repr::AbstractString)
     return nothing
 end
 
+function set_dag_est_g!(d::DAG, df::Union{DataFrame, Nothing}=nothing;
+    g_dot_repr::AbstractString)
+    
+    d.est_g_dot_repr = g_dot_repr
+    vars = isnothing(df) ? nothing : OrderedSet(Symbol.(names(df)))
+    (d.est_g_tuple_list, d.vars) = create_tuple_list(g_dot_repr, vars)
+    d.est_g = DiGraph(length(d.vars))
+    for (i, j) in d.g_tuple_list
+        add_edge!(d.g, i, j)
+    end
+
+    return nothing
+end
+
+function update_dag_est_g!() end
+function set_dag_est_g!() end
 function create_tuple_list() end
 function dseparation() end
 
@@ -101,5 +122,6 @@ export
     DAG,
     create_dag,
     update_dag!,
+    set_dag_est_g!,
     create_tuple_list,
     dseparation
