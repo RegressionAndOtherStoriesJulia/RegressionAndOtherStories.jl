@@ -5,18 +5,18 @@ using RegressionAndOtherStories
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using CausalInference) : (using ..CausalInference)
 
-import RegressionAndOtherStories: DAG, dseparation, create_dag, update_dag!
+import RegressionAndOtherStories: DAG, dseparation, create_dag, update_dag!, update_dag_est_g!
+import CausalInference: backdoor_criterion
 
 
 """
-Compute the estimated graph from a df
+Undate DAG components
 
 $(SIGNATURES)
 
 ### Required arguments
 ```julia
-* `name::AbstractString` : Name for the DAG object
-* `e::Vector{Tuple{Symbol, Symbol}}` : E.g. [(:a, :b), (:b, :c), (:a, :c)]
+* `d::DAG` : DAG object
 ```
 
 ### Keyword arguments
@@ -32,24 +32,31 @@ $(SIGNATURES)
 
 Part of API, exported.
 """
-function RegressionAndOtherStories.create_dag(name::AbstractString, df::DataFrame,  p=0.25;
-    g_dot_repr::Union{AbstractString, Nothing}=nothing)
+function create_dag(name::AbstractString, df::DataFrame, p=0.1;
+    g_dot_repr::Union{AbstractString, Nothing}=nothing,
+    est_func=gausscitest)
     
     d = create_dag(name)
+    d.df = df
+    d.p = p
+
     if !isnothing(g_dot_repr)
-        update_dag!(d, g_dot_repr)
+        update_dag!(d, df; g_dot_repr) # Defined in ROS
     end
-    if !isnothing(df) 
-        update_dag!(d, df, p)
-    end
+
+    update_dag_est_g!(d, df, p; est_func)
 
     d
 end
 
-
-function update_dag!(d::DAG, df::DataFrame, p=0.1)
+function update_dag_est_g!(d::DAG, df::DataFrame, p::Float64=0.1; est_func=gausscitest)
     
     d.df = df
+    d.p = p
+
+    d.est_g = CausalInference.pcalg(df, p, est_func)
+
+    # Create vars OrderedSet{Symbol}
     d.est_vars = OrderedSet{Symbol}()
     for v in Symbol.(names(df))
         if !(v in d.est_vars)
@@ -57,8 +64,6 @@ function update_dag!(d::DAG, df::DataFrame, p=0.1)
         end
     end
         
-    d.est_g = CausalInference.pcalg(df, p, gausscitest)
-
     # Create d.est_tuple_list
     d.est_g_tuple_list = Tuple{Symbol, Symbol}[]
     for (f, edge) in enumerate(d.est_g.fadjlist)
@@ -117,5 +122,35 @@ end
 
 RegressionAndOtherStories.dseparation(d::DAG, f::Symbol, l::Symbol; kwargs...) =
     RegressionAndOtherStories.dseparation(d, f, l, Symbol[]; kwargs...)
+
+"""
+Test for a backdoor, Returns true or false.
+
+$(SIGNATURES)
+
+## Required arguments
+* `d::DAG` : DAG object
+* `f::Symbol` : First symbol of path in graph
+* `l::Symbol` : Last symbol of path in graph
+
+## Optional arguments
+* `s:Vector{Symbol}` : Conditioning set of nodes
+* `kwargs` : Passed on to `dsep()`
+
+## Returns
+* `true or false`
+
+Exported
+"""
+function backdoor_criterion(d::DAG, from::Symbol, to::Symbol, s::Vector{Symbol}=Symbol[]; verbose=false)
+    f = findfirst(x -> x == from, d.vars)
+    l = findfirst(x -> x == to, d.vars)
+    cond = Int[]
+    for sym in s
+        push!(cond, findfirst(x -> x == sym, d.vars))
+    end
+
+    backdoor_criterion(d.g, f, l, cond; verbose)
+end
 
 end
