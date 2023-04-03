@@ -10,7 +10,7 @@
 
 [project-status-img]: https://img.shields.io/badge/lifecycle-experimental-orange.svg
 
-## Purpose (once completed, maybe late 2023)
+## Purpose (once completed)
 
 RegressionAndOtherStories.jl contains supporting (Julia) functions and the data files used in ["Regression and Other Stories"](https://avehtari.github.io/ROS-Examples/) by Andrew Gelham, Jennifer Hill and Aki Vehtari.
 
@@ -51,7 +51,7 @@ I expect I can use ParetoSmoothedImportanceSampling.jl as is but will take anoth
 ## Project maintenance for Pluto notebooks
 
 In the subdirectory `src/Maintenance/reset_notebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes two changes to selected notebooks: 
-1. If it finds a line starting with `Pkg.activate` it disbales that line if `reset_activate = true`.
+1. If it finds a line starting with `Pkg.activate` it disables that line if `reset_activate = true`.
 2. If it finds a line starting with `#Pkg.activate` it enables that line if `set_activate = true`.
 3. It removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
 
@@ -64,6 +64,11 @@ Please file issues, comments and questions [here](https://github.com/stanjulia/R
 Pull requests are also welcome.
 
 ## Versions
+
+### Version 0.11
+
+1. Redone working with CausalInference.jl.
+2. Added introductory CausalInference notebooks.
 
 ### Version 0.10
 
