@@ -1,6 +1,6 @@
 module GraphVizExt
 
-using CairoMakie, RegressionAndOtherStories, DocStringExtensions
+using CairoMakie, RegressionAndOtherStories, MetaGraphs, MetaGraphsNext, DocStringExtensions
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using GraphViz) : (using ..GraphViz)
 
@@ -157,6 +157,47 @@ function RegressionAndOtherStories.gvplot_est_g(d::DAG;
     elseif !isnothing(d.g_dot_repr)
         @warn "No DOT representation for est_g found in DAG."
     end
+end
+
+function is_in(v, f, l)
+    l in v[f]
+end
+
+function get_mark(g, f, l)
+    arrowtail = nothing
+    for key in keys(g.eprops)
+        if key.src == f && key.dst == l
+            arrowtail = g.eprops[key][:mark]
+            return arrowtail
+        end
+    end
+    return nothing
+end
+
+function RegressionAndOtherStories.to_gv(g::MetaDiGraph{Int64, Float64}, vars::Vector{Symbol})
+    df = DataFrame()
+    dot_str = "graph {\n"
+    for key in keys(g.eprops)
+        f = key.src
+        l = key.dst
+        dct = Dict(:arrow => :normal, :circle => :odot, :tail => :dot)
+        if f < l
+            head = get_mark(g, f, l)
+            tail = nothing
+            if is_in(g.graph.fadjlist, l, f)
+                tail = get_mark(g, l, f)
+            end
+            dot_str *= " $(vars[f]) -- $(vars[l]) [dir=both "
+            if head !== :arrow
+                dot_str *= "arrowhead=$(dct[head]) arrowtail=$(dct[tail])]\n"
+            else
+                dot_str *= "arrowtail=$(dct[tail])]\n"
+            end
+            append!(df, DataFrame(f=f, l=l, dir=:both, head=dct[head], tail=dct[tail]))
+        end
+    end
+    dot_str *= "}"
+    (df, dot_str)
 end
 
 end
