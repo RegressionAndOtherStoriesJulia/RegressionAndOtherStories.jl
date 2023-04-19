@@ -71,32 +71,34 @@ end
 
 @time est_g_2 = pcalg(df, p, cmitest)
 
-dsep(dag_1, :x, :v)
-
-dsep(dag_1, :x, :s, [:w], verbose=true)
-
-dsep(dag_1, :x, :s, [:z], verbose=true)
-
-dsep(dag_1, :x, :z, [:v, :w], verbose=true)
-
 @time dag_2 = create_dag("dag_2", df, 0.025; g_dot_str, est_func=cmitest);
 
-gvplot(dag_2)
+@testset "PC & FCI" begin
 
-dsep(dag_2, est_g_2, :x, :z, [:v, :w], verbose=true)
+    @test dsep(dag_1, :x, :v) == false
 
-backdoor_criterion(dag_1, :x, :v)
+    @test dsep(dag_1, :x, :s, [:w]) == false
 
-backdoor_criterion(dag_1, :x, :w)
+    @test dsep(dag_1, :x, :s, [:z]) == true
 
-backdoor_criterion(dag_1, dag_1.g, :x, :w)
+    @test dsep(dag_1, :x, :z, [:v, :w]) == true
 
-backdoor_criterion(dag_1, dag_1.est_g, :x, :w)
+    @test dsep(dag_2, est_g_2, :x, :z, [:v, :w]) == true
 
-backdoor_criterion(dag_1, g_oracle, :x, :v)
+    @test backdoor_criterion(dag_1, :x, :v) == true
 
-backdoor_criterion(dag_1, g_gauss, :x, :v)
+    @test backdoor_criterion(dag_1, :x, :w) == true
 
-dsep(dag_1, g_oracle, :x, :z, [:v, :w], verbose=true)
+    @test backdoor_criterion(dag_1, dag_1.g, :x, :w) == true
 
-dsep(dag_1, dag_1.g, :x, :z, [:v, :w], verbose=true)
+    @test backdoor_criterion(dag_1, dag_1.est_g, :x, :w) == false
+
+    @test backdoor_criterion(dag_1, g_oracle, :x, :v) == false
+
+    @test backdoor_criterion(dag_1, g_gauss, :x, :v) == false
+
+    @test dsep(dag_1, g_oracle, :x, :z, [:v, :w]) == false
+
+    @test dsep(dag_1, dag_1.g, :x, :z, [:v, :w]) == true
+
+end
