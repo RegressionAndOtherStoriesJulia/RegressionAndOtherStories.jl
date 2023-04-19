@@ -84,4 +84,4 @@ StanSample = "c1514b29-d3a0-5178-b312-660c88baa699"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Makie", "StanSample", "GraphViz", "CausalInference", "Test"]
+test = ["CairoMakie", "Makie", "StanSample", "GraphViz", "CausalInference", "Test"]
