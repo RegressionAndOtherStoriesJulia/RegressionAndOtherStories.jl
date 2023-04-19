@@ -1,11 +1,11 @@
 module GraphVizExt
 
-using CairoMakie, RegressionAndOtherStories, MetaGraphs, MetaGraphsNext, DocStringExtensions
+using CairoMakie, RegressionAndOtherStories, MetaGraphs, DocStringExtensions
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using GraphViz) : (using ..GraphViz)
 
 """
-Show GraphViz representation of a dot_repr.
+Show GraphViz representation of a dot_str.
 
 $(SIGNATURES)
 
@@ -39,9 +39,9 @@ function RegressionAndOtherStories.gvplot(d::DAG;
     title_g = "Generational causal graph",
     title_est_g = "Estimated causal graph")
 
-    if !isnothing(d.g_dot_repr) && !isnothing(d.est_g_dot_repr)
-        g1 = GraphViz.Graph(d.g_dot_repr)
-        g2 = GraphViz.Graph(d.est_g_dot_repr)
+    if !isnothing(d.g_dot_str) && !isnothing(d.est_g_dot_str)
+        g1 = GraphViz.Graph(d.g_dot_str)
+        g2 = GraphViz.Graph(d.est_g_dot_str)
 
         f = Figure()
         ax = Axis(f[1, 1]; aspect=DataAspect(), title=title_g)
@@ -68,9 +68,9 @@ function RegressionAndOtherStories.gvplot(d::DAG;
             ["Undirectional", "Indeterminate", "Influence"])
 
         f
-    elseif !isnothing(d.g_dot_repr)
+    elseif !isnothing(d.g_dot_str)
         gvplot_g(d; title=title_g)
-    elseif !isnothing(d.est_g_dot_repr)
+    elseif !isnothing(d.est_g_dot_str)
         gvplot_est_g(d; title=title_est_g)
     else
         @warn "No DOT representation found in DAG."
@@ -93,8 +93,8 @@ Exported
 function RegressionAndOtherStories.gvplot_g(d::DAG; 
     title="Generational causal graph")
 
-    if !isnothing(d.g_dot_repr)
-        g1 = GraphViz.Graph(d.g_dot_repr)
+    if !isnothing(d.g_dot_str)
+        g1 = GraphViz.Graph(d.g_dot_str)
         f = Figure()
         ax = Axis(f[1, 1]; aspect=DataAspect(), title)
 
@@ -113,7 +113,7 @@ function RegressionAndOtherStories.gvplot_g(d::DAG;
             ["Undirectional", "Indeterminate", "Influence"])
 
         f
-    elseif !isnothing(d.g_dot_repr)
+    elseif !isnothing(d.g_dot_str)
         @warn "No DOT representation for g found in DAG."
     end
 end
@@ -134,8 +134,8 @@ Exported
 function RegressionAndOtherStories.gvplot_est_g(d::DAG; 
     title="Estimated causal graph")
 
-    if !isnothing(d.est_g_dot_repr)
-        g1 = GraphViz.Graph(d.est_g_dot_repr)
+    if !isnothing(d.est_g_dot_str)
+        g1 = GraphViz.Graph(d.est_g_dot_str)
         f = Figure()
         ax = Axis(f[1, 1]; aspect=DataAspect(), title)
 
@@ -154,16 +154,16 @@ function RegressionAndOtherStories.gvplot_est_g(d::DAG;
             ["Undirectional", "Indeterminate", "Influence"])
         
         f
-    elseif !isnothing(d.g_dot_repr)
+    elseif !isnothing(d.g_dot_str)
         @warn "No DOT representation for est_g found in DAG."
     end
 end
 
-function is_in(v, f, l)
+function RegressionAndOtherStories.is_in(v, f, l)
     l in v[f]
 end
 
-function get_mark(g, f, l)
+function RegressionAndOtherStories.get_mark(g, f, l)
     arrowtail = nothing
     for key in keys(g.eprops)
         if key.src == f && key.dst == l
@@ -174,30 +174,32 @@ function get_mark(g, f, l)
     return nothing
 end
 
-function RegressionAndOtherStories.to_gv(g::MetaDiGraph{Int64, Float64}, vars::Vector{Symbol})
-    df = DataFrame()
+function RegressionAndOtherStories.to_gv(g::T, vars::Vector{Symbol}) where {T <: AbstractMetaGraph}
+    dct = Dict(:arrow => :normal, :circle => :odot, :tail => :dot)
     dot_str = "graph {\n"
-    for key in keys(g.eprops)
-        f = key.src
-        l = key.dst
-        dct = Dict(:arrow => :normal, :circle => :odot, :tail => :dot)
-        if f < l
-            head = get_mark(g, f, l)
-            tail = nothing
-            if is_in(g.graph.fadjlist, l, f)
+    for (f, edge) in enumerate(g.graph.fadjlist)
+        for l in edge
+            if f < l
+                head = get_mark(g, f, l)
                 tail = get_mark(g, l, f)
+                dot_str *= " $(vars[f]) -- $(vars[l]) [dir="
+                if (!isnothing(tail) && tail !== :tail) && !isnothing(head)
+                    dot_str *= "both arrowhead=$(dct[head]) arrowtail=$(dct[tail])]\n"
+                else
+                    if !isnothing(head) && (isnothing(tail) || tail == :tail)
+                        dot_str *= "forward arrowhead=$(dct[head])"
+                    elseif !isnothing(tail) && isnothing(head)
+                        dot_str *= "back arrowtail=$(dct[tail])"
+                    else
+                        dot_str *= "none"
+                    end
+                    dot_str *= "]\n"
+                end
             end
-            dot_str *= " $(vars[f]) -- $(vars[l]) [dir=both "
-            if head !== :arrow
-                dot_str *= "arrowhead=$(dct[head]) arrowtail=$(dct[tail])]\n"
-            else
-                dot_str *= "arrowtail=$(dct[tail])]\n"
-            end
-            append!(df, DataFrame(f=f, l=l, dir=:both, head=dct[head], tail=dct[tail]))
         end
     end
     dot_str *= "}"
-    (df, dot_str)
+    dot_str
 end
 
 end
