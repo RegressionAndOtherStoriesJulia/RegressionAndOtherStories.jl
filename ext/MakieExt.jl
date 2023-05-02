@@ -1,7 +1,7 @@
 module MakieExt
 
 using RegressionAndOtherStories
-import RegressionAndOtherStories: plot_model_coef, trankplot, plot_chains
+import RegressionAndOtherStories: plot_model_coef, trankplot, plot_chains, pairplot
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using Makie) : (using ..Makie)
 
@@ -166,6 +166,47 @@ function RegressionAndOtherStories.getellipsepoints(μ, Σ, confidence=0.95)
     end
 
     _getellipsepoints(cx, cy, rx, ry, θ)
+end
+
+function RegressionAndOtherStories.pairplot(df; stride=1, colormap=:thermal, 
+    resolution=default_figure_resolution)
+
+    dim = size(df,2) # how many colums there are in the dataframe
+    idxs = 1:stride:size(df,1)
+    colorant = range(0, 1, length=length(idxs))
+    tv = names(df)
+
+    pp_theme = Attributes(
+        Axis = (
+            aspect = 1,
+            topspinevisible = false,
+            rightspinevisible = false
+        ),
+        Scatter = (
+            colormap = colormap, # try :thermal, :darkrainbow
+            markersize = 10
+        )
+    )
+
+    f = with_theme(pp_theme) do
+        f = Figure(resolution=resolution)
+
+        for i in 1:dim, j in 1:dim
+
+            ax = Axis(f[i, j]; title = "$(tv[i]) ~ $(tv[j])")
+            scatter!(df[idxs,j], df[idxs,i], color = colorant)
+
+            if i==dim
+                ax.xticklabelsvisible = true
+                ax.xlabel = names(df)[j]
+            end
+            if j==1
+                ax.yticklabelsvisible = true
+                ax.ylabel = names(df)[i]
+            end
+        end
+        f
+    end
 end
 
 end
