@@ -5,8 +5,8 @@ using RegressionAndOtherStories
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using CausalInference) : (using ..CausalInference)
 
-import RegressionAndOtherStories: DAG, dseparation, backdoor, 
-    create_dag, update_dag!, update_dag_est_g!
+import RegressionAndOtherStories: DAG, create_dag, update_dag!, update_dag_est_g!,
+    skeleton_graph, all_paths
 import CausalInference: dsep, backdoor_criterion
 
 """
@@ -167,6 +167,90 @@ function backdoor_criterion(d::DAG, g::AbstractGraph, from::Symbol, to::Symbol, 
     end
 
     backdoor_criterion(g, f, l, cond; verbose)
+end
+
+function skeleton_graph(d::DAG)
+    if !isnothing(d.g)
+        fadjlist = copy(d.g.fadjlist)
+        for (f, edge) in enumerate(fadjlist)
+            for l in edge
+                if !(f in fadjlist[l])
+                    append!(fadjlist[l], f)
+                end
+            end
+        end
+    end
+    g = Graph(length(fadjlist))
+    for (f, entry) in enumerate(fadjlist)
+        for l in entry
+            add_edge!(g, f, l)
+        end
+    end
+    g
+end
+
+function all_paths(d::DAG, f::Symbol, l::Symbol; debug=false)
+    df = DataFrame()
+    paths = Vector{Int}[]
+    gs = skeleton_graph(d)
+    nb_dict = Dict()
+    for i in 1:6
+        nb_dict[i] = neighbors(gs, i)
+    end
+    debug && println(nb_dict)
+    debug && println(gs.fadjlist)
+    fn = filter(i -> d.vars[i] == f, 1:length(d.vars))[1]
+    ln = filter(i -> d.vars[i] == l, 1:length(d.vars))[1]
+    stack = Path[]
+    nb = deepcopy(nb_dict[fn])
+    setdiff!(nb, [ln])
+    debug && println(nb)
+    for n in nb
+        p = Path(fn, ln, [], [fn], fn)
+        nn = p.next_node
+        p_tmp = deepcopy(p)
+        push!(p_tmp.path, nn)
+        p_tmp.next_node = n
+        if n == ln
+            push!(p_tmp.path, ln)
+            append!(paths, [p_tmp.path])
+        else
+            push!(stack, p_tmp)
+        end
+    end
+    
+    while !isempty(stack)
+        debug && println()
+        debug && println("$stack\n")
+        p = pop!(stack)
+        debug && println(p)
+        nn = p.next_node
+        push!(p.visited, nn)
+        debug && println("has_a_path([$nn], [$(p.l)], $(p.visited)) = $(has_a_path(gs, [nn], [p.l], p.visited))")
+        if has_a_path(gs, [nn], [p.l], p.visited)
+            nb = deepcopy(nb_dict[nn])
+            debug && println("\nNext = $nn, visited=$(p.visited), nb=$(nb))")
+            setdiff!(nb, p.visited)
+            debug && println(nb)
+            for n in nb
+                p_tmp = deepcopy(p)
+                push!(p_tmp.path, nn)
+                p_tmp.next_node = n
+                if n == ln
+                    push!(p_tmp.path, ln)
+                    append!(paths, [p_tmp.path])
+                else
+                    push!(stack, p_tmp)
+                end
+            end
+        end
+    end
+    sym_paths = Vector{Symbol}[]
+    for p in paths
+        sp = [d.vars[i] for i in p]
+        append!(sym_paths, [sp])
+    end
+    sym_paths
 end
 
 end

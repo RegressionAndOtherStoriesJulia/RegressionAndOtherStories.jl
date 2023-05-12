@@ -69,6 +69,15 @@ mutable struct DAG
     covm::Union{NamedArray, Nothing}
 end
 
+mutable struct Path
+  f::Int
+  l::Int
+  path::Vector{Int}
+  visited::Vector{Int}
+  next_node::Int
+end
+
+
 function create_dag(name::Union{AbstractString, Nothing}=nothing)
 
     d = isnothing(name) ?
@@ -115,15 +124,16 @@ end
 function update_dag_est_g!() end
 function set_dag_est_g!() end
 function create_tuple_list() end
-function dseparation() end
-function backdoor() end
+function skeleton_graph() end
+function all_paths() end
 
 export
     DAG,
+    Path,
     create_dag,
     update_dag!,
     set_dag_est_g!,
     create_tuple_list,
-    dseparation,
-    backdoor
+    skeleton_graph,
+    all_paths
     
