@@ -121,6 +121,52 @@ function set_dag_est_g!(d::DAG, df::Union{DataFrame, Nothing}=nothing;
     return nothing
 end
 
+mutable struct PCDAG
+    name::Union{AbstractString, Nothing}
+    
+    # Assumed DAG
+    g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}
+    g_tuple_list::Vector{Tuple{Int, Int}}
+    g_dot_str::AbstractString
+    vars::Vector{Symbol}
+    
+    #Estimated PCDAG
+    est_g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}
+    est_g_tuple_list::Vector{Tuple{Symbol, Symbol}}
+    est_g_dot_str::AbstractString
+    
+    # p value used in testing
+    p::Float64
+    # Df used for est_g
+    df::DataFrame
+    # Covariance matrix from df
+    covm::NamedArray
+end
+
+
+mutable struct FCIDAG
+    name::AbstractString
+    
+    # Assumed DAG
+    g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}
+    g_tuple_list::Vector{Tuple{Int, Int}}
+    g_dot_str::AbstractString
+    vars::Vector{Symbol}
+    
+    #Estimated FCIDAG
+    est_g::MetaGraphs.MetaDiGraph{Int64, Float64}
+    est_g_dot_str::Union{AbstractString, Nothing}
+    
+    # p value used in testing
+    p::Float64
+    # Df used for est_g
+    df::DataFrame
+    # Covariance matrix from df
+    covm::NamedArray
+end
+
+function create_pc_dag() end
+function create_fci_dag() end
 function update_dag_est_g!() end
 function set_dag_est_g!() end
 function create_tuple_list() end
@@ -129,6 +175,10 @@ function all_paths() end
 
 export
     DAG,
+    PCDAG,
+    FCIDAG,
+    create_pc_dag,
+    create_fci_dag,
     Path,
     create_dag,
     update_dag!,

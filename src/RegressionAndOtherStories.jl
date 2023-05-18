@@ -26,6 +26,7 @@ end
 @reexport using NamedArrays, DataStructures, NamedTupleTools
 @reexport using Random, Distributions, StatsBase, Statistics
 @reexport using KernelDensity, LinearAlgebra, LaTeXStrings, Dates
+@reexport using Graphs, MetaGraphs
 
 using DocStringExtensions: FIELDS, SIGNATURES, TYPEDEF
 

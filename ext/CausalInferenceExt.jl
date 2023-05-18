@@ -6,8 +6,73 @@ using RegressionAndOtherStories
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using CausalInference) : (using ..CausalInference)
 
 import RegressionAndOtherStories: DAG, create_dag, update_dag!, update_dag_est_g!,
-    skeleton_graph, all_paths
+    skeleton_graph, all_paths, PCDAG, create_pc_dag, FCIDAG, create_fci_dag
+
 import CausalInference: dsep, backdoor_criterion
+
+function create_pc_dag(name::AbstractString, df::DataFrame,
+    g_dot_str::AbstractString, p=0.1; est_func=gausscitest)
+
+    vars = Vector(Symbol.(names(df)))
+    (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
+    g = DiGraph(length(vars))
+    for (i, j) in g_tuple_list
+        add_edge!(g, i, j)
+    end
+        
+    est_g = CausalInference.pcalg(df, p, est_func)
+
+    # Create d.est_tuple_list
+    est_g_tuple_list = Tuple{Symbol, Symbol}[]
+    for (f, edge) in enumerate(est_g.fadjlist)
+        for l in edge
+            push!(est_g_tuple_list, (vars[f], vars[l]))
+        end
+    end
+
+    # Create d.est_g_dot_str
+    est_g_dot_str = "digraph est_g_$(name) {"
+    for e in g_tuple_list
+        f = vars[e[1]]
+        l = vars[e[2]]
+        if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !==
+            length(est_g_tuple_list)
+            
+            est_g_dot_str = est_g_dot_str * "$(f) -> $(l) [color=red, arrowhead=none];"
+        else
+            est_g_dot_str = est_g_dot_str * "$(f) -> $(l);"
+        end
+    end
+    est_g_dot_str = est_g_dot_str * "}"
+
+    # Compute est_g and covariance matrix (as NamedArray)
+    covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
+
+    return PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
+        est_g_dot_str, p, df, covm)
+
+end
+
+function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p=0.1;
+    est_func=dseporacle)
+    
+    vars = isnothing(df) ? nothing : Vector(Symbol.(names(df)))
+    (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
+    g = DiGraph(length(vars))
+    for (i, j) in g_tuple_list
+        add_edge!(g, i, j)
+    end
+
+    est_g = fcialg(nv(g), est_func, g)
+    est_g_dot_str = to_gv(est_g, vars)
+
+    # Compute est_g and covariance matrix (as NamedArray)
+    covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
+
+    # Create and return the FCIDAG
+    return FCIDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_dot_str, p, df, covm)
+end
+
 
 """
 Undate DAG components

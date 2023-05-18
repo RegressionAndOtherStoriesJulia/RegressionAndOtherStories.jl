@@ -4,6 +4,8 @@ using CairoMakie, RegressionAndOtherStories, MetaGraphs, DocStringExtensions
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using GraphViz) : (using ..GraphViz)
 
+import RegressionAndOtherStories: create_png_image, gvplot
+
 """
 Show GraphViz representation of a dot_str.
 
@@ -16,7 +18,7 @@ Exported
 """
 RegressionAndOtherStories.gvplot(d::AbstractString) = GraphViz.load(IOBuffer(d))
 
-function RegressionAndOtherStories.create_png_image(g::T) where {T <: GraphViz.Graph}
+function create_png_image(g::T) where {T <: GraphViz.Graph}
     tmpdir = mktempdir()
     tb_g = open(joinpath(tmpdir, "dot_g.png"), "w")
     show(tb_g, MIME"image/png"(), g)
@@ -35,7 +37,7 @@ $(SIGNATURES)
 
 Exported
 """
-function RegressionAndOtherStories.gvplot(d::DAG; 
+function gvplot(d::DAG; 
     title_g = "Generational causal graph",
     title_est_g = "Estimated causal graph")
 
@@ -76,6 +78,56 @@ function RegressionAndOtherStories.gvplot(d::DAG;
         @warn "No DOT representation found in DAG."
     end
 end
+
+function RegressionAndOtherStories.gvplot(d::PCDAG; 
+    title_g = "Generational causal graph",
+    title_est_g = "PC estimated causal graph")
+
+    g1 = GraphViz.Graph(d.g_dot_str)
+    g2 = GraphViz.Graph(d.est_g_dot_str)
+
+    f = Figure(resolution=default_figure_resolution)
+
+    # g
+    ax = Axis(f[1, 1]; aspect=DataAspect(), title=title_g)
+    CairoMakie.image!(rotr90(create_png_image(g1)))
+    hidedecorations!(ax)
+    hidespines!(ax)
+
+    # Est_g
+    title = isnothing(d.p) ? title_est_g : title_est_g * " (p = $(round(d.p, digits=3)))"
+    ax = Axis(f[1, 2]; aspect=DataAspect(), title)
+    Makie.image!(rotr90(create_png_image(g2)))
+    hidedecorations!(ax)
+    hidespines!(ax)
+
+    f
+end
+
+function gvplot(d::FCIDAG;
+    title_g = "Generational causal graph",
+    title_est_g = "FCI estimated causal graph")
+
+    g1 = GraphViz.Graph(d.g_dot_str)
+    g2 = GraphViz.Graph(d.est_g_dot_str)
+    
+    f = Figure(resolution=default_figure_resolution)
+
+    # g
+    ax = Axis(f[1, 1]; aspect=DataAspect(), title=title_g)
+    CairoMakie.image!(rotr90(create_png_image(g1)))
+    hidedecorations!(ax)
+    hidespines!(ax)
+
+    # est_g
+    ax = Axis(f[1, 2]; aspect=DataAspect(), title=title_est_g)
+    CairoMakie.image!(rotr90(create_png_image(g2)))
+    hidedecorations!(ax)
+    hidespines!(ax)
+    
+    f
+end
+
 
 """
 Show GraphViz representation of the DAG.g.
