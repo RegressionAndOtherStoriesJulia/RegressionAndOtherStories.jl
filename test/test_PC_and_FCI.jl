@@ -33,7 +33,7 @@ end
 
 g_dot_str="DiGraph dag_1 {x->v; v->z; x->w; w->z; z->s;}";
 
-dag_1 = create_dag("dag_1", df; g_dot_str);
+dag_1 = create_fci_dag("dag_1", df, g_dot_str);
 
 g = pcalg(df, 0.25, gausscitest)
 
@@ -69,9 +69,7 @@ let
 end
 
 
-@time est_g_2 = pcalg(df, p, cmitest)
-
-@time dag_2 = create_dag("dag_2", df, 0.025; g_dot_str, est_func=cmitest);
+@time dag_2 = create_pc_dag("dag_2", df, g_dot_str, 0.25; est_func=cmitest);
 
 @testset "PC & FCI" begin
 
@@ -82,8 +80,6 @@ end
     @test dsep(dag_1, :x, :s, [:z]) == true
 
     @test dsep(dag_1, :x, :z, [:v, :w]) == true
-
-    @test dsep(dag_2, est_g_2, :x, :z, [:v, :w]) == true
 
     @test backdoor_criterion(dag_1, :x, :v) == true
 

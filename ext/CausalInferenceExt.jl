@@ -5,42 +5,41 @@ using RegressionAndOtherStories
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using CausalInference) : (using ..CausalInference)
 
-import RegressionAndOtherStories: DAG, create_dag, update_dag!, update_dag_est_g!,
-    skeleton_graph, all_paths, PCDAG, create_pc_dag, FCIDAG, create_fci_dag
+import RegressionAndOtherStories: AbstractDAG, PCDAG, create_pc_dag, FCIDAG, create_fci_dag,
+    skeleton_graph, all_paths 
 
-import CausalInference: dsep, backdoor_criterion
+import CausalInference: dsep, backdoor_criterion, is_collider
 
-function create_pc_dag(name::AbstractString, df::DataFrame,
-    g_dot_str::AbstractString, p=0.1; est_func=gausscitest)
+function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p::Float64=0.1; est_func=gausscitest)
 
-    vars = Vector(Symbol.(names(df)))
+    g_dot_str = g_dot_str
+    vars = Symbol.(names(df))
     (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
         add_edge!(g, i, j)
     end
-        
+    
     est_g = CausalInference.pcalg(df, p, est_func)
 
     # Create d.est_tuple_list
-    est_g_tuple_list = Tuple{Symbol, Symbol}[]
+    est_g_tuple_list = Tuple{Int, Int}[]
     for (f, edge) in enumerate(est_g.fadjlist)
         for l in edge
-            push!(est_g_tuple_list, (vars[f], vars[l]))
+            push!(est_g_tuple_list, (f, l))
         end
     end
-
+    
     # Create d.est_g_dot_str
     est_g_dot_str = "digraph est_g_$(name) {"
     for e in g_tuple_list
-        f = vars[e[1]]
-        l = vars[e[2]]
-        if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !==
-            length(est_g_tuple_list)
-            
-            est_g_dot_str = est_g_dot_str * "$(f) -> $(l) [color=red, arrowhead=none];"
+        f = e[1]
+        l = e[2]
+        if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
+
+           est_g_dot_str = est_g_dot_str * "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
         else
-            est_g_dot_str = est_g_dot_str * "$(f) -> $(l);"
+            est_g_dot_str = est_g_dot_str * "$(vars[f]) -> $(vars[l]);"
         end
     end
     est_g_dot_str = est_g_dot_str * "}"
@@ -50,13 +49,12 @@ function create_pc_dag(name::AbstractString, df::DataFrame,
 
     return PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
         est_g_dot_str, p, df, covm)
-
 end
 
 function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p=0.1;
     est_func=dseporacle)
     
-    vars = isnothing(df) ? nothing : Vector(Symbol.(names(df)))
+    vars = Symbol.(names(df))
     (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
@@ -71,91 +69,6 @@ function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::Abstract
 
     # Create and return the FCIDAG
     return FCIDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_dot_str, p, df, covm)
-end
-
-
-"""
-Undate DAG components
-
-$(SIGNATURES)
-
-### Required arguments
-```julia
-* `d::DAG` : DAG object
-```
-
-### Keyword arguments
-```julia
-* `df::DataFrame` : DataFrame with observations
-* `covm::NamedArray` : Covariance matrix of observations
-```
-
-### Returns
-```julia
-* `dag::DAG` : Newly created DAG
-```
-
-Part of API, exported.
-"""
-function create_dag(name::AbstractString, df::DataFrame, p=0.1;
-    g_dot_str::Union{AbstractString, Nothing}=nothing,
-    est_func=gausscitest)
-    
-    d = create_dag(name)
-    d.df = df
-    d.p = p
-
-    if !isnothing(g_dot_str)
-        update_dag!(d, df; g_dot_str) # Defined in ROS
-    end
-
-    update_dag_est_g!(d, df, p; est_func)
-
-    d
-end
-
-function update_dag_est_g!(d::DAG, df::DataFrame, p::Float64=0.1; est_func=gausscitest)
-    
-    d.df = df
-    d.p = p
-
-    d.est_g = CausalInference.pcalg(df, p, est_func)
-
-    # Create vars Vector{Symbol}
-    d.est_vars = Vector{Symbol}()
-    for v in Symbol.(names(df))
-        if !(v in d.est_vars)
-            push!(d.est_vars, v)
-        end
-    end
-        
-    # Create d.est_tuple_list
-    d.est_g_tuple_list = Tuple{Symbol, Symbol}[]
-    for (f, edge) in enumerate(d.est_g.fadjlist)
-        for l in edge
-            push!(d.est_g_tuple_list, (f, l))
-        end
-    end
-    
-    # Create d.est_g_dot_str
-    d.est_g_dot_str = "digraph est_g_$(d.name) {"
-    for e in d.g_tuple_list
-        f = d.est_vars[e[1]]
-        l = d.est_vars[e[2]]
-        if length(setdiff(d.est_g_tuple_list, [(e[2], e[1])])) !==
-            length(d.est_g_tuple_list)
-            
-            d.est_g_dot_str = d.est_g_dot_str * "$(f) -> $(l) [color=red, arrowhead=none];"
-        else
-            d.est_g_dot_str = d.est_g_dot_str * "$(f) -> $(l);"
-        end
-    end
-    d.est_g_dot_str = d.est_g_dot_str * "}"
-
-    # Compute est_g and covariance matrix (as NamedArray)
-    d.covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
-
-    return nothing
 end
 
 """
@@ -177,7 +90,7 @@ $(SIGNATURES)
 
 Exported
 """
-function dsep(d::DAG, f::Symbol, l::Symbol, s::Vector{Symbol}=Symbol[]; kwargs...)
+function dsep(d::AbstractDAG, f::Symbol, l::Symbol, s::Vector{Symbol}=Symbol[]; kwargs...)
     cond = Int[]
     for sym in s
         push!(cond, findfirst(x -> x == sym, d.vars))
@@ -185,7 +98,7 @@ function dsep(d::DAG, f::Symbol, l::Symbol, s::Vector{Symbol}=Symbol[]; kwargs..
     dsep(d.g, findfirst(x -> x == f, d.vars), findfirst(x -> x == l, d.vars), cond; kwargs...)
 end
 
-function dsep(d::DAG, g::AbstractGraph, f::Symbol, l::Symbol, s::Vector{Symbol}=Symbol[]; kwargs...)
+function dsep(d::AbstractDAG, g::AbstractGraph, f::Symbol, l::Symbol, s::Vector{Symbol}=Symbol[]; kwargs...)
     cond = Int[]
     for sym in s
         push!(cond, findfirst(x -> x == sym, d.vars))
@@ -212,7 +125,9 @@ $(SIGNATURES)
 
 Exported
 """
-function backdoor_criterion(d::DAG, from::Symbol, to::Symbol, s::Vector{Symbol}=Symbol[]; verbose=false)
+function backdoor_criterion(d::AbstractDAG, from::Symbol, to::Symbol, s::Vector{Symbol}=Symbol[];
+    verbose=false)
+
     f = findfirst(x -> x == from, d.vars)
     l = findfirst(x -> x == to, d.vars)
     cond = Int[]
@@ -223,7 +138,9 @@ function backdoor_criterion(d::DAG, from::Symbol, to::Symbol, s::Vector{Symbol}=
     backdoor_criterion(d.g, f, l, cond; verbose)
 end
 
-function backdoor_criterion(d::DAG, g::AbstractGraph, from::Symbol, to::Symbol, s::Vector{Symbol}=Symbol[]; verbose=false)
+function backdoor_criterion(d::AbstractDAG, g::AbstractGraph, from::Symbol, to::Symbol,
+    s::Vector{Symbol}=Symbol[]; verbose=false)
+
     f = findfirst(x -> x == from, d.vars)
     l = findfirst(x -> x == to, d.vars)
     cond = Int[]
@@ -234,7 +151,15 @@ function backdoor_criterion(d::DAG, g::AbstractGraph, from::Symbol, to::Symbol, 
     backdoor_criterion(g, f, l, cond; verbose)
 end
 
-function skeleton_graph(d::DAG)
+function is_collider(d::AbstractDAG, f::Symbol, m::Symbol, l::Symbol; verbose=false)
+
+    f = findfirst(x -> x == f, d.vars)
+    m = findfirst(x -> x == m, d.vars)
+    l = findfirst(x -> x == l, d.vars)
+    is_collider(d.est_g, f, m, l)
+end
+   
+function skeleton_graph(d::AbstractDAG)
     if !isnothing(d.g)
         fadjlist = copy(d.g.fadjlist)
         for (f, edge) in enumerate(fadjlist)
@@ -254,12 +179,12 @@ function skeleton_graph(d::DAG)
     g
 end
 
-function all_paths(d::DAG, f::Symbol, l::Symbol; debug=false)
+function all_paths(d::AbstractDAG, f::Symbol, l::Symbol; debug=false)
     df = DataFrame()
     paths = Vector{Int}[]
     gs = skeleton_graph(d)
     nb_dict = Dict()
-    for i in 1:6
+    for i in 1:nv(d.g)
         nb_dict[i] = neighbors(gs, i)
     end
     debug && println(nb_dict)
