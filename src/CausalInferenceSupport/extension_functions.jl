@@ -31,30 +31,22 @@ mutable struct Path
 end
 
 """
-Directed acyclic graph struct
-
-$(SIGNATURES)
+Directed acyclic graph struct to hold PC algorithm output
 
 ### Mutable struct
 ```julia
 DAG(
-* `name::Union{AbstractString, Nothing}` : Name for the DAG object
-* `g::Union{Graphs.SimpleGraphs.SimpleDiGraph{Int64}, Nothing}` : CausalInference.DiGraph
-* `g_tuple_list::Union{Vector{Tuple{Int, Int}}, Nothing}` : DAG definition as vector of edges, e.g. [(:a, :b), ...]
-* `g_dot_str::Union{AbstractString, Nothing}` : DAG dot representation (e.g. used for GraphViz)
-* `vars::Union{Vector{Symbol}, Nothing}` : Variables in initial DAG
-* `est_g::Union{Graphs.SimpleGraphs.SimpleDiGraph{Int64}, Nothing}` : CausalInference.DiGraph
-* `est_g_tuple_list::Union{Vector{Tuple{Int, Int}}, Nothing}` : DAG definition as vector of edges, e.g. [(:a, :b), ...]
-* `est_g_dot_str::Union{AbstractString, Nothing}` : DAG dot representation (e.g. used for GraphViz)
-* `est_vars::Union{Vector{Symbol}, Nothing}` : Variables in PC estimated DAG
-* `df::Union{DataFrame, Nothing}` : Variable observations
-* `cov::Union{NamedArray, Nothing}` : Covariance matrix as NamedArray
+* `name::AbstractString` : Name for the DAG object
+* `g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}` : CausalInference.DiGraph
+* `g_tuple_list::Vector{Tuple{Int, Int}}` : DAG definition as vector of edges, e.g. [(:a, :b), ...]
+* `g_dot_str::AbstractString` : DAG dot representation (e.g. used for GraphViz)
+* `vars::Vector{Symbol}` : Variables in initial DAG
+* `est_g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}` : CausalInference.DiGraph
+* `est_g_tuple_list::Vector{Tuple{Int, Int}}` : DAG definition as vector of edges, e.g. [(:a, :b), ...]
+* `est_g_dot_str::AbstractString` : DAG dot representation (e.g. used for GraphViz)
+* `df::DataFrame` : Variable observations
+* `cov::NamedArray` : Covariance matrix as NamedArray
 )
-```
-
-### Constructor
-```julia
-* `dag(name::Union{AbstractString, Nothing})` : Create a dummy DAG object
 ```
 
 Part of API, exported.
@@ -82,6 +74,27 @@ mutable struct PCDAG <: AbstractDAG
 end
 
 
+"""
+Directed acyclic graph struct to hold FCI algorithm output
+
+### Mutable struct
+```julia
+DAG(
+* `name::AbstractString` : Name for the DAG object
+* `g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}` : CausalInference.DiGraph
+* `g_tuple_list::Vector{Tuple{Int, Int}}` : DAG definition as vector of edges, e.g. [(:a, :b), ...]
+* `g_dot_str::AbstractString` : DAG dot representation (e.g. used for GraphViz)
+* `vars::Vector{Symbol}` : Variables in initial DAG
+* `est_g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}` : CausalInference.DiGraph
+* `est_g_tuple_list::Vector{Tuple{Int, Int}}` : DAG definition as vector of edges, e.g. [(:a, :b), ...]
+* `est_g_dot_str::AbstractString` : DAG dot representation (e.g. used for GraphViz)
+* `df::DataFrame` : Variable observations
+* `cov::NamedArray` : Covariance matrix as NamedArray
+)
+```
+
+Part of API, exported.
+"""
 mutable struct FCIDAG <: AbstractDAG
     name::AbstractString
     

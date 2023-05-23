@@ -10,7 +10,27 @@ import RegressionAndOtherStories: AbstractDAG, PCDAG, create_pc_dag, FCIDAG, cre
 
 import CausalInference: dsep, backdoor_criterion, is_collider
 
-function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p::Float64=0.1; est_func=gausscitest)
+"""
+Create a PCDAG object.
+
+$(SIGNATURES)
+
+## Required arguments
+* `name::AbstractString` : A name for the PCDAG
+* `df::DataFrame` : DataFrame with observations
+* `g_dot_str::AbstractString` : Represents in most PCDAGs the assumed generational model
+* `p::Float74` : p-value used in independence tests
+
+## Optional keyword arguments
+* `est_func=gausscitest` : Function used to compute PCDAG
+
+## Returns
+* `PCDAG` : See ?PCDAG
+
+Part of the API, exported.
+"""
+function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString,
+    p::Float64=0.1; est_func=gausscitest)
 
     g_dot_str = g_dot_str
     vars = Symbol.(names(df))
@@ -51,6 +71,25 @@ function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractS
         est_g_dot_str, p, df, covm)
 end
 
+"""
+Create a FCIDAG object.
+
+$(SIGNATURES)
+
+## Required arguments
+* `name::AbstractString` : A name for the FCIDAG
+* `df::DataFrame` : DataFrame with observations
+* `g_dot_str::AbstractString` : Represents in most FCIDAGs the assumed generational model
+* `p::Float74` : p-value used in independence tests
+
+## Optional keyword arguments
+* `est_func=dseporacle` : Function used to compute FCIDAG
+
+## Returns
+* `PCDAG` : See ?PCDAG
+
+Part of the API, exported.
+"""
 function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p=0.1;
     est_func=dseporacle)
     
@@ -77,7 +116,7 @@ Test for d-separation, Returns true or false.
 $(SIGNATURES)
 
 ## Required arguments
-* `d::DAG` : DAG object
+* `d::AbstractDAG` : AbstractDAG object
 * `f::Symbol` : First symbol of path in graph
 * `l::Symbol` : Last symbol of path in graph
 
