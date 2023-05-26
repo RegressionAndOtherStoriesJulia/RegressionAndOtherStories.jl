@@ -1,4 +1,4 @@
-# RegressionAndOtherStories.jl v0.10
+# RegressionAndOtherStories.jl v0.13
 
 | **Project Status**          |  **Build Status** |
 |:---------------------------:|:-----------------:|
@@ -20,16 +20,16 @@ The package is also used in project SR2StanPluto.jl v9+, a revised inplementatio
 
 The **supporting functions** are intended to be used in (currently) 3 Julia projects (also under development), [ROSStanPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSStanPluto.jl), [ROSTuringPluto.jl](https://github.com/RegressionAndOtherStoriesJulia/ROSTuringPluto.jl) and [SR2StanPluto](https://xcelab.net/rm/statistical-rethinking/).
 
-All **data files** are in `.csv` format and located in the `data` directory.
+All currently available **data files** are in `.csv` format and located in the `data` directory.
 
-If RegressionAndOtherStories.jl is loaded, the files can be read in as a DataFrame using:
+If RegressionAndOtherStories.jl is loaded, the files can be read in as a DataFrame using e.g.:
 ```
 hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
 ```
 
 For that purpose `ros_datadir()` is exported.
 
-If needed, Stata files (`.dat`) have been converted to `.csv` files using the scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package [ROS-Examples](https://github.com/avehtari/ROS-Examples) RegressionAndOtherStories.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
+If needed, Stata files (`.dat`) have been converted to `.csv` files as is illustrated by a few scripts in the `scripts` directory, e.g. see `scripts\hdi.jl`. To access the Stata files in the R package [ROS-Examples](https://github.com/avehtari/ROS-Examples) RegressionAndOtherStories.jl expects the environment variable `JULIA_ROS_HOME` to be defined, e.g.:
 ```
 ENV["JULIA_ROS_HOME"] = expanduser("~/Projects/R/ROS-Examples")
 ```
@@ -42,17 +42,18 @@ If so desired, direct use of the Stata files is also possible as the Stata to .c
 
 RegressionAndOtherStories.jl v9+ is using Julia's package extension option. In particular Turing, Stan, Makie, GraphViz and CausalInference, if needed, are included as extensions.
 
-Over time I might minimize the use of AlgebraOfGraphics.jl. It is a nice package but also a bit more difficult to tailor (compared to Makie/GLMakie).
-
-In working on this I will move over (and likely update) several important functions from StatisticalRethinking.jl as well, e.g. `link()`.
+Over time I might minimize the use of AlgebraOfGraphics.jl. It is a nice package but also a bit more difficult to tailor (compared to Makie/CairoMakie).
 
 I expect I can use ParetoSmoothedImportanceSampling.jl as is but will take another look at PSIS.jl and ParetoSmooth.jl when revising the relevant chapters.
 
 ## Project maintenance for Pluto notebooks
 
-In the subdirectory `src/Maintenance/reset_notebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes two changes to selected notebooks: 
+In the subdirectory `src/Maintenance/reset_notebooks.jl` is a function I use in the Pluto notebook projects (SR2StanPluto, ROSStanPluto, etc.). The function potentially makes three changes to selected notebooks: 
+
 1. If it finds a line starting with `Pkg.activate` it disables that line if `reset_activate = true`.
+
 2. If it finds a line starting with `#Pkg.activate` it enables that line if `set_activate = true`.
+
 3. It removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
 
 Using `Pkg.activate(...)` is useful if your workflow uses many different notebooks.
@@ -64,6 +65,10 @@ Please file issues, comments and questions [here](https://github.com/stanjulia/R
 Pull requests are also welcome.
 
 ## Versions
+
+### Versions 0.12 and 0.13
+
+1. Switching to PCDAG and FCIDAG when using CausalInference.jl.
 
 ### Version 0.11
 
