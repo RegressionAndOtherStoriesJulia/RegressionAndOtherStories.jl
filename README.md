@@ -56,7 +56,7 @@ In the subdirectory `src/Maintenance/reset_notebooks.jl` is a function I use in 
 
 3. It removes the Project and Manifest sections of all notebooks selected for reset. See the maintenance notebooks in projects such as SR2StanPluto and ROSStanPluto.
 
-Using `Pkg.activate(...)` is useful if your workflow uses many different notebooks.
+Using `Pkg.activate(...)` is useful if your workflow uses many different notebooks. E.g., in my workflow I `] up` the project `SR2StanPluto` in the REPL before I start opening individual notebooks in Pluto. 
 
 ## Issues, comments and questions
 
