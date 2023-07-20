@@ -6,7 +6,7 @@ $(SIGNATURES)
 
 ## Positional arguments
 ```julia
-* `x::AbstractVectir` # DataFrame holding the draws
+* `x::AbstractVector` # DataFrame holding the draws
 * `n::Int` # Number of bins
 * `rng::AbstractRNG=Random.default_rng()` # Random number generator
 ```
