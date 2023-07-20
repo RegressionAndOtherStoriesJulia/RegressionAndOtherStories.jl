@@ -2,7 +2,7 @@
 
 This function provides:
 
-1. Reset a Pluto notebook by removing Project and Manefest sections. This will
+1. Reset a Pluto notebook by removing Project and Manifest sections. This will
 ensure the latest version of packages will be used.
 2. During development work on projects and packages I often use `Pkg.activate()` and work
 in a project environment to have updates installed. This function comments out such a line,
@@ -86,7 +86,7 @@ end
 
 This function provides:
 
-1. Reset selected Pluto notebooks by removing Project and Manefest sections. This will
+1. Reset selected Pluto notebooks by removing Project and Manifest sections. This will
 ensure the latest version of packages will be used.
 2. During development work on projects and packages I often use `Pkg.activate()` and work
 in a project environment to have updates installed. This function comments out such a line,
@@ -94,7 +94,7 @@ typically before I merge the project back to Github.
 
 $(SIGNATURES)
 
-See the Maintenance Pluto notebooks in the `Regresssion And Other Stories` and `Statistical Rethinking` projects.
+See the Maintenance Pluto notebooks in the `Regression And Other Stories` and `Statistical Rethinking` projects.
 
 """
 function reset_selected_notebooks_in_notebooks_df!(df::DataFrame;
