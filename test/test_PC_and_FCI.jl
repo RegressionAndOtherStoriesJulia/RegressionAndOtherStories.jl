@@ -4,6 +4,7 @@ begin
     using GraphViz
     using Graphs
     using MetaGraphs
+    using Test
 
     # DAG support
     using CausalInference
@@ -25,7 +26,7 @@ let
     z = v + w + rand(N) * 0.25
     s = z + rand(N) * 0.25
 
-    global X = [x v w z s]
+    #global nt = (x=x, v=v, w=w, z=z, s=s)
     global df = DataFrame(x=x, v=v, w=w, z=z, s=s)
     global covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
     df
@@ -33,13 +34,20 @@ end
 
 g_dot_str="DiGraph dag_1 {x->v; v->z; x->w; w->z; z->s;}";
 
-dag_1 = create_fci_dag("dag_1", df, g_dot_str);
+vars = Symbol.(names(df))
+nt = namedtuple(vars, [df[!, k] for k in vars])
 
-g = pcalg(df, 0.25, gausscitest)
+g = pcalg(nt, 0.25, gausscitest)
+g |> display
+
+dag_1 = create_fci_dag("dag_1", df, g_dot_str);
+dag_1.est_g |> display
 
 g_oracle = fcialg(5, dseporacle, dag_1.g)
+g_oracle |> display
 
-g_gauss = fcialg(dag_1.df, 0.05, gausscitest)
+g_gauss = fcialg(nt, 0.05, gausscitest)
+g_gauss |> display
 
 let
     fci_oracle_dot_str = to_gv(g_oracle, dag_1.vars)
@@ -68,8 +76,8 @@ let
     f
 end
 
-
-@time dag_2 = create_pc_dag("dag_2", df, g_dot_str, 0.25; est_func=cmitest);
+println("Cmitest")
+#@time dag_2 = create_pc_dag("dag_2", df, g_dot_str, 0.25; est_func=cmitest);
 
 @testset "PC & FCI" begin
 

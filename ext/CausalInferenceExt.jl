@@ -17,7 +17,7 @@ $(SIGNATURES)
 
 ## Required arguments
 * `name::AbstractString` : A name for the PCDAG
-* `df::DataFrame` : DataFrame with observations
+* `nt::NamedTuple` : NamedTuple with observations
 * `g_dot_str::AbstractString` : Represents in most PCDAGs the assumed generational model
 * `p::Float74` : p-value used in independence tests
 
@@ -34,13 +34,15 @@ function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractS
 
     g_dot_str = g_dot_str
     vars = Symbol.(names(df))
+    nt = namedtuple(vars, [df[!, k] for k in vars])
+
     (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
         add_edge!(g, i, j)
     end
     
-    est_g = CausalInference.pcalg(df, p, est_func)
+    est_g = CausalInference.pcalg(nt, p, est_func)
 
     # Create d.est_tuple_list
     est_g_tuple_list = Tuple{Int, Int}[]
@@ -94,6 +96,7 @@ function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::Abstract
     est_func=dseporacle)
     
     vars = Symbol.(names(df))
+    nt = namedtuple(vars, [df[!, k] for k in vars])
     (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
