@@ -386,24 +386,16 @@ $(SIGNATURES)
 
 Exported
 """
-function list_backdoor_adjustment(d::ROS.AbstractDAG, from::Symbol, to::Symbol;
+function list_backdoor_adjustments(d::ROS.AbstractDAG, from::Symbol, to::Symbol;
     include=Symbol[], exclude=Symbol[], debug=false)
-
-    #list_backdoor_adjustment(g, X, Y, I = Set{eltype(g)}(), R = setdiff(Set(vertices(g)), X, Y))
 
     f = findfirst(x -> x == from, d.vars)
     l = findfirst(x -> x == to, d.vars)
-    incl = Int[]
-    for sym in include
-        push!(incl, findfirst(x -> x == sym, d.vars))
-    end
-    excl = Int[]
-    for sym in setdiff(d.vars, exclude)
-        push!(excl, findfirst(x -> x == sym, d.vars))
-    end
+    incl = Int[findfirst(x -> x == j, d.vars) for j in include]
+    excl = Int[findfirst(x -> x == j, d.vars) for j in setdiff(d.vars, exclude)]
     debug && println("list_backdoor_adjustment(g, $Set($f), $Set($l), $Set($incl), $Set($excl)")
     res =  Set(list_backdoor_adjustment(d.g, Set(f), Set(l), Set(incl), Set(excl)))
-    return [Symbol[d.vars[i] for i in j] for j in res]
+    return [Symbol[dag_pc.vars[i] for i in j] for j in res]
 end
 
 end
