@@ -116,8 +116,36 @@ mutable struct FCIDAG <: AbstractDAG
     covm::NamedArray
 end
 
+mutable struct GESDAG <: AbstractDAG
+    name::AbstractString
+    
+    # Assumed DAG
+    g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}
+    g_tuple_list::Vector{Tuple{Int, Int}}
+    g_dot_str::AbstractString
+    vars::Vector{Symbol}
+    
+    #Estimated FCIDAG
+    est_g::Graphs.SimpleGraphs.SimpleDiGraph{Int64}
+    est_g_dot_str::AbstractString
+    
+    # Df used for est_g
+    df::DataFrame
+
+    method::Symbol
+    
+    # penalty value
+    penalty::Float64
+    score::Float64
+    elapsed::Tuple{Float64, Float64}
+
+    # Covariance matrix from df
+    covm::NamedArray
+end
+
 function create_pc_dag() end
 function create_fci_dag() end
+function create_ges_dag() end
 function create_tuple_list() end
 function skeleton_graph() end
 function all_paths() end
@@ -126,8 +154,10 @@ export
     AbstractDag,
     PCDAG,
     FCIDAG,
+    GESDAG,
     create_pc_dag,
     create_fci_dag,
+    create_ges_dag,
     Path,
     create_tuple_list,
     skeleton_graph,

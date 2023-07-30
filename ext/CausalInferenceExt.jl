@@ -6,9 +6,9 @@ using RegressionAndOtherStories
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using CausalInference) : (using ..CausalInference)
 
 import RegressionAndOtherStories: AbstractDAG, PCDAG, create_pc_dag, FCIDAG, create_fci_dag,
-    skeleton_graph, all_paths 
+    GESDAG, create_ges_dag, skeleton_graph, all_paths 
 
-import CausalInference: dsep, backdoor_criterion, is_collider
+import CausalInference: dsep, backdoor_criterion, is_collider, list_backdoor_adjustment
 
 """
 Create a PCDAG object.
@@ -71,6 +71,69 @@ function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractS
 
     return PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
         est_g_dot_str, p, df, covm)
+end
+
+
+"""
+Create a GESDAG object.
+
+$(SIGNATURES)
+
+## Required arguments
+* `name::AbstractString` : A name for the FCIDAG
+* `df::DataFrame` : DataFrame with observations
+* `g_dot_str::AbstractString` : Represents in most FCIDAGs the assumed generational model
+* `p::Float74` : p-value used in independence tests
+
+## Optional keyword arguments
+* `parallel=true` : Use multiple threads
+
+## Returns
+* `GESDAG` : See ?GESDAG
+
+Part of the API, exported.
+"""
+function create_ges_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString;
+    method=:gaussian_bic, penalty=1, parallel=true, verbose=false)
+    
+    vars = Symbol.(names(df))
+    nt = namedtuple(vars, [df[!, k] for k in vars])
+    (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
+    g = DiGraph(length(vars))
+    for (i, j) in g_tuple_list
+        add_edge!(g, i, j)
+    end
+
+    (est_g, score, elapsed) = ges(df; method, penalty, parallel, verbose)
+    
+    # Create d.est_tuple_list
+    est_g_tuple_list = Tuple{Int, Int}[]
+    for (f, edge) in enumerate(est_g.fadjlist)
+        for l in edge
+            push!(est_g_tuple_list, (f, l))
+        end
+    end
+    
+    # Create d.est_g_dot_str
+    est_g_dot_str = "digraph est_g_$(name) {"
+    for e in g_tuple_list
+        f = e[1]
+        l = e[2]
+        if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
+
+           est_g_dot_str = est_g_dot_str * "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
+        else
+            est_g_dot_str = est_g_dot_str * "$(vars[f]) -> $(vars[l]);"
+        end
+    end
+    est_g_dot_str = est_g_dot_str * "}"
+
+    # Compute est_g and covariance matrix (as NamedArray)
+    covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
+
+    # Create and return the GESDAG
+    return GESDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_dot_str, df,
+        method, penalty, score, elapsed, covm)
 end
 
 """
@@ -221,6 +284,24 @@ function skeleton_graph(d::AbstractDAG)
     g
 end
 
+"""
+List all paths between nodes f and l.
+
+$(SIGNATURES)
+
+## Required arguments
+* `d::DAG` : DAG object
+* `f::Symbol` : First symbol of path in graph
+* `l::Symbol` : Last symbol of path in graph
+
+## Optional keyword arguments
+* `debug = false` : Show intermediate results
+
+## Returns
+* `Vector{Vector{Symbol}}`
+
+Exported
+"""
 function all_paths(d::AbstractDAG, f::Symbol, l::Symbol; debug=false)
     df = DataFrame()
     paths = Vector{Int}[]
@@ -283,6 +364,46 @@ function all_paths(d::AbstractDAG, f::Symbol, l::Symbol; debug=false)
         append!(sym_paths, [sp])
     end
     sym_paths
+end
+
+"""
+List backdoor adjustments.
+
+$(SIGNATURES)
+
+## Required arguments
+* `d::DAG` : DAG object
+* `f::Symbol` : First symbol of path in graph
+* `l::Symbol` : Last symbol of path in graph
+
+## Optional keyword arguments
+* `include = Symbol[]` : Adjustments sets containing these nodes
+* `exclude = Symbol[]` : Nodes that can't be part of adjustment sets, e.g. unobserved.
+* `debug = true` : Show intermediate results (show call to CausalInference method)
+
+## Returns
+* `Vector{Vector{Symbol}}`
+
+Exported
+"""
+function list_backdoor_adjustment(d::ROS.AbstractDAG, from::Symbol, to::Symbol;
+    include=Symbol[], exclude=Symbol[], debug=false)
+
+    #list_backdoor_adjustment(g, X, Y, I = Set{eltype(g)}(), R = setdiff(Set(vertices(g)), X, Y))
+
+    f = findfirst(x -> x == from, d.vars)
+    l = findfirst(x -> x == to, d.vars)
+    incl = Int[]
+    for sym in include
+        push!(incl, findfirst(x -> x == sym, d.vars))
+    end
+    excl = Int[]
+    for sym in setdiff(d.vars, exclude)
+        push!(excl, findfirst(x -> x == sym, d.vars))
+    end
+    debug && println("list_backdoor_adjustment(g, $Set($f), $Set($l), $Set($incl), $Set($excl)")
+    res =  Set(list_backdoor_adjustment(d.g, Set(f), Set(l), Set(incl), Set(excl)))
+    return [Symbol[d.vars[i] for i in j] for j in res]
 end
 
 end

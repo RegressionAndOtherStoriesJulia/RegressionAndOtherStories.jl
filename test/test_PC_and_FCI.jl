@@ -77,7 +77,7 @@ let
 end
 
 println("Cmitest")
-#@time dag_2 = create_pc_dag("dag_2", df, g_dot_str, 0.25; est_func=cmitest);
+@time dag_2 = create_pc_dag("dag_2", df, g_dot_str, 0.25; est_func=cmitest);
 
 @testset "PC & FCI" begin
 

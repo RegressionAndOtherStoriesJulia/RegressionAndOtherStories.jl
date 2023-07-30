@@ -52,6 +52,31 @@ function RegressionAndOtherStories.gvplot(d::PCDAG;
     f
 end
 
+function RegressionAndOtherStories.gvplot(d::GESDAG; 
+    title_g = "Generational causal graph",
+    title_est_g = "GES estimated causal graph")
+
+    g1 = GraphViz.Graph(d.g_dot_str)
+    g2 = GraphViz.Graph(d.est_g_dot_str)
+
+    f = Figure(resolution=default_figure_resolution)
+
+    # g
+    ax = Axis(f[1, 1]; aspect=DataAspect(), title=title_g)
+    CairoMakie.image!(rotr90(create_png_image(g1)))
+    hidedecorations!(ax)
+    hidespines!(ax)
+
+    # Est_g
+    title = isnothing(d.penalty) ? title_est_g : title_est_g * " (penalty = $(round(d.penalty, digits=1)))"
+    ax = Axis(f[1, 2]; aspect=DataAspect(), title)
+    Makie.image!(rotr90(create_png_image(g2)))
+    hidedecorations!(ax)
+    hidespines!(ax)
+
+    f
+end
+
 function gvplot(d::FCIDAG;
     title_g = "Generational causal graph",
     title_est_g = "FCI estimated causal graph")
