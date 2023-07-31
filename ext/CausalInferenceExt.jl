@@ -386,7 +386,7 @@ $(SIGNATURES)
 
 Exported
 """
-function list_backdoor_adjustments(d::ROS.AbstractDAG, from::Symbol, to::Symbol;
+function list_backdoor_adjustment(d::ROS.AbstractDAG, from::Symbol, to::Symbol;
     include=Symbol[], exclude=Symbol[], debug=false)
 
     f = findfirst(x -> x == from, d.vars)
