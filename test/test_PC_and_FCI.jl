@@ -37,7 +37,7 @@ g_dot_str="DiGraph dag_1 {x->v; v->z; x->w; w->z; z->s;}";
 vars = Symbol.(names(df))
 nt = namedtuple(vars, [df[!, k] for k in vars])
 
-g = pcalg(nt, 0.25, gausscitest)
+g = pcalg(df, 0.25, gausscitest)
 g |> display
 
 dag_1 = create_fci_dag("dag_1", df, g_dot_str);
@@ -46,7 +46,7 @@ dag_1.est_g |> display
 g_oracle = fcialg(5, dseporacle, dag_1.g)
 g_oracle |> display
 
-g_gauss = fcialg(nt, 0.05, gausscitest)
+g_gauss = fcialg(df, 0.05, gausscitest)
 g_gauss |> display
 
 let
@@ -76,8 +76,17 @@ let
     f
 end
 
+println("Dag_ges")
+@time dag_4 = create_ges_dag("ges", df, g_dot_str; penalty=1.0);
+
+println("Dag_fci")
+@time dag_5 = create_fci_dag("fci", df, g_dot_str, 0.25);
+
+println("Dag_pc")
+@time dag_3 = create_pc_dag("pc", df, g_dot_str, 0.25);
+
 println("Cmitest")
-@time dag_2 = create_pc_dag("dag_2", df, g_dot_str, 0.25; est_func=cmitest);
+@time dag_2 = create_pc_dag("cmi", df, g_dot_str, 0.25; est_func=cmitest);
 
 @testset "PC & FCI" begin
 
