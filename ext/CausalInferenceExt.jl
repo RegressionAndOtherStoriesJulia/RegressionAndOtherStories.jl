@@ -17,7 +17,7 @@ $(SIGNATURES)
 
 ## Required arguments
 * `name::AbstractString` : A name for the PCDAG
-* `nt::NamedTuple` : NamedTuple with observations
+* `df:DataFrame` : DataFrame with data (observations and possibly non observed inputs)
 * `g_dot_str::AbstractString` : Represents in most PCDAGs the assumed generational model
 * `p::Float74` : p-value used in independence tests
 
@@ -33,21 +33,15 @@ function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractS
     est_func=gausscitest)
     println("In create_pc_dag")
 
-    #g_dot_str = g_dot_str
     vars = Symbol.(names(df))
-    #nt = namedtuple(vars, [df[!, k] for k in vars])
-
-    println("Creating g_tuple_list")
-    (g_tuple_list, vars2) = create_tuple_list(g_dot_str, vars)
+    g_tuple_list = create_tuple_list(g_dot_str, vars)
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
         add_edge!(g, i, j)
     end
     
-    println("Calling pcalg")
     est_g = pcalg(df, p, est_func)
 
-    println("Creating est_g_tuple_list")
     # Create d.est_tuple_list
     est_g_tuple_list = Tuple{Int, Int}[]
     for (f, edge) in enumerate(est_g.fadjlist)
@@ -61,7 +55,6 @@ function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractS
     for e in g_tuple_list
         f = e[1]
         l = e[2]
-        println([f, l, length(est_g_tuple_list), length(setdiff(est_g_tuple_list, [(e[2], e[1])]))])
         if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
             est_g_dot_str *= "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
         else
@@ -101,8 +94,7 @@ function create_ges_dag(name::AbstractString, df::DataFrame, g_dot_str::Abstract
     method=:gaussian_bic, penalty=1, parallel=true, verbose=false)
     
     vars = Symbol.(names(df))
-    nt = namedtuple(vars, [df[!, k] for k in vars])
-    (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
+    g_tuple_list = create_tuple_list(g_dot_str, vars)
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
         add_edge!(g, i, j)
@@ -163,8 +155,7 @@ function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::Abstract
     est_func=dseporacle)
     
     vars = Symbol.(names(df))
-    nt = namedtuple(vars, [df[!, k] for k in vars])
-    (g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
+    g_tuple_list = create_tuple_list(g_dot_str, vars)
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
         add_edge!(g, i, j)

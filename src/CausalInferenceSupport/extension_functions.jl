@@ -1,23 +1,15 @@
-function create_tuple_list(d_str::AbstractString, vars::Union{Vector{Symbol}, Nothing})
+function create_tuple_list(d_str::AbstractString, vars::Vector{Symbol})
     d = d_str[findfirst("{", d_str)[1]+1:findlast("}", d_str)[1]-2]
     s = filter(x->!isspace(x), d)
     s = split.(split(s, ";"), "->")
-    if isnothing(vars)
-        vars = Vector{Symbol}()
-        for e in s
-            e = Symbol.(e)
-            for n in e
-                push!(vars, n)
-            end
-        end
-    end
+
     tups = Tuple{Int, Int}[]
     for e in s
         e = Symbol.(e)
         push!(tups,
             (findfirst(x -> x == e[1], vars), findfirst(x -> x == e[2], vars)))
     end
-    (tups, vars)
+    tups
 end
 
 abstract type AbstractDAG end

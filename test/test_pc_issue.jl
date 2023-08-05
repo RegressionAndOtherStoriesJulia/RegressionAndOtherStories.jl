@@ -26,50 +26,62 @@ est_g |> display
 est_g = pcalg(df, 0.25, gausscitest)
 est_g |> display
 
+function create_pc1(name, df, g_dot_str, p=0.1, est_func = gausscitest)
+    pcalg(df, p, est_func)
+end
+
 name = "dag_pc"
 g_dot_str = "Digraph PC {A->C; C->F; B->E; E->H; F->G; G->H; A->D; B->D; D->F; D->H;}"
+vars = Symbol.(names(df))
 p = 0.1
 est_func = gausscitest
 
-vars = Symbol.(names(df))
-nt = namedtuple(vars, [df[!, k] for k in vars])
 
-(g_tuple_list, vars) = create_tuple_list(g_dot_str, vars)
-g = DiGraph(length(vars))
-for (i, j) in g_tuple_list
-    add_edge!(g, i, j)
-end
+dag_pc1 = create_pc1(name, df, g_dot_str)
+dag_pc1 |> display
 
-est_g = CausalInference.pcalg(df, p, est_func)
-est_g |> display
+#function create_pc2(name, df, g_dot_str, p=0.1, vars=Symbol.(names(df)); est_func = gausscitest)
+#    println("In create_pc2")
 
-# Create d.est_tuple_list
-est_g_tuple_list = Tuple{Int, Int}[]
-for (f, edge) in enumerate(est_g.fadjlist)
-    for l in edge
-        push!(est_g_tuple_list, (f, l))
+    g_tuple_list = create_tuple_list(g_dot_str, vars)
+    g = DiGraph(length(vars))
+    for (i, j) in g_tuple_list
+        add_edge!(g, i, j)
     end
-end
-est_g_tuple_list |> display
 
-# Create d.est_g_dot_str
-est_g_dot_str = "digraph est_g_$(name) {"
-for e in g_tuple_list
-    f = e[1]
-    l = e[2]
-    println([f, l, length(est_g_tuple_list), length(setdiff(est_g_tuple_list, [(e[2], e[1])]))])
-    if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
-        global est_g_dot_str *= "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
-    else
-        global est_g_dot_str *= "$(vars[f]) -> $(vars[l]);"
+    est_g = CausalInference.pcalg(df, p, est_func)
+    est_g |> display
+
+    # Create d.est_tuple_list
+    est_g_tuple_list = Tuple{Int, Int}[]
+    for (f, edge) in enumerate(est_g.fadjlist)
+        for l in edge
+            push!(est_g_tuple_list, (f, l))
+        end
     end
-end
-est_g_dot_str *= "}"
-est_g_dot_str |> display
 
-# Compute est_g and covariance matrix (as NamedArray)
-covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
+    # Create d.est_g_dot_str
+    est_g_dot_str = "digraph est_g_$(name) {"
+    for e in g_tuple_list
+        f = e[1]
+        l = e[2]
+        if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
+            global est_g_dot_str *= "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
+        else
+            global est_g_dot_str *= "$(vars[f]) -> $(vars[l]);"
+        end
+    end
+    est_g_dot_str *= "}"
 
-dag_pc = PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
-    est_g_dot_str, p, df, covm)
-dag_pc.est_g |> display
+    # Compute est_g and covariance matrix (as NamedArray)
+    covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
+
+    dag_pc2 = PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
+        est_g_dot_str, p, df, covm)
+    
+#end
+
+dag_pc2.g |> display
+
+dag_pc2.est_g |> display
+
