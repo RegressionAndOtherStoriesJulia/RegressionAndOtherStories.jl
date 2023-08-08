@@ -5,13 +5,16 @@ using RegressionAndOtherStories
 
 RegressionAndOtherStories.EXTENSIONS_SUPPORTED ? (using CausalInference) : (using ..CausalInference)
 
-import RegressionAndOtherStories: AbstractDAG, PCDAG, create_pc_dag, FCIDAG, create_fci_dag,
-    GESDAG, create_ges_dag, skeleton_graph, all_paths 
+import RegressionAndOtherStories: AbstractDAG, 
+    PCDAG, create_pcalg_gauss_dag, create_pcalg_cmi_dag,
+    FCIDAG, create_fci_dag,
+    GESDAG, create_ges_dag, 
+    skeleton_graph, all_paths 
 
 import CausalInference: dsep, backdoor_criterion, is_collider, list_backdoor_adjustment
 
 """
-Create a PCDAG object.
+Create a PCDAG object using gausscitest.
 
 $(SIGNATURES)
 
@@ -19,19 +22,16 @@ $(SIGNATURES)
 * `name::AbstractString` : A name for the PCDAG
 * `df:DataFrame` : DataFrame with data (observations and possibly non observed inputs)
 * `g_dot_str::AbstractString` : Represents in most PCDAGs the assumed generational model
-* `p::Float74` : p-value used in independence tests
 
 ## Optional keyword arguments
-* `est_func=gausscitest` : Function used to compute PCDAG
+* `p=0.25` : p-value used in independence tests
 
 ## Returns
 * `PCDAG` : See ?PCDAG
 
 Part of the API, exported.
 """
-function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p=0.1;
-    est_func=gausscitest)
-    println("In create_pc_dag")
+function create_pcalg_gauss_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString; p=0.25)
 
     vars = Symbol.(names(df))
     g_tuple_list = create_tuple_list(g_dot_str, vars)
@@ -40,7 +40,64 @@ function create_pc_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractS
         add_edge!(g, i, j)
     end
     
-    est_g = pcalg(df, p, est_func)
+    est_g = pcalg(df, p, gausscitest)
+
+    # Create d.est_tuple_list
+    est_g_tuple_list = Tuple{Int, Int}[]
+    for (f, edge) in enumerate(est_g.fadjlist)
+        for l in edge
+            push!(est_g_tuple_list, (f, l))
+        end
+    end
+    
+    # Create d.est_g_dot_str
+    est_g_dot_str = "digraph est_g_$(name) {"
+    for e in g_tuple_list
+        f = e[1]
+        l = e[2]
+        if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
+            est_g_dot_str *= "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
+        else
+            est_g_dot_str *= "$(vars[f]) -> $(vars[l]);"
+        end
+    end
+    est_g_dot_str *= "}"
+
+    # Compute est_g and covariance matrix (as NamedArray)
+    covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
+
+    return PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
+        est_g_dot_str, p, df, covm)
+end
+
+"""
+Create a PCDAG object using cmitest.
+
+$(SIGNATURES)
+
+## Required arguments
+* `name::AbstractString` : A name for the PCDAG
+* `df:DataFrame` : DataFrame with data (observations and possibly non observed inputs)
+* `g_dot_str::AbstractString` : Represents in most PCDAGs the assumed generational model
+
+## Optional keyword arguments
+* `p=0.25` : p-value used in independence tests
+
+## Returns
+* `PCDAG` : See ?PCDAG
+
+Part of the API, exported.
+"""
+function create_pcalg_cmi_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString; p=0.25)
+
+    vars = Symbol.(names(df))
+    g_tuple_list = create_tuple_list(g_dot_str, vars)
+    g = DiGraph(length(vars))
+    for (i, j) in g_tuple_list
+        add_edge!(g, i, j)
+    end
+    
+    est_g = pcalg(df, p, cmitest)
 
     # Create d.est_tuple_list
     est_g_tuple_list = Tuple{Int, Int}[]
@@ -151,7 +208,7 @@ $(SIGNATURES)
 
 Part of the API, exported.
 """
-function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p=0.1;
+function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p=0.25;
     est_func=dseporacle)
     
     vars = Symbol.(names(df))

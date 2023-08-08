@@ -82,11 +82,11 @@ println("Dag_ges")
 println("Dag_fci")
 @time dag_5 = create_fci_dag("fci", df, g_dot_str, 0.25);
 
-println("Dag_pc")
-@time dag_3 = create_pc_dag("pc", df, g_dot_str, 0.25);
+println("Dag_pcalg_gauss")
+@time dag_3 = create_pcalg_gauss_dag("pc", df, g_dot_str);
 
-println("Cmitest")
-@time dag_2 = create_pc_dag("cmi", df, g_dot_str, 0.25; est_func=cmitest);
+println("Dag_pcalg_cmi")
+@time dag_2 = create_pcalg_cmi_dag("cmi", df, g_dot_str);
 
 @testset "PC & FCI" begin
 

@@ -135,7 +135,8 @@ mutable struct GESDAG <: AbstractDAG
     covm::NamedArray
 end
 
-function create_pc_dag() end
+function create_pcalg_gauss_dag() end
+function create_pcalg_cmi_dag() end
 function create_fci_dag() end
 function create_ges_dag() end
 function create_tuple_list() end
@@ -147,7 +148,8 @@ export
     PCDAG,
     FCIDAG,
     GESDAG,
-    create_pc_dag,
+    create_pcalg_gauss_dag,
+    create_pcalg_cmi_dag,
     create_fci_dag,
     create_ges_dag,
     Path,

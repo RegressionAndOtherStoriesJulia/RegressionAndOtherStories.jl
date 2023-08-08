@@ -1,4 +1,6 @@
-using CausalInference, DataFrames, RegressionAndOtherStories
+using CausalInference, DataFrames
+using CairoMakie, GraphViz
+using RegressionAndOtherStories
 
 # Generate some sample data to use with the PC algorithm
 
@@ -20,37 +22,35 @@ H += 0.95 .* D
 nt = (A=A, B=B, C=C, D=D, E=E, F=F, G=G, H=H)
 df = DataFrame(A=A, B=B, C=C, D=D, E=E, F=F, G=G, H=H)
 
-est_g = pcalg(nt, 0.25, gausscitest)
-est_g |> display
-
-est_g = pcalg(df, 0.25, gausscitest)
-est_g |> display
-
-function create_pc1(name, df, g_dot_str, p=0.1, est_func = gausscitest)
-    pcalg(df, p, est_func)
-end
-
 name = "dag_pc"
 g_dot_str = "Digraph PC {A->C; C->F; B->E; E->H; F->G; G->H; A->D; B->D; D->F; D->H;}"
-vars = Symbol.(names(df))
-p = 0.1
-est_func = gausscitest
+p = 0.25
 
+est_pcalg_gauss_nt = pcalg(nt, p, gausscitest)
+est_pcalg_gauss_nt |> display
 
-dag_pc1 = create_pc1(name, df, g_dot_str)
-dag_pc1 |> display
+est_pcalg_gauss_df = pcalg(df, p, gausscitest)
+est_pcalg_gauss_df |> display
 
-#function create_pc2(name, df, g_dot_str, p=0.1, vars=Symbol.(names(df)); est_func = gausscitest)
-#    println("In create_pc2")
+est_pcalg_cmi_df = pcalg(df, p, cmitest)
+est_pcalg_cmi_df |> display
 
+#vars=Symbol.(names(df))
+#g_tuple_list = create_tuple_list(g_dot_str, vars)
+
+function create_pcalg_gauss_dag(name, df, g_dot_str; p=0.25)
+
+    println("In create_pcalg_gauss_dag")
+
+    vars=Symbol.(names(df))
     g_tuple_list = create_tuple_list(g_dot_str, vars)
+
     g = DiGraph(length(vars))
     for (i, j) in g_tuple_list
         add_edge!(g, i, j)
     end
 
-    est_g = CausalInference.pcalg(df, p, est_func)
-    est_g |> display
+    est_g = pcalg(df, p, gausscitest)
 
     # Create d.est_tuple_list
     est_g_tuple_list = Tuple{Int, Int}[]
@@ -59,16 +59,16 @@ dag_pc1 |> display
             push!(est_g_tuple_list, (f, l))
         end
     end
-
+    
     # Create d.est_g_dot_str
     est_g_dot_str = "digraph est_g_$(name) {"
     for e in g_tuple_list
         f = e[1]
         l = e[2]
         if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
-            global est_g_dot_str *= "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
+            est_g_dot_str *= "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
         else
-            global est_g_dot_str *= "$(vars[f]) -> $(vars[l]);"
+            est_g_dot_str *= "$(vars[f]) -> $(vars[l]);"
         end
     end
     est_g_dot_str *= "}"
@@ -76,12 +76,56 @@ dag_pc1 |> display
     # Compute est_g and covariance matrix (as NamedArray)
     covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
 
-    dag_pc2 = PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
+    return PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
         est_g_dot_str, p, df, covm)
+
+end
+
+dag_pcalg_gauss = create_pcalg_gauss_dag(name, df, g_dot_str)
+dag_pcalg_gauss.est_g |> display
+
+function create_pcalg_cmi_dag(name, df, g_dot_str; p=0.25)
+
+    println("In create_pcalg_cmi_dag")
+
+    vars=Symbol.(names(df))
+    g_tuple_list = create_tuple_list(g_dot_str, vars)
+
+    g = DiGraph(length(vars))
+    for (i, j) in g_tuple_list
+        add_edge!(g, i, j)
+    end
+
+    est_g = pcalg(df, p, cmitest)
+
+    # Create d.est_tuple_list
+    est_g_tuple_list = Tuple{Int, Int}[]
+    for (f, edge) in enumerate(est_g.fadjlist)
+        for l in edge
+            push!(est_g_tuple_list, (f, l))
+        end
+    end
     
-#end
+    # Create d.est_g_dot_str
+    est_g_dot_str = "digraph est_g_$(name) {"
+    for e in g_tuple_list
+        f = e[1]
+        l = e[2]
+        if length(setdiff(est_g_tuple_list, [(e[2], e[1])])) !== length(est_g_tuple_list)
+            est_g_dot_str *= "$(vars[f]) -> $(vars[l]) [color=red, arrowhead=none];"
+        else
+            est_g_dot_str *= "$(vars[f]) -> $(vars[l]);"
+        end
+    end
+    est_g_dot_str *= "}"
 
-dag_pc2.g |> display
+    # Compute est_g and covariance matrix (as NamedArray)
+    covm = NamedArray(cov(Array(df)), (names(df), names(df)), ("Rows", "Cols"))
 
-dag_pc2.est_g |> display
+    return PCDAG(name, g, g_tuple_list, g_dot_str, vars, est_g, est_g_tuple_list,
+        est_g_dot_str, p, df, covm)
 
+end
+
+dag_pcalg_cmi = create_pcalg_cmi_dag(name, df, g_dot_str)
+dag_pcalg_cmi.est_g |> display
