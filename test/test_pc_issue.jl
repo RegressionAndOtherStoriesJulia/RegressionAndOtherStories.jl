@@ -36,6 +36,8 @@ println("\nPcalg cmi df")
 est_pcalg_cmi_df = pcalg(df, p, cmitest)
 est_pcalg_cmi_df |> display
 
+#=
+# Commented out because it needs RegressionAndOtherStories
 println("\nFci dseoracle df")
 est_func=dseporacle
 vars = Symbol.(names(df))
@@ -46,6 +48,7 @@ for (i, j) in g_tuple_list
 end
 est_fci = fcialg(nv(g), est_func, g)
 est_fci |> display
+=#
 
 println("\nGes gaussian_bic df")
 method=:gaussian_bic; penalty=1.0; parallel=false; verbose=false
