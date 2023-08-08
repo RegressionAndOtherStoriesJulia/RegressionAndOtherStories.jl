@@ -137,9 +137,12 @@ $(SIGNATURES)
 * `name::AbstractString` : A name for the FCIDAG
 * `df::DataFrame` : DataFrame with observations
 * `g_dot_str::AbstractString` : Represents in most FCIDAGs the assumed generational model
-* `p::Float74` : p-value used in independence tests
 
 ## Optional keyword arguments
+* `method==:gaussian_bic`
+* `penalty=1.0`
+* `parallel=true`
+* `verbose=false`
 * `parallel=true` : Use multiple threads
 
 ## Returns
@@ -148,7 +151,7 @@ $(SIGNATURES)
 Part of the API, exported.
 """
 function create_ges_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString;
-    method=:gaussian_bic, penalty=1, parallel=true, verbose=false)
+    method=:gaussian_bic, penalty=1.0, parallel=true, verbose=false)
     
     vars = Symbol.(names(df))
     g_tuple_list = create_tuple_list(g_dot_str, vars)
@@ -198,9 +201,9 @@ $(SIGNATURES)
 * `name::AbstractString` : A name for the FCIDAG
 * `df::DataFrame` : DataFrame with observations
 * `g_dot_str::AbstractString` : Represents in most FCIDAGs the assumed generational model
-* `p::Float74` : p-value used in independence tests
 
 ## Optional keyword arguments
+* `p=0.25` : p-value used in independence tests
 * `est_func=dseporacle` : Function used to compute FCIDAG
 
 ## Returns
@@ -208,8 +211,8 @@ $(SIGNATURES)
 
 Part of the API, exported.
 """
-function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString, p=0.25;
-    est_func=dseporacle)
+function create_fci_dag(name::AbstractString, df::DataFrame, g_dot_str::AbstractString;
+    p=0.25, est_func=dseporacle)
     
     vars = Symbol.(names(df))
     g_tuple_list = create_tuple_list(g_dot_str, vars)

@@ -80,7 +80,7 @@ println("Dag_ges")
 @time dag_4 = create_ges_dag("ges", df, g_dot_str; penalty=1.0);
 
 println("Dag_fci")
-@time dag_5 = create_fci_dag("fci", df, g_dot_str, 0.25);
+@time dag_5 = create_fci_dag("fci", df, g_dot_str);
 
 println("Dag_pcalg_gauss")
 @time dag_3 = create_pcalg_gauss_dag("pc", df, g_dot_str);
