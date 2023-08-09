@@ -1,4 +1,4 @@
-using CausalInference, DataFrames
+using Graphs, CausalInference, DataFrames
 
 # Generate some sample data to use with the PC algorithm
 
@@ -36,8 +36,20 @@ println("\nPcalg cmi df")
 est_pcalg_cmi_df = pcalg(df, p, cmitest)
 est_pcalg_cmi_df |> display
 
-#=
-# Commented out because it needs RegressionAndOtherStories
+function create_tuple_list(d_str::AbstractString, vars::Vector{Symbol})
+    d = d_str[findfirst("{", d_str)[1]+1:findlast("}", d_str)[1]-2]
+    s = filter(x->!isspace(x), d)
+    s = split.(split(s, ";"), "->")
+
+    tups = Tuple{Int, Int}[]
+    for e in s
+        e = Symbol.(e)
+        push!(tups,
+            (findfirst(x -> x == e[1], vars), findfirst(x -> x == e[2], vars)))
+    end
+    tups
+end
+
 println("\nFci dseoracle df")
 est_func=dseporacle
 vars = Symbol.(names(df))
@@ -48,7 +60,6 @@ for (i, j) in g_tuple_list
 end
 est_fci = fcialg(nv(g), est_func, g)
 est_fci |> display
-=#
 
 println("\nGes gaussian_bic df")
 method=:gaussian_bic; penalty=1.0; parallel=false; verbose=false
