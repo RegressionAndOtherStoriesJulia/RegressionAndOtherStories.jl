@@ -12,7 +12,7 @@ $(SIGNATURES)
 
 """
 function reset_notebook!(fname::AbstractString;
-    display_actions=false, reset_activate=true, set_activate=false) 
+    display_actions=true, reset_activate=true, set_activate=false) 
 
     if !isfile(fname)
         @warn "Notebook $fname does not exist!"

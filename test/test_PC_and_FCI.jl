@@ -40,7 +40,10 @@ nt = namedtuple(vars, [df[!, k] for k in vars])
 g = pcalg(df, 0.25, gausscitest)
 g |> display
 
-dag_1 = create_fci_dag("dag_1", df, g_dot_str);
+g = pcalg(df, 0.25, cmitest)
+g |> display
+
+dag_1 = create_pcalg_gauss_dag("dag_1", df, g_dot_str)
 dag_1.est_g |> display
 
 g_oracle = fcialg(5, dseporacle, dag_1.g)
