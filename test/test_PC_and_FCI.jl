@@ -59,7 +59,7 @@ let
     g2 = GraphViz.Graph(dag_1.est_g_dot_str)
     g3 = GraphViz.Graph(fci_oracle_dot_str)
     g4 = GraphViz.Graph(fci_gauss_dot_str)
-    f = Figure(resolution=default_figure_resolution)
+    f = Figure(;size = default_figure_resolution)
     ax = Axis(f[1, 1]; aspect=DataAspect(), title="True (generational) DAG")
     CairoMakie.image!(rotr90(create_png_image(g1)))
     hidedecorations!(ax)

@@ -25,7 +25,7 @@ function trankplot(df::DataFrame, param::AbstractString;
     nt_args = (n_draws=n_draws, n_chains=n_chains)
     ranks = rank_vector(df[:, param], nt_args)
     
-    f = Figure(resolution = default_figure_resolution)
+    f = Figure(;size =  default_figure_resolution)
     if n_eff > 0
         ax = Axis(f[1, 1]; 
             title="Trankplot of parameter $(param) (n_eff = $(n_eff))")

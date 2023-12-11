@@ -34,7 +34,7 @@ function RegressionAndOtherStories.gvplot(d::PCDAG;
     g1 = GraphViz.Graph(d.g_dot_str)
     g2 = GraphViz.Graph(d.est_g_dot_str)
 
-    f = Figure(resolution=default_figure_resolution)
+    f = Figure(;size =  default_figure_resolution)
 
     # g
     ax = Axis(f[1, 1]; aspect=DataAspect(), title=title_g)
@@ -59,7 +59,7 @@ function RegressionAndOtherStories.gvplot(d::GESDAG;
     g1 = GraphViz.Graph(d.g_dot_str)
     g2 = GraphViz.Graph(d.est_g_dot_str)
 
-    f = Figure(resolution=default_figure_resolution)
+    f = Figure(;size =  default_figure_resolution)
 
     # g
     ax = Axis(f[1, 1]; aspect=DataAspect(), title=title_g)
@@ -84,7 +84,7 @@ function gvplot(d::FCIDAG;
     g1 = GraphViz.Graph(d.g_dot_str)
     g2 = GraphViz.Graph(d.est_g_dot_str)
     
-    f = Figure(resolution=default_figure_resolution)
+    f = Figure(;size =  default_figure_resolution)
 
     # g
     ax = Axis(f[1, 1]; aspect=DataAspect(), title=title_g)

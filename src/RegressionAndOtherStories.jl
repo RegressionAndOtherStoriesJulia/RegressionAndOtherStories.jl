@@ -119,7 +119,7 @@ function ros_data(dataset, parts...; env_var="JULIA_ROS_HOME")
     normpath(joinpath(ros_path(dataset), "data", parts...))
 end
 
-default_figure_resolution = (1100, 600);
+default_figure_resolution =  (1100, 600);
 
 export
     ros_path,

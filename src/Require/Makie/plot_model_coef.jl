@@ -31,7 +31,7 @@ function plot_model_coef(s::Vector{NamedTuple},  pars::Vector{Symbol}; mnames=St
     yran = range(1, stop=length(ylabs), length=length(ys))
     yticks = (yran, ys)
     
-    f = Figure(resolution=default_figure_resolution)
+    f = Figure(;size =  default_figure_resolution)
     ax = Axis(f[1, 1]; title, yticks)
     xlims!(xmin-0.1(xmax-xmin), xmax+0.1(xmax-xmin))
     ylims!(0, 10)

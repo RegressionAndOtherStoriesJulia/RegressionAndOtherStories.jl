@@ -6,7 +6,7 @@ function plot_chains(df::DataFrame, pars::Vector{Symbol};
     dft[!, :chain] = repeat(collect(1:no_of_chains); inner=no_of_draws)
     dft[!, :chain] = categorical(dft.chain)
 
-    fig = Figure(resolution = default_figure_resolution)
+    fig = Figure(;size =  default_figure_resolution)
     for i in 1:length(pars)
         ax = Axis(fig[i, 1]; ylabel="$(pars[i])", xlabel="Iteration", title="Traces")
         for j in 1:no_of_chains

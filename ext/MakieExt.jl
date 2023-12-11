@@ -39,7 +39,7 @@ function plot_model_coef(s::Vector{NamedTuple},
     yran = range(1, stop=length(ylabs), length=length(ys))
     yticks = (yran, ys)
     
-    f = Figure(resolution=default_figure_resolution)
+    f = Figure(;size =  default_figure_resolution)
     ax = Axis(f[1, 1]; title, yticks)
     xlims!(xmin-0.1(xmax-xmin), xmax+0.1(xmax-xmin))
     ylims!(0, levels)
@@ -73,7 +73,7 @@ function trankplot(df::DataFrame, param::AbstractString;
     nt_args = (n_draws=n_draws, n_chains=n_chains)
     ranks = RegressionAndOtherStories.rank_vector(df[:, param], nt_args)
     
-    f = Figure(resolution = default_figure_resolution)
+    f = Figure(;size =  default_figure_resolution)
     if n_eff > 0
         ax = Axis(f[1, 1]; 
             title="Trankplot of parameter $(param) (n_eff = $(n_eff))")
@@ -110,7 +110,7 @@ function plot_chains(df::DataFrame, pars::Vector{Symbol};
     dft[!, :chain] = repeat(collect(1:no_of_chains); inner=no_of_draws)
     dft[!, :chain] = categorical(dft.chain)
 
-    fig = Figure(resolution = default_figure_resolution)
+    fig = Figure(;size =  default_figure_resolution)
     for i in 1:length(pars)
         ax = Axis(fig[i, 1]; ylabel="$(pars[i])", xlabel="Iteration", title="Traces")
         for j in 1:no_of_chains
@@ -168,10 +168,10 @@ function RegressionAndOtherStories.getellipsepoints(μ, Σ, confidence=0.95)
     _getellipsepoints(cx, cy, rx, ry, θ)
 end
 
-function RegressionAndOtherStories.pairplot(df; stride=1, colormap=:thermal, 
-    resolution=default_figure_resolution)
+function RegressionAndOtherStories.pairplot(df; stride=1, colormap=:thermal,
+    fsize =  default_figure_resolution)
 
-    dim = size(df,2) # how many colums there are in the dataframe
+    dim = size(df, 2) # how many colums there are in the dataframe
     idxs = 1:stride:size(df,1)
     colorant = range(0, 1, length=length(idxs))
     tv = names(df)
@@ -189,7 +189,7 @@ function RegressionAndOtherStories.pairplot(df; stride=1, colormap=:thermal,
     )
 
     f = with_theme(pp_theme) do
-        f = Figure(resolution=resolution)
+        f = Figure(;size = fsize)
 
         for i in 1:dim, j in 1:dim
 
