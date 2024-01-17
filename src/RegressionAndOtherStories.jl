@@ -20,7 +20,6 @@ function __init__()
     end
 end
 
-
 @reexport using CSV, DelimitedFiles, Unicode, Graphs, OrderedCollections
 @reexport using DataFrames, CategoricalArrays
 @reexport using NamedArrays, DataStructures, NamedTupleTools
@@ -121,12 +120,7 @@ end
 
 default_figure_resolution =  (1100, 600);
 
-export
-    ros_path,
-    ros_data,
-    default_figure_resolution
-
-# Access RegressionAndOtherStories.jl data files (.csv) using ros_datadir()
+# Access RegressionAndOtherStories.jl ROS data files (.csv) using ros_datadir()
 """
 
 # ros_datadir()
@@ -158,7 +152,15 @@ hibbs = CSV.read(ros_datadir("ElectionsEconomy", "hibbs.csv"), DataFrame)
 
 """
 function ros_datadir(parts...)
-    normpath(@__DIR__, "..", "data", parts...)
+    normpath(@__DIR__, "..", "data", "ROS", parts...)
+end
+
+function arm_datadir(parts...)
+    normpath(@__DIR__, "..", "data", "ARM", parts...)
+end
+
+function armm_datadir(parts...)
+    normpath(@__DIR__, "..", "data", "ARMM", parts...)
 end
 
 include("Utilities/bin_vector.jl")
@@ -186,7 +188,12 @@ include("GraphVizSupport/extension_functions.jl")
 include("Maintenance/reset_notebooks.jl")
 
 export
+    ros_path,
+    ros_data,
+    default_figure_resolution,
     ROS,
-    ros_datadir
+    ros_datadir,
+    arm_datadir,
+    armm_datadir
 
 end # module
