@@ -1,7 +1,7 @@
 name = "RegressionAndOtherStories"
 uuid = "21324389-b050-441a-ba7b-9a837781bda0"
 authors = ["Rob J Goedman <goedman@icloud.com>"]
-version = "0.15.9"
+version = "0.16.0"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -52,7 +52,7 @@ StanExt = "StanSample"
 CSV = "0.10.11"
 CairoMakie = "0.11"
 CategoricalArrays = "0.10"
-CausalInference = "0.11, 0.12"
+CausalInference = "0.12, 0.13"
 DataFrames = "1.3"
 DataStructures = "0.18.11"
 Distributions = "0.25"
