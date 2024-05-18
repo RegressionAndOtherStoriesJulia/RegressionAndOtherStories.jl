@@ -16,7 +16,7 @@ After many years I have decided to step away from my work with Stan and Julia. M
 
 At the end of 2024 I'll archive the different packages and projects included in the Github organisations StanJulia, StatisticalRethingJulia and RegressionAndOtherStoriesJulia if no one is interested (and time-wise able!) to take on this work.
 
-I have thoroughly enjoyed working on both Stan and Julia and see both mature during the last 15 years.
+I have thoroughly enjoyed working on both Julia and Stan and see both projects mature during the last 15 or so years. And I will always be grateful for the many folks who have helped me on numerous occasions. Both the Julia and the Stan community are awesome to work with! Thanks a lot!
 
 ## Purpose (once completed)
 
